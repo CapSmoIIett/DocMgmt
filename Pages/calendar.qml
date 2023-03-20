@@ -1,10 +1,14 @@
 import QtQuick
 
-Item {
+Rectangle {
+    width: 200
+    height: 100
+    color: "blue"
 
-            TableView {
-                anchors.fill: parent
-                clip: true
-
-            }
+    Text {
+        text: "Page 1"
+        anchors.centerIn: parent
+        color: "white"
+        font.pixelSize: 24
+    }
 }

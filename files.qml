@@ -7,6 +7,8 @@ import QtCharts
 
 import Qt.labs.folderlistmodel
 
+Rectangle
+{
   Pane {
     padding: 10
     anchors.fill: parent
@@ -261,3 +263,4 @@ import Qt.labs.folderlistmodel
       }
     }
   }
+}

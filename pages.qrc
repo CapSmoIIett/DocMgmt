@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Pages/calendar.qml</file>
+        <file>Pages/CellBox.qml</file>
+        <file>Pages/files.qml</file>
+        <file>Pages/LargeChartView.qml</file>
+        <file>Pages/personal.qml</file>
+        <file>Pages/SideNavButton.qml</file>
+    </qresource>
+</RCC>

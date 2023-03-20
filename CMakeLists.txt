@@ -9,6 +9,8 @@ find_package(Qt6 6.4 COMPONENTS Quick Charts QuickControls2 REQUIRED)
 
 qt_add_executable(appDocMgmtQt
     main.cpp
+    imagines.qrc
+    pages.qrc
 )
 
 qt_add_qml_module(appDocMgmtQt
