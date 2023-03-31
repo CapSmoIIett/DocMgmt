@@ -2,6 +2,14 @@
 #include <QQmlApplicationEngine>
 
 
+#include "header.h"
+#include "client.h"
+
+void test::hello()
+{
+    Client cl;
+}
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
@@ -15,6 +23,12 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
+
+    test t;
+    QObject *qml = engine.rootObjects()[0];
+
+    QObject::connect(qml, SIGNAL(hello()),
+                     &t, SLOT(hello()));
 
     QObject* qtquick2Themes = engine.rootObjects()[0]->findChild<QObject*>("qtquick2Themes");
     //qtquick2Themes->setProperty("text", qgetenv("QT_QUICK_CONTROLS_STYLE"));

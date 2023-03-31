@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/images">
+    <qresource prefix="/">
         <file>images/baseline-category-24px.svg</file>
         <file>images/baseline-menu-24px.svg</file>
         <file>images/baseline-more_vert-24px.svg</file>

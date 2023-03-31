@@ -6,5 +6,6 @@
         <file>Pages/LargeChartView.qml</file>
         <file>Pages/personal.qml</file>
         <file>Pages/SideNavButton.qml</file>
+        <file>Pages/Test.qml</file>
     </qresource>
 </RCC>
