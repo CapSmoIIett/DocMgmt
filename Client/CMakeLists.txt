@@ -28,6 +28,11 @@ qt_add_executable(appDocMgmtQt
     client.h
     imagines.qrc
     pages.qrc
+    database.cpp
+    database.h
+    model.cpp
+    model.h
+
 )
 
 qt_add_qml_module(appDocMgmtQt
@@ -39,8 +44,9 @@ qt_add_qml_module(appDocMgmtQt
         Pages/files.qml
         Pages/personal.qml
         Pages/CellBox.qml
-        Pages/SideNavButton.qml
         Pages/LargeChartView.qml
+        Pages/DrawerItem.qml
+        Pages/PageDrawer.qml
 )
 
 #set(QT_CHARTS_INCLUDE_PATHS "${QT_ROOT}/include/QtCharts")

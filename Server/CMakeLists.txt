@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 6.4 COMPONENTS SQL REQUIRED)
+find_package(Qt6 6.4 COMPONENTS SQL Network REQUIRED)
 
 ###########################################################################
 
@@ -23,6 +23,8 @@ link_directories(${PostgreSQL_LIBRARY_DIRS})
 
 qt_add_executable(DocMgmtServer
     main.cpp
+    server.cpp
+    server.h
 )
 
 set_target_properties(DocMgmtServer PROPERTIES
@@ -34,7 +36,7 @@ set_target_properties(DocMgmtServer PROPERTIES
 )
 
 target_link_libraries(appDocMgmtQt
-    PRIVATE Qt6::Sql)
+    PRIVATE Qt6::Sql Qt6::Network)
 
 install(TARGETS DocMgmtServer
     BUNDLE DESTINATION .

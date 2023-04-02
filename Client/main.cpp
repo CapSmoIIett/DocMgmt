@@ -1,9 +1,12 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 
 #include "header.h"
 #include "client.h"
+#include "database.h"
+#include "model.h"
 
 void test::hello()
 {
@@ -23,6 +26,22 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
+
+
+    DataBase database;
+    // Объявляем и инициализируем модель представления данных
+    Model *model = new Model();
+    /* Поскольку Мы отнаследовались от QSqlQueryModel, то
+     * для выборки данных нам необходимо выполнить SQL-запрос,
+     * в котором мы выберем все необходимы поля из нужной нам таблицы
+     * */
+    //model->setQuery("SELECT " TABLE_EMPLOYEE_NAME ", " TABLE_EMPLOYEE_OFFICE " FROM " TABLE_EMPLOYEE);
+    model->setQuery("select full_name, office_id from employee");
+
+    //engine.rootContext()->setContextProperty("myModel", model);
+
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
 
     test t;
     QObject *qml = engine.rootObjects()[0];

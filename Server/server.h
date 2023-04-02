@@ -1,11 +1,23 @@
-#ifndef SERVER_H
-#define SERVER_H
+#pragma once
 
+//#include <QSctpServer>
+//#include <QSslServer>
+//#include <QTcpServer>
+//#include <QTcpSocket>
+#include <QVector>
 
-class Server
+class Server //: public QTcpServer
 {
+    //Q_OBJECT
+
 public:
     Server();
+    void incomingConnection(qintptr socketDescription);
+    void slotReadyRead();
+
+private:
+    //QVector<QTcpSocket> Sockets;
+    QByteArray Data;
+    void SendToClient();
 };
 
-#endif // SERVER_H

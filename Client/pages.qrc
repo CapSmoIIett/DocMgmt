@@ -5,7 +5,11 @@
         <file>Pages/files.qml</file>
         <file>Pages/LargeChartView.qml</file>
         <file>Pages/personal.qml</file>
-        <file>Pages/SideNavButton.qml</file>
         <file>Pages/Test.qml</file>
+        <file>Pages/DrawerItem.qml</file>
+        <file>Pages/PageDrawer.qml</file>
+        <file>Pages/MenuButton.qml</file>
+        <file>Pages/MenuCard.qml</file>
+        <file>Pages/MenuStack.qml</file>
     </qresource>
 </RCC>
