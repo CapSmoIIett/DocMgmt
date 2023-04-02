@@ -186,70 +186,83 @@ ApplicationWindow {
             id: pages
 
             ListElement {
-                index: 0
                 name: 'personal'
+                page_source: "qrc:/Pages/personal.qml"
             }
             ListElement {
-                index: 1
                 name: 'files'
+                page_source: "qrc:/Pages/files.qml"
             }
             ListElement {
-                index: 2
+                name: 'calendar'
+                page_source: "qrc:/Pages/calendar.qml"
+            }
+            ListElement {
                 name: 'Test'
+                page_source: "qrc:/Pages/Test.qml"
             }
         }
 
-        ColumnLayout {
+        Rectangle {
+
             anchors.fill: parent
+            color: "#FFFFFF"
 
-            Label {
-                text: 'Drawer'
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pixelSize: 20
-                Layout.fillWidth: true
-            }
+            ColumnLayout {
+                anchors.fill: parent
 
-            Component {
-                id: drawerButton
+                Label {
+                    text: 'Drawer'
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 20
+                    Layout.fillWidth: true
+                }
 
-                Rectangle {
-                    id: wrapper
-                    //anchors.fill: parent
+                Component {
+                    id: drawerButton
+
+                    Rectangle {
+                        id: wrapper
+                        //anchors.fill: parent
 
 
-                    color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
-                    width: parent.width
-                    height: 40
+                        color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
+                        width: parent.width
+                        height: 40
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: model.name
-                    }
-
-                    MouseArea {
-                        id: mouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-
-                        // By clicking on the menu item is replaced component in the Loader
-                        onClicked: {
-                            loader.loadFragment(model.index)
-                            hello()
+                        Text {
+                            anchors.centerIn: parent
+                            text: model.name
                         }
+
+                        MouseArea {
+                            id: mouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+
+                            // By clicking on the menu item is replaced component in the Loader
+                            onClicked: {
+                                loader.loadFragment(model.page_source)
+                                drawer.close()
+                                hello()
+                            }
+                        }
+
                     }
+                }
+
+                ListView {
+                    anchors.fill: parent
+                    anchors.topMargin: 30
+
+
+                    model: pages
+
+                    delegate:drawerButton
+                    focus: true
 
                 }
-            }
-            ListView {
-                anchors.fill: parent
-                anchors.topMargin: 30
-
-
-                model: pages
-
-                delegate:drawerButton
-                focus: true
 
             }
 
@@ -263,21 +276,10 @@ ApplicationWindow {
     Loader {
         id: loader
         anchors.fill: parent
-        source: "qrc:/Pages/files.qml"
+        source: "qrc:/Pages/personal.qml"
 
-        function loadFragment(index){
-
-            switch(index){
-            case 0:
-                loader.source = "qrc:/Pages/personal.qml"
-                break;
-            case 1:
-                loader.source = "qrc:/Pages/files.qml"
-                break;
-            case 2:
-                loader.source = "qrc:/Pages/Test.qml"
-                break;
-            }
+        function loadFragment(page_source){
+            loader.source = page_source
         }
     }
     //*/

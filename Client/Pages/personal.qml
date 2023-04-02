@@ -4,429 +4,360 @@ import QtQuick.Controls
 import Qt.labs.qmlmodels
 
 Rectangle {
-      anchors.fill: parent
-      width: parent.width
-      ListModel {
-          id: myModel
+    anchors.fill: parent
+    width: parent.width
 
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+    Rectangle {
+        anchors.fill: parent
+        color: "#FFFFFF"
+    ListModel {
+        id: myModel
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        ListElement {
+                name: "John"
+                title: "Programmer"
+                office: "New York"
+                department: "IT"
+                teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+                name: "Alice"
+                title: "Sound designer"
+                office: "Paris"
+                department: "Art"
+                teams: "External project"
+        }
+        ListElement {
+                name: "Bob"
+                title: "Producer"
+                office: "London"
+                department: "Art"
+                teams: "External project"
+        }
+        ListElement {
+                name: "John"
+                title: "Programmer"
+                office: "New York"
+                department: "IT"
+                teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+                name: "Alice"
+                title: "Sound designer"
+                office: "Paris"
+                department: "Art"
+                teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "John"
-              title: "Programmer"
-              office: "New York"
-              department: "IT"
-              teams: "External project"
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          }
-          ListElement {
-              name: "Alice"
-              title: "Sound designer"
-              office: "Paris"
-              department: "Art"
-              teams: "External project"
-          }
-          ListElement {
-              name: "Bob"
-              title: "Producer"
-              office: "London"
-              department: "Art"
-              teams: "External project"
-          }
-      }
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-      ColumnLayout {
-              anchors.left: parent.left
-              anchors.top: parent.top
-            width: parent.width
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          // Define the header row
-          RowLayout {
-              anchors.left: parent.left
-              anchors.top: parent.top
-              spacing: 4
-              Rectangle {
-                  Layout.fillWidth: true
-                  height: 20
-                  color: "lightgray"
-                  Text {
-                      text: "Name"
-                      anchors.centerIn: parent
-                  }
-              }
-              Rectangle {
-                  Layout.fillWidth: true
-                  height: 20
-                  color: "lightgray"
-                  Text {
-                      text: "Title"
-                      anchors.centerIn: parent
-                  }
-              }
-              Rectangle {
-                  Layout.fillWidth: true
-                  height: 20
-                  color: "lightgray"
-                  Text {
-                      text: "Office"
-                      anchors.centerIn: parent
-                  }
-              }
-              Rectangle {
-                  Layout.fillWidth: true
-                  height: 20
-                  color: "lightgray"
-                  Text {
-                      text: "Department"
-                      anchors.centerIn: parent
-                  }
-              }
-              Rectangle {
-                  Layout.fillWidth: true
-                  height: 20
-                  color: "lightgray"
-                  Text {
-                      text: "Teams"
-                      anchors.centerIn: parent
-                  }
-              }
-         }
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "John"
+            title: "Programmer"
+            office: "New York"
+            department: "IT"
+            teams: "External project"
 
-          // Define the table rows
-          Repeater {
-              model: myModel
-              delegate: RowLayout {
-                  spacing: 4
-                  Rectangle {
-                      Layout.fillWidth: true
-                      height: 20
-                      color: index % 2 == 0 ? "white" : "lightgray"
-                      Text {
-                          text: name
-                          anchors.centerIn: parent
-                      }
-                  }
-                  Rectangle {
-                      Layout.fillWidth: true
-                      height: 20
-                      color: index % 2 == 0 ? "white" : "lightgray"
-                      Text {
-                          text: title
-                          anchors.centerIn: parent
-                      }
-                  }
-                  Rectangle {
-                      Layout.fillWidth: true
-                      height: 20
-                      color: index % 2 == 0 ? "white" : "lightgray"
-                      Text {
-                          text: office
-                          anchors.centerIn: parent
-                      }
-                  }
-                  Rectangle {
-                      Layout.fillWidth: true
-                      height: 20
-                      color: index % 2 == 0 ? "white" : "lightgray"
-                      Text {
-                          text: department
-                          anchors.centerIn: parent
-                      }
-                  }
-                  Rectangle {
-                      Layout.fillWidth: true
-                      height: 20
-                      color: index % 2 == 0 ? "white" : "lightgray"
-                      Text {
-                          text: teams
-                          anchors.centerIn: parent
-                      }
-                  }
-              }
-          }
-      }
-  }
+        }
+        ListElement {
+            name: "Alice"
+            title: "Sound designer"
+            office: "Paris"
+            department: "Art"
+            teams: "External project"
+        }
+        ListElement {
+            name: "Bob"
+            title: "Producer"
+            office: "London"
+            department: "Art"
+            teams: "External project"
+        }
+    }
+
+
+
+        // Define the table rows
+        TableView {
+            anchors.fill: parent
+            id: table
+            model: myModel
+            clip: true
+
+            //highlight:  Rectangle { width: 80; height: 80; color: "lightsteelblue" }
+
+            TableViewColumn {
+                role: "name"
+                title: "name"
+                width: 300
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            relegate: Rectangle {
+
+                /*Image {
+                id: icon
+                hight:parent.hight
+                source: 'qrc:/images/baseline-more_vert-24px.svg'
+                }*/
+
+                Text {
+                anchors.left: parent.left
+                text: model.name
+                }
+
+            }
+        }
+    }
+}
+
