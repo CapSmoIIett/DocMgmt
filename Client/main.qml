@@ -212,11 +212,13 @@ ApplicationWindow {
                 anchors.fill: parent
 
                 Label {
+                    id: label
                     text: 'Drawer'
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 20
                     Layout.fillWidth: true
+                    width: parent
                 }
 
                 Component {
@@ -254,7 +256,7 @@ ApplicationWindow {
 
                 ListView {
                     anchors.fill: parent
-                    anchors.topMargin: 30
+                    anchors.topMargin: label.height
 
 
                     model: pages
