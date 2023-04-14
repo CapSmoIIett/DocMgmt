@@ -33,6 +33,9 @@ qt_add_executable(appDocMgmtQt
     model.cpp
     model.h
 
+    appengine.cpp
+    appengine.h
+
 )
 
 qt_add_qml_module(appDocMgmtQt
@@ -40,6 +43,7 @@ qt_add_qml_module(appDocMgmtQt
     VERSION 1.0
     QML_FILES 
         main.qml 
+        authenticationWindow.qml
         Pages/calendar.qml
         Pages/files.qml
         Pages/personal.qml

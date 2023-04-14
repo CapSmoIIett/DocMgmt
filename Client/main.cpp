@@ -7,6 +7,7 @@
 #include "client.h"
 #include "database.h"
 #include "model.h"
+#include "appengine.h"
 
 void test::hello()
 {
@@ -27,6 +28,8 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
+    AppEngine appEngine;
+    //engine.rootContext()->setContextProperty(main);
 
     DataBase database;
     // Объявляем и инициализируем модель представления данных

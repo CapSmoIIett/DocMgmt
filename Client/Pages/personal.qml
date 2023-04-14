@@ -5,13 +5,15 @@ import Qt.labs.qmlmodels
 
 Rectangle {
     anchors.fill: parent
-    width: parent.width
+    //width: parent.width
 
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
         anchors.left: tableView.left
+        width: parent.width
     }
+
 
 
     TableModel {
@@ -99,7 +101,7 @@ Rectangle {
             "title": "Producer",
             "office": "London",
             "department": "Art",
-            "teams": "External project of USA"
+            "teams": "External project of U.S.A."
         }
         ]
     }
@@ -119,22 +121,38 @@ Rectangle {
         /*columnWidthProvider: function (column) {
             return model ? table.width / model.columnCount() : 0// Width(column)
         }*/
+        /*
+        TableViewColumn {role: "name" }
+        TableViewColumn {role: "title" }
+        TableViewColumn {role: "office" }
+        TableViewColumn {role: "depatment" }
+        TableViewColumn {role: "teams" }
+        */
 
         delegate: Rectangle {
             //implicitWidth: text.implicitwidth > 100 ? text.implicitWidth : 100
             //implicitWidth: table.columnWidthProvider(column)
-
-            //implicitWidth: 100
+            //width: parent.width
+            //implicitWidth: 180
             implicitHeight: 50
-            border.width: 1
+            border.width: 0
 
-            Text {
-                id: text
-                text: display
-                anchors.centerIn: parent
-            }
+
+                Text {
+                    //id: text
+                    text: display
+                    //anchors.centerIn: parent
+                    //Layout.alignment: parent
+                    //clip: true
+                    Layout.preferredWidth: parent.width - 10
+                    elide: Text.ElideRight
+
+                }
+
+
         }
 
+        /*
         Row {
             id: header
             Repeater {
@@ -157,5 +175,8 @@ Rectangle {
                 }
             }
         }
+        */
+
+
     }
 }
