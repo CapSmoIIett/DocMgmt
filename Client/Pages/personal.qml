@@ -5,14 +5,22 @@ import Qt.labs.qmlmodels
 
 Rectangle {
     anchors.fill: parent
-    //width: parent.width
+
 
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
         anchors.left: tableView.left
-        width: parent.width
+
+        //model: [ "Name" , "Title", "Office", "Department", "Teams"]
+
+        delegate: Text {
+            horizontalAlignment: Text.AlignHCenter
+            text:  model.display//modelData//model.headerData()
+        }
     }
+    //border.width: 1
+    //*/
 
 
 
@@ -22,7 +30,7 @@ Rectangle {
         TableModelColumn {display: "name" }
         TableModelColumn {display: "title" }
         TableModelColumn {display: "office" }
-        TableModelColumn {display: "depatment" }
+        TableModelColumn {display: "department" }
         TableModelColumn {display: "teams" }
 
         rows: [
@@ -111,71 +119,38 @@ Rectangle {
     TableView {
         id: table
         anchors.fill: parent
-        anchors.topMargin: header.height
+        anchors.topMargin: horizontalHeader.implicitHeight
         columnSpacing: 1
         rowSpacing: 1
         clip: true
 
+        columnWidthProvider: function (column) {
+            return table.width / 5;/// table.model.columnCount();
+        }
+        onWidthChanged: table.forceLayout()
+
+
         model: model
 
-        /*columnWidthProvider: function (column) {
-            return model ? table.width / model.columnCount() : 0// Width(column)
-        }*/
-        /*
-        TableViewColumn {role: "name" }
-        TableViewColumn {role: "title" }
-        TableViewColumn {role: "office" }
-        TableViewColumn {role: "depatment" }
-        TableViewColumn {role: "teams" }
-        */
-
         delegate: Rectangle {
-            //implicitWidth: text.implicitwidth > 100 ? text.implicitWidth : 100
-            //implicitWidth: table.columnWidthProvider(column)
-            //width: parent.width
-            //implicitWidth: 180
+            implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 50
-            border.width: 0
+            //border.width: 1
 
+            Text {
+                text: display
+                horizontalAlignment: Text.AlignHCenter
+                //verticalAlignment:  Text.AlignVCenter
+                anchors.centerIn: parent
+                //anchors.leftMargin: 50
+                width: parent.width
+                elide: Text.ElideRight
 
-                Text {
-                    //id: text
-                    text: display
-                    //anchors.centerIn: parent
-                    //Layout.alignment: parent
-                    //clip: true
-                    Layout.preferredWidth: parent.width - 10
-                    elide: Text.ElideRight
-
-                }
-
-
-        }
-
-        /*
-        Row {
-            id: header
-            Repeater {
-                //model: model.columnCount()
-                model: table.columns > 0 ? columns : 1
-
-                Rectangle {
-                    //width: model.columnWidth(index)
-                    //height: parent.height
-                    //width: table.columnWidthProvider()
-
-                    implicitWidth: 100
-                    implicitHeight: 50
-                    border.width: 1
-
-                    Text {
-                        text: display
-                        anchors.centerIn: parent
-                    }
-                }
             }
+
+
         }
-        */
+        //*/
 
 
     }

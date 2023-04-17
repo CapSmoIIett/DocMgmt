@@ -28,11 +28,8 @@ qt_add_executable(appDocMgmtQt
     client.h
     imagines.qrc
     pages.qrc
-    database.cpp
-    database.h
     model.cpp
     model.h
-
     appengine.cpp
     appengine.h
 

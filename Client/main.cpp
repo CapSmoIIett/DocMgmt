@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(u"qrc:/DocMgmtQt/main.qml"_qs);
+    //const QUrl url(u"qrc:/DocMgmtQt/authenticationWindow.qml"_qs);
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -43,7 +44,8 @@ int main(int argc, char *argv[])
 
     //engine.rootContext()->setContextProperty("myModel", model);
 
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    //engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    //engine.load(QUrl(QStringLiteral("qrc:/DocMgmtQt/authenticationWindow.qml")));
 
 
     test t;

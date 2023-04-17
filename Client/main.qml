@@ -9,7 +9,8 @@ import QtCharts
 import Qt.labs.qmlmodels
 
 ApplicationWindow {
-    visible: true
+    id: mainWindow
+    visible: false
     minimumHeight: 600
     minimumWidth: 1300
 
@@ -27,6 +28,82 @@ ApplicationWindow {
     Universal.theme: Universal[subTheme.currentText]
     Universal.accent: Universal[accentColor.currentText]
     */
+ /***********************************************************************/
+
+    /*
+    LoginWindow {
+        id: loginWind
+    }
+    //*/
+
+    Window{
+        id: loginWindow
+        minimumWidth: 450
+        minimumHeight: 180
+
+        signal onLogin
+
+        GroupBox {
+            id: gridBox
+            title: "Verification"
+            Layout.fillWidth: true
+            //Layout.minimumWidth: grid.Layout.minimumWidth + 30
+            //anchors.fill: parent
+            width: parent.width
+
+
+
+            GridLayout {
+                id: grid
+                rows: 2
+                flow: GridLayout.TopToBottom
+                anchors.fill: parent
+                width: parent.width
+
+                Label {
+                    id: labelLogin
+                    text: "Login"
+                }
+                Label {
+                    id: labelPassword
+                    text: "Password"
+                }
+
+                TextField {
+                    id: textLogin
+                    Layout.fillWidth: true
+                }
+                TextField {
+                    id: textPassword
+                    Layout.fillWidth: true
+                }
+            }
+        }
+        Label {
+            id: error
+            anchors.top: gridBox.bottom
+            anchors.left: parent.left
+            anchors.margins: 15
+            visible:false
+
+            text: "Error to login!"
+        }
+
+        Button {
+            text: "login"
+            anchors.top: gridBox.bottom
+            anchors.right: parent.right
+            anchors.margins: 15
+
+            width: 100
+
+            onClicked: {
+                loginWindow.onLogin
+                loginWindow.hide()
+                mainWindow.show()
+            }
+        }
+    }//*/
 
  /***********************************************************************/
 
@@ -71,10 +148,8 @@ ApplicationWindow {
                 Layout.fillWidth: true
             }
 
-            ToolButton { text: 'Action 1' }
-            ToolButton { text: 'Action 2' }
+            ToolButton { text: 'User' }
             ToolSeparator {}
-            ToolButton { text: 'Action 3' }
             ToolButton { text: 'Action 4' }
             ToolButton {
                 icon.source: 'qrc:/images/baseline-more_vert-24px.svg'
@@ -94,89 +169,6 @@ ApplicationWindow {
     //*/
 
  /***********************************************************************/
-
-    /*
-    Drawer {
-        id: drawer
-        width: 200
-        height: parent.height
-
-        ColumnLayout {
-            width: parent.width
-
-            Label {
-                text: 'Drawer'
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.pixelSize: 20
-                Layout.fillWidth: true
-            }
-
-            Button {
-                flat: true
-                background.anchors.fill: this
-            //    Layaout.fillWidth:true
-                width: parent.width
-
-                text: 'personal'
-
-                MouseArea {
-                width: parent.width
-                anchors.fill: parent
-
-                // By clicking on the menu item is replaced component in the Loader
-                onClicked: {
-                    loader.loadFragment(0)
-                    hello()
-                }
-                }
-                //horizontalAlignment: Text.AlignHCenter
-            }
-
-            Button {
-                id: button
-                width: parent.width
-                flat: true
-                background.anchors.fill: this
-                spacing: 40
-
-                contentItem: Text {
-                    text: 'files'
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    // By clicking on the menu item is replaced component in the Loader
-                    onClicked: {
-                        loader.loadFragment(1)
-                        hello()
-                    }
-                }
-            }
-
-            Button {
-                flat: true
-                background.anchors.fill: this
-                spacing: 40
-
-                text: 'test'
-                MouseArea {
-                    anchors.fill: parent
-
-                    // By clicking on the menu item is replaced component in the Loader
-                    onClicked: {
-                        loader.loadFragment(2)
-                        hello()
-                    }
-                }
-            }
-        }
-    }
-    //*/
-
     Drawer {
         id: drawer
         width: 200
@@ -284,5 +276,35 @@ ApplicationWindow {
             loader.source = page_source
         }
     }
+    //*/
+        //component.onCompleted:  console.log("HI") //Qt.createComponent("authenticationWindow.qml")
+
+    /*
+    Component {
+        id: loginWindow
+        Window {
+            flags: Qt.Dialog
+            modality: Qt.ApplicationModal
+
+            Loader {
+                anchors.fill: parent
+                source: "qrc:/Pages/authenticationWindow.qml"
+            }
+        }
+    }
+    */
+
+    Component.onCompleted: {
+        loginWindow.show()
+    }
+
+    /*loginWindow.onLogin: {
+        loginwindow.hide()
+        mainwindow.show()
+    }*/
+
+
+
+
     //*/
 }
