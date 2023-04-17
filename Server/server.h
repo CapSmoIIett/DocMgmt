@@ -12,6 +12,8 @@
 #include <QTcpServer>
 #include <QObject>
 
+#include <iostream>
+
 #include "messages.h"
 
 class Server : public QTcpServer
@@ -28,14 +30,17 @@ public:
 
 public slots:
     void read();
+    void IncomingConnection(qintptr socketDescriptor);
+    void ReadyRead();
 
 private:
-    //QVector<QTcpSocket> Sockets;
+    QVector<QTcpSocket*> v_Sockets;
     QByteArray Data;
-    void SendToClient();
+    void SendToClient(QString);
     void SendPartOfFile();
 
     int i_Port;
     QUdpSocket* p_UdpSocket;
+    QTcpSocket* p_TcpSocket;
 };
 

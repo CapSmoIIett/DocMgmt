@@ -26,6 +26,8 @@ qt_add_executable(DocMgmtServer
     server.cpp
     server.h
     messages.h
+    database.cpp
+    database.h
 )
 
 set_target_properties(DocMgmtServer PROPERTIES

@@ -2,14 +2,61 @@
 
 Server::Server(int port)
 {
-    p_UdpSocket = new QUdpSocket();
+    //p_UdpSocket = new QUdpSocket();
 
-    p_UdpSocket->bind(QHostAddress::Any, port);
+    //p_UdpSocket->bind(QHostAddress::Any, port);
+
+    if (this->listen(QHostAddress::Any), port)
+        std::cout << "Server start" << "\n";
 
     // тут еще какой то код конструктора //
-    connect(p_UdpSocket, &QUdpSocket::readyRead, this,  &Server::read);
+    //connect(p_UdpSocket, &QUdpSocket::readyRead, this,  &Server::read);
 
 }
+
+
+void Server::IncomingConnection(qintptr socketDescriptor)
+{
+    p_TcpSocket = new QTcpSocket;
+    p_TcpSocket->setSocketDescriptor(socketDescriptor);
+
+    connect (p_TcpSocket, &QTcpSocket::readyRead, this, &Server::ReadyRead);
+    connect (p_TcpSocket, &QTcpSocket::disconnected, this, &Server::deleteLater);
+
+    v_Sockets.push_back(p_TcpSocket);
+
+    std::cout << "Client connected" << socketDescriptor << "\n";
+}
+
+void Server::ReadyRead ()
+{
+    p_TcpSocket = (QTcpSocket*)sender();
+    QDataStream in(p_TcpSocket);
+
+    in.setVersion(QDataStream::Qt_6_4);
+    if(in.status() != QDataStream::Ok)
+    {
+        std::cout << "Error" << "\n";
+    }
+
+    std::cout << "Start reading ..." << "\n";
+    QString str;
+    in >> str;
+    std::cout << "End reading." << "\n";
+
+}
+
+void Server::SendToClient(QString str)
+{
+    Data.clear();
+    QDataStream out(&Data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_6_4);
+    out << str;
+    p_TcpSocket->write(Data);
+
+}
+
+
 
 void Server::send(QString str, int type)
 {
