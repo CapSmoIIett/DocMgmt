@@ -41,6 +41,9 @@ ApplicationWindow {
         minimumWidth: 450
         minimumHeight: 180
 
+        x: (Screen.width - loginWindow.width) / 2
+        y: (Screen.height - loginWindow.height) / 2
+
         signal onLogin
 
         GroupBox {
@@ -102,6 +105,9 @@ ApplicationWindow {
                 loginWindow.hide()
                 mainWindow.show()
             }
+        }
+
+        Component.onCompleted: {
         }
     }//*/
 
@@ -295,7 +301,10 @@ ApplicationWindow {
     */
 
     Component.onCompleted: {
-        loginWindow.show()
+        loginWindow.showNormal()
+
+            x: 1000//Screen.width / 2 - loginWindow.width / 2;
+            y: 0 //Screen.height / 2 - loginWindow.height / 2;
     }
 
     /*loginWindow.onLogin: {
