@@ -18,12 +18,12 @@
 #define TABLE_EMPLOYEE_OFFICE		"office"
 //#define TABLE_EMPLOYEE_PROFESSION	"profession"
 
-class DataBase : public QObject
+class Database : public QObject
 {
     Q_OBJECT
 public:
-    explicit DataBase(QObject *parent = 0);
-    ~DataBase();
+    explicit Database(QObject *parent = 0);
+    ~Database();
     /* Методы для непосредственной работы с классом
      * Подключение к базе данных и вставка записей в таблицу
      * */
@@ -34,11 +34,8 @@ private:
     // Сам объект базы данных, с которым будет производиться работа
     QSqlDatabase    db;
 
-private:
+public:
     /* Внутренние методы для работы с базой данных
      * */
-    bool openDataBase();
-    bool restoreDataBase();
-    void closeDataBase();
-    bool createTable();
+    bool createTables();
 };

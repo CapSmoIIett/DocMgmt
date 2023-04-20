@@ -18,23 +18,181 @@
 
  */
 
-DataBase::DataBase(QObject *parent) : QObject(parent)
+Database::Database(QObject *parent) :
+    QObject(parent)
 {
     // Подключаемся к базе данных
     this->connectToDataBase();
     /* После чего производим наполнение таблицы базы данных
      * контентом, который будет отображаться в TableView
      * */
+
+    db = QSqlDatabase::addDatabase("QPSQL");
+
+
+    db.setDatabaseName("DocMgmt");
+    db.setUserName("postgres");
+    db.setPassword("1111");
+    db.setHostName("localhost");
+    //db.setHostName("127.0.0.1");
+    //db.setPort(5434);
+
+    qDebug() << QSqlDatabase::drivers() << "\n";
+
+    db.open();
+
+    if (db.isOpen())
+    {
+        qDebug("DB open");
+    }
+    else
+    {
+        qDebug("DB not open");
+        qDebug() << db.lastError().text() << "\n";
+    }
+
+    createTables();
 }
 
-DataBase::~DataBase()
+Database::~Database()
+{
+    db.close();
+}
+
+bool Database::createTables()
 {
 
+    /*****************************************************
+     * Create tables
+     */
+
+    QSqlQuery query;
+    bool result = 0;
+
+    result = query.exec("CREATE TABLE IF NOT EXISTS users"
+                "("
+                    "id serial primary key,"
+                    "rights_Id integer references Rights(Id),"
+                    "full_Name varchar(255) null,"
+                    "birth_Date date null,"
+                    "office_Id integer references Office(Id),"
+                    "phone_Number varchar(30)"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+    result = query.exec("CREATE TABLE IF NOT EXISTS rights"
+                "("
+                    "id serial primary key"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+    result = query.exec("CREATE TABLE IF NOT EXISTS office"
+                "("
+                    "id serial primary key"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+
+    /*****************************************************
+     * Add rights for supervisor
+     */
+
+    result = query.exec("SELECT * FROM rights WHERE id = 0");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+    if (!query.next())
+    {
+        result = query.exec("INSERT INTO rights (id) VALUES (0) ");
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+            return false;
+        }
+    }
+
+    /*****************************************************
+     * Add office for supervisor
+     */
+
+    result = query.exec("SELECT * FROM office WHERE id = 0");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+    if (!query.next())
+    {
+        result = query.exec("INSERT INTO office (id) VALUES (0) ");
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+            return false;
+        }
+    }
+
+    /*****************************************************
+     * Add supervisor
+     */
+
+    result = query.exec("SELECT * FROM users WHERE id = 0");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+    if (!query.next())
+    {
+        result = query.exec("INSERT INTO users (id, rights_id , full_name, office_id) VALUES (0, 0, 'supervisor', 0) ");
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+            return false;
+        }
+    }
+
+
+    return true;
 }
 
 /* Методы для подключения к базе данных
  * */
-void DataBase::connectToDataBase()
+void Database::connectToDataBase()
 {
     /* Перед подключением к базе данных производим проверку на её существование.
      * В зависимости от результата производим открытие базы данных или её восстановление
@@ -45,104 +203,4 @@ void DataBase::connectToDataBase()
         this->openDataBase();
     }
     */
-}
-
-/* Методы восстановления базы данных
- * */
-bool DataBase::restoreDataBase()
-{
-    if(this->openDataBase()){
-        if(!this->createTable()){
-            return false;
-        } else {
-            return true;
-        }
-    } else {
-        qDebug() << "Не удалось восстановить базу данных";
-        return false;
-    }
-    return false;
-}
-
-/* Метод для открытия базы данных
- * */
-bool DataBase::openDataBase()
-{
-    /* База данных открывается по заданному пути
-     * и имени базы данных, если она существует
-     * */
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setHostName(DATABASE_HOSTNAME);
-    db.setDatabaseName("C:/example/" DATABASE_NAME);
-    if(db.open()){
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/* Методы закрытия базы данных
- * */
-void DataBase::closeDataBase()
-{
-    db.close();
-}
-
-/* Метод для создания таблицы в базе данных
- * */
-bool DataBase::createTable()
-{
-    /* В данном случае используется формирование сырого SQL-запроса
-     * с последующим его выполнением.
-     * */
-    /*SqlQuery query;
-    if(!query.exec( "CREATE TABLE " TABLE " ("
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                            TABLE_DATE      " DATE            NOT NULL,"
-                            TABLE_TIME      " TIME            NOT NULL,"
-                            TABLE_RANDOM    " INTEGER         NOT NULL,"
-                            TABLE_MESSAGE   " VARCHAR(255)    NOT NULL"
-                        " )"
-                    )){
-        qDebug() << "DataBase: error of create " << TABLE;
-        qDebug() << query.lastError().text();
-        return false;
-    } else {
-        return true;
-    }
-    return false;
-    */
-    return false;
-}
-
-/* Метод для вставки записи в базу данных
- * */
-bool DataBase::inserIntoTable(const QVariantList &data)
-{
-    /* Запрос SQL формируется из QVariantList,
-     * в который передаются данные для вставки в таблицу.
-     * */
-    QSqlQuery query;
-    /* В начале SQL запрос формируется с ключами,
-     * которые потом связываются методом bindValue
-     * для подстановки данных из QVariantList
-     * */
-    /*query.prepare("INSERT INTO " TABLE_EMPLOYEE " ( " TABLE_DATE ", "
-                                             TABLE_TIME ", "
-                                             TABLE_RANDOM ", "
-                                             TABLE_MESSAGE " ) "
-                  "VALUES (:Date, :Time, :Random, :Message )");
-    query.bindValue(":Date",        data[0].toDate());
-    query.bindValue(":Time",        data[1].toTime());
-    query.bindValue(":Random",      data[2].toInt());
-    query.bindValue(":Message",     data[3].toString());
-    // После чего выполняется запросом методом exec()
-    if(!query.exec()){
-        qDebug() << "error insert into " << TABLE_EMPLOYEE;
-        qDebug() << query.lastError().text();
-        return false;
-    } else {
-        return true;
-    }*/
-    return false;
 }
