@@ -6,7 +6,7 @@ AppEngine::AppEngine(QObject* parent) :
 
 }
 
-QString AppEngine::UserName()
+QString AppEngine::userName()
 {
     return "user";
 }
@@ -16,7 +16,7 @@ void AppEngine::setUserName(const QString &userName)
 
 }
 
-QString AppEngine::Password()
+QString AppEngine::password()
 {
     return "password";
 }
@@ -26,7 +26,9 @@ void AppEngine::setPassword(const QString &password)
 
 }
 
-bool AppEngine::Verify()
+bool AppEngine::verify()
 {
+    qDebug() << "Verify" << "\n";
+
     return true;
 }

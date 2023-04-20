@@ -4,28 +4,31 @@
 #include <QString>
 #include <qqml.h>
 
+#include <client.h>
+
 class AppEngine : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString UserName READ UserName WRITE setUserName)
-    Q_PROPERTY(QString Password READ Password WRITE setUserName)
-    Q_PROPERTY(BOOL Verify READ Verify NOTIFY onVerefied)
+    Q_PROPERTY(QString userName READ userName WRITE setUserName)
+    Q_PROPERTY(QString password READ password WRITE setUserName)
     QML_ELEMENT
 
 public:
     explicit AppEngine(QObject *parent = nullptr);
 
-    QString UserName();
+    QString userName();
     void setUserName(const QString &userName);
 
-    QString Password();
+    QString password();
     void setPassword(const QString &password);
 
-    bool Verify();
+    Q_INVOKABLE bool verify();
 
 signals:
     void onVerefied();
 
+private:
+    Client client;
 
 
 };
