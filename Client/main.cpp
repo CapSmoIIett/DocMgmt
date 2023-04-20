@@ -1,11 +1,11 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQmlProperty>
 
 
 #include "header.h"
 #include "client.h"
-#include "database.h"
 #include "model.h"
 #include "appengine.h"
 
@@ -30,29 +30,9 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     AppEngine appEngine;
-    //engine.rootContext()->setContextProperty(main);
-
-    DataBase database;
-    // Объявляем и инициализируем модель представления данных
-    Model *model = new Model();
-    /* Поскольку Мы отнаследовались от QSqlQueryModel, то
-     * для выборки данных нам необходимо выполнить SQL-запрос,
-     * в котором мы выберем все необходимы поля из нужной нам таблицы
-     * */
-    //model->setQuery("SELECT " TABLE_EMPLOYEE_NAME ", " TABLE_EMPLOYEE_OFFICE " FROM " TABLE_EMPLOYEE);
-    model->setQuery("select full_name, office_id from employee");
-
-    //engine.rootContext()->setContextProperty("myModel", model);
-
-    //engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    //engine.load(QUrl(QStringLiteral("qrc:/DocMgmtQt/authenticationWindow.qml")));
+    engine.rootContext()->setContextProperty("app", &appEngine);
 
 
-    test t;
-    QObject *qml = engine.rootObjects()[0];
-
-    QObject::connect(qml, SIGNAL(hello()),
-                     &t, SLOT(hello()));
 
     QObject* qtquick2Themes = engine.rootObjects()[0]->findChild<QObject*>("qtquick2Themes");
     //qtquick2Themes->setProperty("text", qgetenv("QT_QUICK_CONTROLS_STYLE"));

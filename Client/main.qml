@@ -101,9 +101,18 @@ ApplicationWindow {
             width: 100
 
             onClicked: {
-                loginWindow.onLogin
-                loginWindow.hide()
-                mainWindow.show()
+                loginWindow.onLogin()
+
+                app.userName = textLogin.text
+                app.userPassword = textPassword.text
+
+                var isVerified = app.verify()
+
+                if (isVerified)
+                {
+                    loginWindow.hide()
+                    mainWindow.show()
+                }
             }
         }
 
