@@ -9,6 +9,7 @@ Server::Server(int port)
     if (this->listen(QHostAddress::Any), port)
         std::cout << "Server start" << "\n";
 
+
     // тут еще какой то код конструктора //
     //connect(p_UdpSocket, &QUdpSocket::readyRead, this,  &Server::read);
 

@@ -14,7 +14,14 @@
 
 #include <iostream>
 
+#include "database.h"
 #include "messages.h"
+
+struct _Client
+{
+    QTcpSocket* socket;
+    QString ip;
+};
 
 class Server : public QTcpServer
 {
@@ -42,5 +49,8 @@ private:
     int i_Port;
     QUdpSocket* p_UdpSocket;
     QTcpSocket* p_TcpSocket;
+
+public:
+    Database db;
 };
 
