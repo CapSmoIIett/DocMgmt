@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/DocMgmtQt/main.qml"_qs);
+    const QUrl url(u"qrc:/DocMgmtQt/qml/main.qml"_qs);
+
     //const QUrl url(u"qrc:/DocMgmtQt/authenticationWindow.qml"_qs);
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

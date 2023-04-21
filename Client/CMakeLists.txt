@@ -27,27 +27,30 @@ qt_add_executable(appDocMgmtQt
     client.cpp
     client.h
     imagines.qrc
-    pages.qrc
+    qml.qrc
     model.cpp
     model.h
     appengine.cpp
     appengine.h
 
+    ../messages.h
 )
+
 
 qt_add_qml_module(appDocMgmtQt
     URI DocMgmtQt
     VERSION 1.0
     QML_FILES 
-        main.qml 
-        authenticationWindow.qml
-        Pages/calendar.qml
-        Pages/files.qml
-        Pages/personal.qml
-        Pages/CellBox.qml
-        Pages/LargeChartView.qml
-        Pages/DrawerItem.qml
-        Pages/PageDrawer.qml
+        qml/main.qml
+        qml/authenticationWindow.qml
+        qml/Pages/calendar.qml
+        qml/Pages/files.qml
+        qml/Pages/personal.qml
+        qml/Pages/Test.qml
+        qml/Components/CellBox.qml
+        qml/Components/LargeChartView.qml
+        qml/Components/DrawerItem.qml
+        qml/Components/PageDrawer.qml
 )
 
 #set(QT_CHARTS_INCLUDE_PATHS "${QT_ROOT}/include/QtCharts")

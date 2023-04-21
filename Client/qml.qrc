@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Pages/calendar.qml</file>
+        <file>qml/Components/CellBox.qml</file>
+        <file>qml/Pages/files.qml</file>
+        <file>qml/Components/LargeChartView.qml</file>
+        <file>qml/Pages/personal.qml</file>
+        <file>qml/Pages/Test.qml</file>
+        <file>qml/Components/DrawerItem.qml</file>
+        <file>qml/Components/PageDrawer.qml</file>
+        <file>qml/Components/MenuButton.qml</file>
+        <file>qml/Components/MenuCard.qml</file>
+        <file>qml/Components/MenuStack.qml</file>
+    </qresource>
+</RCC>
