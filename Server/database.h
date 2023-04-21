@@ -5,6 +5,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlDatabase>
+#include <QSqlRecord>
 #include <QFile>
 #include <QDate>
 #include <QDebug>
@@ -24,11 +25,8 @@ class Database : public QObject
 public:
     explicit Database(QObject *parent = 0);
     ~Database();
-    /* Методы для непосредственной работы с классом
-     * Подключение к базе данных и вставка записей в таблицу
-     * */
-    void connectToDataBase();
-    bool inserIntoTable(const QVariantList &data);
+
+    bool Verify (QString userName, QString password);
 
 private:
     // Сам объект базы данных, с которым будет производиться работа

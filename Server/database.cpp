@@ -21,14 +21,7 @@
 Database::Database(QObject *parent) :
     QObject(parent)
 {
-    // Подключаемся к базе данных
-    this->connectToDataBase();
-    /* После чего производим наполнение таблицы базы данных
-     * контентом, который будет отображаться в TableView
-     * */
-
     db = QSqlDatabase::addDatabase("QPSQL");
-
 
     db.setDatabaseName("DocMgmt");
     db.setUserName("postgres");
@@ -72,6 +65,7 @@ bool Database::createTables()
     result = query.exec("CREATE TABLE IF NOT EXISTS users"
                 "("
                     "id serial primary key,"
+                    "password varchar(255) null,"
                     "rights_Id integer references Rights(Id),"
                     "full_Name varchar(255) null,"
                     "birth_Date date null,"
@@ -176,7 +170,7 @@ bool Database::createTables()
 
     if (!query.next())
     {
-        result = query.exec("INSERT INTO users (id, rights_id , full_name, office_id) VALUES (0, 0, 'supervisor', 0) ");
+        result = query.exec("INSERT INTO users (id, password, rights_id , full_name, office_id) VALUES (0, 1111, 0, 'supervisor', 0) ");
 
         if (!result)
         {
@@ -190,17 +184,30 @@ bool Database::createTables()
     return true;
 }
 
-/* Методы для подключения к базе данных
- * */
-void Database::connectToDataBase()
+bool Database::Verify (QString userName, QString password)
 {
-    /* Перед подключением к базе данных производим проверку на её существование.
-     * В зависимости от результата производим открытие базы данных или её восстановление
-     * */
-    /*if(!QFile("C:/example/" DATABASE_NAME).exists()){
-        this->restoreDataBase();
-    } else {
-        this->openDataBase();
+    QSqlQuery query;
+    int result = 0;
+
+    result = query.exec("SELECT password FROM users WHERE username = :username");
+
+    query.bindValue(":username", userName);
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
     }
-    */
+
+    QSqlRecord rec = query.record();
+    const int index = rec.indexOf( "password" );
+
+    if (!query.next())
+    {
+        return query.value(index).toString() == password;
+    }
+
+    return false;
+
 }
