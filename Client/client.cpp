@@ -7,12 +7,20 @@ Client::Client(QString ip, int port) :
 {
     p_TcpSocket = new QTcpSocket(this);
 
-    connect(p_TcpSocket, &QTcpSocket::readyRead, this, &Client::ReadyRead);
+    connect(p_TcpSocket, &QTcpSocket::readyRead, this, &Client::ReadSocket);
+    connect(p_TcpSocket, &QTcpSocket::disconnected, this, &Client::DiscardSocket);
 
+    ConnectToServer();
 }
 
 void Client::ConnectToServer()
 {
+    if (p_TcpSocket->state() == QTcpSocket::ConnectedState)
+    {
+        qDebug() << "lready connected";
+        return;
+    }
+
     qDebug() << "Connecting" << s_IP << " " << i_Port;
     p_TcpSocket->connectToHost(s_IP, i_Port);
 
@@ -35,38 +43,86 @@ void Client::SendToServer(QString str)
     p_TcpSocket->write(Data);
 }
 
-QString ReadFromServer()
-{
 
+bool Client::VerifyRequest (QString username, QString password)
+{
+    qDebug();
+    qDebug() << "Client::VerifyRequest";
+
+    if (!p_TcpSocket)
+    {
+        qDebug () << "Verify: socket error";
+        return false;
+    }
+
+    if (!p_TcpSocket->isOpen())
+    {
+        qDebug () << "Verify: socket close";
+        return false;
+    }
+
+    QDataStream socketStream(p_TcpSocket);
+    socketStream.setVersion(QDataStream::Qt_6_4);
+
+    QByteArray byteArray;
+    byteArray.prepend((QString("Type:%1,Username:%2,Password:%3").arg(MSG_VERIFY).arg(username).arg(password)).toUtf8());
+
+    qDebug() << byteArray;
+
+    socketStream << byteArray;
+
+
+    return true;
 }
 
-bool Client::Verify (QString username, QString password)
+void Client::ReadSocket ()
 {
+    qDebug();
+    qDebug() << "Client::ReadSocket";
 
-    if (!IsConnected())
-        ConnectToServer();
+    QByteArray buffer;
+    QDataStream socketStream(p_TcpSocket);
+    socketStream.setVersion(QDataStream::Qt_6_4);
 
-    SendToServer(MSG_VERIFY_TEXT);
-    SendToServer(username);
-    SendToServer(password);
+    //p_TcpSocket = (QTcpSocket*)sender();
 
-}
-
-void Client::ReadyRead ()
-{
-    p_TcpSocket = (QTcpSocket*)sender();
-    QDataStream in(p_TcpSocket);
-
-    in.setVersion(QDataStream::Qt_6_4);
-    if(in.status() != QDataStream::Ok)
+    if(socketStream.status() != QDataStream::Ok)
     {
         std::cout << "Error" << "\n";
     }
 
-    std::cout << "Start reading ..." << "\n";
-    QString str;
-    in >> str;
-    //std::cout << str << "\n";
-    std::cout << "End reading." << "\n";
+    socketStream.startTransaction();
+    socketStream >> buffer;
 
+    if (!socketStream.commitTransaction())
+    {
+        qDebug() << QString("%1 :: Waiting for more data to come..").arg(p_TcpSocket->socketDescriptor());
+        //emit newMessage(message);
+        return;
+    }
+
+    QString header = buffer;
+
+    QString type = header.split(",")[0].split(":")[1];
+    qDebug() << "Type: " << type;
+
+
+    switch (type.toInt())
+    {
+    case MSG_VERIFY:
+    {
+        QString result = header.split(",")[1].split(":")[1];
+        qDebug() << "MSG_VERIFY: " << result;
+        emit Verified(result.toInt() == 1);
+    }
+    }
+
+    qDebug() << "header " << header;
+    qDebug() << buffer.toStdString().c_str();
+}
+
+void Client::DiscardSocket()
+{
+    p_TcpSocket->deleteLater();
+    p_TcpSocket = nullptr;
 }

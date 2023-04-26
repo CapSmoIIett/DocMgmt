@@ -10,7 +10,7 @@ class AppEngine : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString userName READ userName WRITE setUserName)
-    Q_PROPERTY(QString password READ password WRITE setUserName)
+    Q_PROPERTY(QString password READ password WRITE setPassword)
     QML_ELEMENT
 
 public:
@@ -25,11 +25,13 @@ public:
     Q_INVOKABLE bool verify();
 
 signals:
-    void onVerefied();
+    void verified(bool result);
 
 private:
     Client client;
 
+    QString s_UserName;
+    QString s_Password;
 
 };
 

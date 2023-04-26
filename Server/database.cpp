@@ -189,9 +189,16 @@ bool Database::Verify (QString userName, QString password)
     QSqlQuery query;
     int result = 0;
 
-    result = query.exec("SELECT password FROM users WHERE username = :username");
+    qDebug();
+    qDebug() << "Database::Verify";
+    qDebug() << userName;
+    qDebug() << password;
 
-    query.bindValue(":username", userName);
+    result = query.exec(QString("SELECT password FROM users WHERE  full_name = '%1'").arg(userName));
+
+    //query.exec("SELECT password FROM users WHERE  full_name = ':username'");
+    //query.bindValue(":username", userName);
+    //result =  query.exec();
 
     if (!result)
     {
@@ -203,8 +210,9 @@ bool Database::Verify (QString userName, QString password)
     QSqlRecord rec = query.record();
     const int index = rec.indexOf( "password" );
 
-    if (!query.next())
+    if (query.next())
     {
+        qDebug() << "Passwords: " << query.value(index).toString() << " " << password;
         return query.value(index).toString() == password;
     }
 

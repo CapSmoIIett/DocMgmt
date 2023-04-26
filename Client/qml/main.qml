@@ -101,24 +101,47 @@ ApplicationWindow {
             width: 100
 
             onClicked: {
+                console.log("clicked")
                 loginWindow.onLogin()
 
                 app.userName = textLogin.text
-                app.userPassword = textPassword.text
+                app.password = textPassword.text
 
-                var isVerified = app.verify()
+                app.verify()
 
-                if (isVerified)
-                {
-                    loginWindow.hide()
-                    mainWindow.show()
-                }
             }
         }
 
         Component.onCompleted: {
+            textLogin.text = "supervisor"
+            textPassword.text = "1111"
+        }
+
+        Connections {
+            target: app
+
+
+            onVerified : {
+                //var isVerified = result
+                    console.log("verified")
+
+                if (result)
+                {
+                    console.log("true")
+                    loginWindow.hide()
+
+                    mainWindow.show()
+                }
+                else
+                {
+                }
+            }
+
         }
     }//*/
+
+
+
 
  /***********************************************************************/
 

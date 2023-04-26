@@ -12,6 +12,8 @@
 
 class Client : public QObject
 {
+    Q_OBJECT
+
 public:
     Client(QString ip = "127.0.0.1", int port = 5500);
 
@@ -20,10 +22,15 @@ public:
     void SendToServer(QString str);
     QString ReadFromServer();
 
-    bool Verify (QString username, QString password);
+    bool VerifyRequest (QString username, QString password);
+
+signals:
+    void Verified(bool result);
 
 public slots:
-    void ReadyRead();
+    void ReadSocket();
+    void DiscardSocket();
+
 
 private:
     QTcpSocket* p_TcpSocket;

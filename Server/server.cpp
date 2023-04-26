@@ -1,5 +1,180 @@
 #include "server.h"
 
+
+Server::Server(int port) :
+    i_Port(port)
+{
+    p_Server = new QTcpServer();
+
+    if (!p_Server->listen(QHostAddress::Any, i_Port))
+    {
+        qDebug() << "Error listening";
+        return;
+    }
+
+    qDebug() << "Start listening";
+
+    connect(p_Server, &QTcpServer::newConnection, this, &Server::NewConnection);
+    connect(this, &Server::SendedClient, this, &Server::SendToClient);
+}
+
+Server::~Server()
+{
+    for (auto socket : set_Sockets)
+    {
+        socket->close();
+        socket->deleteLater();
+    }
+
+    p_Server->close();
+    p_Server->deleteLater();
+}
+
+void Server::NewConnection()
+{
+    while (p_Server->hasPendingConnections())
+        AppendToSocketLists(p_Server->nextPendingConnection());
+}
+
+void Server::AppendToSocketLists(QTcpSocket* socket)
+{
+    set_Sockets.insert(socket);
+    connect (socket, &QTcpSocket::readyRead, this, &Server::ReadSocket);
+    connect (socket, &QTcpSocket::disconnected, this, &Server::DiscardSocket);
+    connect (socket, &QTcpSocket::errorOccurred, this, &Server::DisplayError);
+
+    qDebug() << QString("Client connected, socket: %1").arg(socket->socketDescriptor());
+}
+
+void Server::ReadSocket()
+{
+    qDebug();
+    qDebug() << "Server::ReadSocket";
+
+
+    auto socket = reinterpret_cast<QTcpSocket*>(sender());
+
+    QByteArray buffer;
+    QDataStream socketStream(socket);
+    socketStream.setVersion(QDataStream::Qt_6_4);
+
+    socketStream.startTransaction();
+    socketStream >> buffer;
+
+    if (!socketStream.commitTransaction())
+    {
+        qDebug() << QString("%1 :: Waiting for more data to come..").arg(socket->socketDescriptor());
+        //emit newMessage(message);
+        return;
+    }
+
+    //QString msg = buffer;
+    //ProcessingMessage(buffer);
+
+    QString header = buffer;
+
+    QString type = header.split(",")[0].split(":")[1];
+    qDebug() << "Type: " << type;
+
+    switch (type.toInt())
+    {
+    case MSG_VERIFY:
+    {
+        QString username = header.split(",")[1].split(":")[1];
+        QString password = header.split(",")[2].split(":")[1];
+
+        qDebug() << "Username: " << username;
+        qDebug() << "Password: " << password;
+
+        bool isVerified = false;
+
+        isVerified = db.Verify(username, password);
+
+        qDebug() << "Verified: " << isVerified;
+
+        emit SendToClient(QString("Type:%1,result:%2").arg(MSG_VERIFY).arg(isVerified));
+
+    } break;
+    }
+
+    qDebug() << buffer.toStdString().c_str();
+
+}
+
+void Server::DiscardSocket()
+{
+    auto socket = reinterpret_cast<QTcpSocket*>(sender());
+
+    auto it = set_Sockets.find(socket);
+
+    if (it != set_Sockets.end())
+    {
+        qDebug() << QString("%1 :: disconect").arg(socket->socketDescriptor());
+        set_Sockets.remove(*it);
+    }
+
+    socket->deleteLater();
+}
+
+void Server::DisplayError(QAbstractSocket::SocketError socketError)
+{
+    switch(socketError)
+    {
+    case QAbstractSocket::HostNotFoundError:
+        qDebug() << "Host not found";
+        break;
+    }
+}
+
+void Server::SendToClient(QString str)
+{
+    qDebug();
+    qDebug() << "Server::SendToClient";
+    qDebug() << str;
+
+    auto socket = reinterpret_cast<QTcpSocket*>(sender());
+
+    QDataStream socketStream(socket);
+    socketStream.setVersion(QDataStream::Qt_6_4);
+
+    QByteArray byteArray;
+    byteArray.prepend(str.toUtf8());
+
+    socketStream << byteArray;
+
+}
+
+
+
+
+void Server::ProcessingMessage(QString header)
+{
+    qDebug() << "Start msg processing";
+
+    QString type = header.split(",")[0].split(":")[1];
+    qDebug() << "Type: " << type;
+
+    switch (type.toInt())
+    {
+    case MSG_VERIFY:
+    {
+        QString username = header.split(",")[1].split(":")[1];
+        QString password = header.split(",")[2].split(":")[1];
+
+        qDebug() << "Username: " << username;
+        qDebug() << "Password: " << password;
+
+        bool isVerified = false;
+
+        isVerified = db.Verify(username, password);
+
+        qDebug() << "Verified: " << isVerified;
+    } break;
+    }
+}
+
+
+/*
 Server::Server(int port)
 {
     //p_UdpSocket = new QUdpSocket();
@@ -7,7 +182,9 @@ Server::Server(int port)
     //p_UdpSocket->bind(QHostAddress::Any, port);
 
     if (this->listen(QHostAddress::Any), port)
-        std::cout << "Server start" << "\n";
+        qDebug() << "Start listening port " << port;
+
+    p_TcpSocket = new QTcpSocket(this);
 
 
     // тут еще какой то код конструктора //
@@ -26,7 +203,7 @@ void Server::IncomingConnection(qintptr socketDescriptor)
 
     v_Sockets.push_back(p_TcpSocket);
 
-    std::cout << "Client connected" << socketDescriptor << "\n";
+    qDebug() << "Client connected" << socketDescriptor;
 }
 
 void Server::ReadyRead ()
@@ -41,6 +218,34 @@ void Server::ReadyRead ()
     }
 
     std::cout << "Start reading ..." << "\n";
+
+    int type = 0;
+
+    in >> type;
+
+    switch (type)
+    {
+    case MSG_VERIFY:
+    {
+        qDebug() << "MSG_VERIFY";
+
+        QString username;
+        QString password;
+        bool isVerified = false;
+
+        in >> username;
+        in >> password;
+
+        isVerified = db.Verify(username, password);
+
+        SendToClient("Hi");
+
+
+        qDebug() << "MSG_VERIFY end";
+    } break;
+
+    }
+
     QString str;
     in >> str;
     std::cout << "End reading." << "\n";
@@ -96,15 +301,36 @@ void Server::read()
     qint8 type = 0;
     in >> type;
 
+    qDebug() << type;
+
     switch (type)
     {
-    case MSG_TYPE_USUAL:
+    /*
+     * case MSG_TYPE_USUAL:
         {
             QString str;
             in >> str;
-            // код по перенаправке сообщения в классы выше //
-            break;
-        }
+        } break;
+*/
+/*
+    case MSG_VERIFY:
+    {
+        qDebug() << "MSG_VERIFY";
+
+        QString username;
+        QString password;
+        bool isVerified = false;
+
+        in >> username;
+        in >> password;
+
+        isVerified = db.Verify(username, password);
+
+        SendToClient("Hi");
+
+
+        qDebug() << "MSG_VERIFY end";
+    } break;
 
     }
 
@@ -118,5 +344,21 @@ void Server::read()
         sending(nickname, qint8(PERSON_ONLINE));
     }
     */
+/*
+}
+
+QString Server::GenerateToken(QString user)
+{
+    static int token = 100000;
+    auto it =  m_Tokens.find(user);
+
+    if (it != m_Tokens.end())
+    {
+        m_Tokens[user] = QString::number(token);
+        return QString::number(token++);
+    }
+
+    return it.value();
 
 }
+*/

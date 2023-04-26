@@ -6,6 +6,8 @@
 //#include <QTcpSocket>
 
 #include <QVector>
+#include <QMap>
+#include <QSet>
 
 #include <QUdpSocket>
 #include <QTcpSocket>
@@ -15,7 +17,7 @@
 #include <iostream>
 
 #include "database.h"
-#include "messages.h"
+#include "../messages.h"
 
 struct _Client
 {
@@ -23,32 +25,54 @@ struct _Client
     QString ip;
 };
 
-class Server : public QTcpServer
+class Server : public QObject //public QTcpServer
 {
-    //Q_OBJECT
+    Q_OBJECT
 
 public:
     Server(int port = 5500);
+    ~Server();
     //void incomingConnection(qintptr socketDescription);
     //void slotReadyRead();
 
-    void send(QString, int type);
+    //void send(QString, int type);
     //void sendFile(QString fileName);
 
+    void AppendToSocketLists(QTcpSocket* socket);
+
+    void ProcessingMessage(QString header);
+
+signals:
+    void SendedClient(QString str);
+
 public slots:
-    void read();
-    void IncomingConnection(qintptr socketDescriptor);
-    void ReadyRead();
+    //void read();
+    //void IncomingConnection(qintptr socketDescriptor);
+    void NewConnection();
+    //void ReadyRead();
+
+    void ReadSocket();
+    void DiscardSocket();
+    void DisplayError(QAbstractSocket::SocketError socketError);
+
+    void SendToClient(QString str);
 
 private:
-    QVector<QTcpSocket*> v_Sockets;
-    QByteArray Data;
-    void SendToClient(QString);
-    void SendPartOfFile();
+    QSet<QTcpSocket*> set_Sockets;
+
+    //QByteArray Data;
+    //void SendToClient(QString);
+    //void SendPartOfFile();
+
+    QString GenerateToken(QString user);
 
     int i_Port;
-    QUdpSocket* p_UdpSocket;
-    QTcpSocket* p_TcpSocket;
+
+    //QTcpSocket* p_TcpSocket;
+
+    QTcpServer* p_Server;
+
+    QMap<QString, QString> m_Tokens;
 
 public:
     Database db;

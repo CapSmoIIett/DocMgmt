@@ -3,32 +3,40 @@
 AppEngine::AppEngine(QObject* parent) :
     QObject(parent)
 {
+    connect(&this->client, &Client::Verified, this, [this](bool result) { qDebug() << "call"; emit this->verified(result); });
 
 }
 
 QString AppEngine::userName()
 {
-    return "user";
+    return s_UserName;
 }
 
 void AppEngine::setUserName(const QString &userName)
 {
-
+    s_UserName = userName;
 }
 
 QString AppEngine::password()
 {
-    return "password";
+    return s_Password;
 }
 
 void AppEngine::setPassword(const QString &password)
 {
-
+    s_Password = password;
 }
 
 bool AppEngine::verify()
 {
-    qDebug() << "Verify" << "\n";
+    qDebug();
+    qDebug() << "AppEngine::verify";
+    qDebug() << s_UserName << " " << s_Password;
+
+    if (!client.IsConnected())
+        client.ConnectToServer();
+
+    client.VerifyRequest(s_UserName, s_Password);
 
     return true;
 }
