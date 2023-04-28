@@ -186,13 +186,13 @@ bool Database::createTables()
 
 bool Database::Verify (QString userName, QString password)
 {
-    QSqlQuery query;
-    int result = 0;
-
     qDebug();
     qDebug() << "Database::Verify";
     qDebug() << userName;
     qDebug() << password;
+
+    QSqlQuery query;
+    int result = 0;
 
     result = query.exec(QString("SELECT password FROM users WHERE  full_name = '%1'").arg(userName));
 
@@ -217,5 +217,141 @@ bool Database::Verify (QString userName, QString password)
     }
 
     return false;
+}
 
+QVector<User> Database::GetUsersList()
+{
+    qDebug();
+    qDebug() << "Database::UsersListRequest";
+
+    QSqlQuery query;
+    QVector<User> users;
+    int result;
+
+    result = query.exec(QString("SELECT * FROM users"));
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexFullName = rec.indexOf( "full_name" );
+    const int indexOffice = rec.indexOf( "office_id" );
+    const int indexRight = rec.indexOf( "rights_id" );
+
+    while (query.next())
+    {
+        User user;
+        user.s_Full_Name = query.value(indexFullName).toString();
+        user.s_Office = query.value(indexOffice).toString();
+        user.s_Right = query.value(indexRight).toString();
+
+        qDebug() << user.s_Full_Name;
+        qDebug() << user.s_Right;
+        qDebug() << user.s_Office;
+
+        users.push_back(user);
+    }
+
+    return users;
+}
+
+User Database::GetUserData(QString username)
+{
+    qDebug();
+    qDebug() << "Database::GetUserData";
+
+    QSqlQuery query;
+    User user;
+    int result;
+
+    query.prepare(QString("SELECT * FROM users WHERE full_name = :username"));
+
+    query.bindValue(":username", username);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexFullName = rec.indexOf( "full_name" );
+    const int indexOffice = rec.indexOf( "office_id" );
+    const int indexRight = rec.indexOf( "rights_id" );
+
+    if (query.next())
+    {
+        user.s_Full_Name = query.value(indexFullName).toString();
+        user.s_Office = query.value(indexOffice).toString();
+        user.s_Right = query.value(indexRight).toString();
+
+        qDebug() << user.s_Full_Name;
+        qDebug() << user.s_Right;
+        qDebug() << user.s_Office;
+    }
+
+    return user;
+}
+
+QString Database::FindFreeDefaultName()
+{
+    QString userName = "User";
+
+    qDebug();
+    qDebug() << "Database::FindFreeDefaultName";
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    do
+    {
+        userName = (it++ == 0) ? QString("User") : QString("User%1").arg(it);
+
+        query.prepare("SELECT * FROM users WHERE full_name = :name");
+
+        query.bindValue(":name", userName);
+
+        result = query.exec();
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+        }
+    }
+    while (query.next());
+
+    return userName;
+}
+
+void Database::AddUser()
+{
+    qDebug();
+    qDebug() << "Database::AddUser";
+
+    auto name = FindFreeDefaultName();
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    query.prepare("INSERT INTO users (password, rights_id , full_name, office_id) VALUES (1111, 0, :name, 0) ");
+
+    query.bindValue(":name", name);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
 }

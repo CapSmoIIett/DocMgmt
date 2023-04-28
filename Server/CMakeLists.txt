@@ -30,7 +30,7 @@ qt_add_executable(DocMgmtServer
     database.h
 
     ../messages.h
-
+    ../datastructures.h
 )
 
 set_target_properties(DocMgmtServer PROPERTIES

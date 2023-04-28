@@ -10,6 +10,8 @@
 #include <QDate>
 #include <QDebug>
 
+#include "../datastructures.h"
+
 /* Директивы имен таблицы, полей таблицы и базы данных */
 #define DATABASE_HOSTNAME   "ExampleDataBase"
 #define DATABASE_NAME       "DataBase.db"
@@ -27,6 +29,12 @@ public:
     ~Database();
 
     bool Verify (QString userName, QString password);
+    QVector<User> GetUsersList();
+    User GetUserData(QString username);
+
+    QString FindFreeDefaultName();
+    void AddUser();
+
 
 private:
     // Сам объект базы данных, с которым будет производиться работа

@@ -93,8 +93,41 @@ void Server::ReadSocket()
         qDebug() << "Verified: " << isVerified;
 
         emit SendToClient(QString("Type:%1,result:%2").arg(MSG_VERIFY).arg(isVerified));
-
     } break;
+
+    case MSG_ALL_USERS:
+    {
+        auto users = db.GetUsersList();
+
+        QString data = QString("Type:%1,Size:%2,").arg(MSG_ALL_USERS).arg(users.size());
+        for (int i = 0; i < users.size(); i++)
+        {
+            data += QString("Full_Name_%1:%2,").arg(i).arg(users[i].s_Full_Name);
+            data += QString("Office_%1:%2,").arg(i).arg(users[i].s_Office);
+            data += QString("Right_%1:%2,").arg(i).arg(users[i].s_Right);
+        }
+
+        emit SendToClient(data);
+    } break;
+
+    case MSG_ADD_USER:
+    {
+        db.AddUser();
+    } break;
+    case MSG_LOAD_DATA_USER:
+    {
+        QString username = header.split(",")[1].split(":")[1];
+
+        auto user = db.GetUserData(username);
+
+        QString data = QString("Type:%1,").arg(MSG_LOAD_DATA_USER);
+        data += QString("Full_Name:%1,").arg(user.s_Full_Name);
+        data += QString("Office:%1,").arg(user.s_Office);
+        data += QString("Right:%1,").arg(user.s_Right);
+
+        emit SendToClient(data);
+    }break;
+
     }
 
     qDebug() << buffer.toStdString().c_str();

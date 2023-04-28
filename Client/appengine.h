@@ -11,6 +11,8 @@ class AppEngine : public QObject
     Q_OBJECT
     Q_PROPERTY(QString userName READ userName WRITE setUserName)
     Q_PROPERTY(QString password READ password WRITE setPassword)
+    Q_PROPERTY(QString office READ office WRITE setOffice)
+    Q_PROPERTY(QString right READ right WRITE setRight)
     QML_ELEMENT
 
 public:
@@ -22,15 +24,30 @@ public:
     QString password();
     void setPassword(const QString &password);
 
+    QString office();
+    void setOffice(const QString &password);
+
+    QString right();
+    void setRight(const QString &password);
+
+    Client& GetClient();
+
     Q_INVOKABLE bool verify();
+    Q_INVOKABLE void usersListRequest();
+    Q_INVOKABLE void addUserRequest();
+
+    Q_INVOKABLE void loadCurUserDataRequest();
+    Q_INVOKABLE void loadUserDataRequest();
 
 signals:
     void verified(bool result);
 
+public slots:
+
 private:
     Client client;
 
-    QString s_UserName;
+    User user;
     QString s_Password;
 
 };
