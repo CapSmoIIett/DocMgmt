@@ -1,8 +1,9 @@
 
 #include "rightsmodel.h"
 
-RightsTableModel::RightsTableModel(QObject *parent)
-    : QAbstractTableModel{parent}
+RightsTableModel::RightsTableModel(AppEngine* engine, QObject *parent) :
+    QAbstractTableModel{parent},
+    p_AppEngine(engine)
 {
 
 }

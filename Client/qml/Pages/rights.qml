@@ -1,21 +1,28 @@
-
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls 2.2
-import Qt.labs.folderlistmodel 2.2
-import QtQuick 2.9
-import QtQuick.Window 2.2
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.2
-import Qt.labs.folderlistmodel 2.1
-import Qt.labs.platform 1.0
+import QtQuick.Controls
+import Qt.labs.qmlmodels
 
 
 Rectangle {
     anchors.fill: parent
 
+    HorizontalHeaderView {
+        id: horizontalHeader
+        syncView: table
+
+        delegate: Text {
+            horizontalAlignment: Text.AlignHCenter
+            text:  model.display
+        }
+    }
+
     TableView {
+        id: table
         anchors.fill: parent
+        anchors.topMargin: horizontalHeader.height
+        clip: true
+
 
         model: rightsTableModel
 
