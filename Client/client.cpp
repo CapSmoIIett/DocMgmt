@@ -24,7 +24,7 @@ void Client::ConnectToServer()
     qDebug() << "Connecting" << s_IP << " " << i_Port;
     p_TcpSocket->connectToHost(s_IP, i_Port);
 
-    p_TcpSocket->waitForConnected();
+    //p_TcpSocket->waitForConnected();
 
     qDebug() << "Connection: " << (p_TcpSocket->state() == QTcpSocket::ConnectedState);
 }
@@ -43,36 +43,54 @@ void Client::SendToServer(QString str)
     p_TcpSocket->write(Data);
 }
 
-
-bool Client::VerifyRequest (QString username, QString password)
+void Client::SendRequest (QString str)
 {
     qDebug();
-    qDebug() << "Client::VerifyRequest";
+    qDebug() << "Client::SendRequest";
 
     if (!p_TcpSocket)
     {
         qDebug () << "Verify: socket error";
-        return false;
+        return;
     }
 
     if (!p_TcpSocket->isOpen())
     {
         qDebug () << "Verify: socket close";
-        return false;
+        return;
     }
 
     QDataStream socketStream(p_TcpSocket);
     socketStream.setVersion(QDataStream::Qt_6_4);
 
     QByteArray byteArray;
-    byteArray.prepend((QString("Type:%1,Username:%2,Password:%3").arg(MSG_VERIFY).arg(username).arg(password)).toUtf8());
+    byteArray.prepend(str.toUtf8());
 
     qDebug() << byteArray;
 
     socketStream << byteArray;
+}
 
+bool Client::VerifyRequest (QString username, QString password)
+{
+    SendRequest(QString("Type:%1,Username:%2,Password:%3").arg(MSG_VERIFY).arg(username).arg(password));
 
     return true;
+}
+
+void Client::UsersListRequest()
+{
+    SendRequest(QString("Type:%1").arg(MSG_ALL_USERS));
+}
+
+void Client::AddUserRequest()
+{
+    SendRequest(QString("Type:%1").arg(MSG_ADD_USER));
+}
+
+void Client::loadUserDataRequest(QString username)
+{
+    SendRequest(QString("Type:%1,Username:%2").arg(MSG_LOAD_DATA_USER).arg(username));
 }
 
 void Client::ReadSocket ()
@@ -112,12 +130,49 @@ void Client::ReadSocket ()
     case MSG_VERIFY:
     {
         QString result = header.split(",")[1].split(":")[1];
+
         qDebug() << "MSG_VERIFY: " << result;
-        emit Verified(result.toInt() == 1);
-    }
+
+        emit onVerified(result.toInt() == 1);
+    } break;
+
+    case MSG_ALL_USERS:
+    {
+        QVector<User> users;
+        QString size = header.split(",")[1].split(":")[1];
+
+        qDebug() << "MSG_ALL_USERS: " << size;
+
+        for (int i = 0; i < size.toInt(); i++)
+        {
+            User user;
+            user.s_Full_Name = header.split(",")[1 + i + 1].split(":")[1];
+            user.s_Office = header.split(",")[1 + i + 2].split(":")[1];
+            user.s_Right = header.split(",")[1 + i + 3].split(":")[1];
+
+            qDebug() << user.s_Full_Name;
+            qDebug() << user.s_Right;
+            qDebug() << user.s_Office;
+
+            users.push_back(user);
+        }
+
+        emit onGetUsersList(users);
+    } break;
+
+    case MSG_LOAD_DATA_USER:
+    {
+        qDebug() << "MSG_LOAD_DATA_USER";
+
+        User user;
+        user.s_Full_Name = header.split(",")[1].split(":")[1];
+        user.s_Office = header.split(",")[2].split(":")[1];
+        user.s_Right = header.split(",")[3].split(":")[1];
+
+        emit onGetUserData(user);
+    } break;
     }
 
-    qDebug() << "header " << header;
     qDebug() << buffer.toStdString().c_str();
 }
 

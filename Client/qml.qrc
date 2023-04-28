@@ -11,5 +11,8 @@
         <file>qml/Components/MenuButton.qml</file>
         <file>qml/Components/MenuCard.qml</file>
         <file>qml/Components/MenuStack.qml</file>
+        <file>qml/Pages/user.qml</file>
+        <file>qml/Pages/rights.qml</file>
+        <file>qml/Pages/offices.qml</file>
     </qresource>
 </RCC>

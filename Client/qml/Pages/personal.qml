@@ -3,14 +3,56 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Qt.labs.qmlmodels
 
+
+//import PersonalModel 1.0
+
+
 Rectangle {
     anchors.fill: parent
+
+    ToolBar {
+        id: toolBar
+        width: parent.width
+        height: updateButton.height + 10
+
+
+        RowLayout {
+            anchors.fill: parent
+
+            ToolButton {
+                id: updateButton
+
+                text: "Update"
+                onClicked: {
+                console.log("Update")
+                app.usersListRequest()
+                }
+            }
+
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                Layout.fillWidth: true
+            }
+
+            ToolButton {
+                text: 'Add user'
+                onClicked: {
+                    console.log("Add user")
+                    app.addUserRequest()
+                }
+            }
+        }
+    }
 
 
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
         anchors.left: tableView.left
+        anchors.top: toolBar.bottom
+        //anchors.topMargin: toolBar.height
 
         //model: [ "Name" , "Title", "Office", "Department", "Teams"]
 
@@ -24,102 +66,12 @@ Rectangle {
 
 
 
-    TableModel {
-        id: model
-
-        TableModelColumn {display: "name" }
-        TableModelColumn {display: "title" }
-        TableModelColumn {display: "office" }
-        TableModelColumn {display: "department" }
-        TableModelColumn {display: "teams" }
-
-        rows: [
-        {
-            "name": "John",
-            "title": "Programmer",
-            "office": "New York",
-            "department": "IT",
-            "teams": "External project"
-        },
-        {
-            "name": "John",
-            "title": "Programmer",
-            "office": "New York",
-            "department": "IT",
-            "teams": "External project"
-        },
-        {
-            "name": "Alice",
-            "title": "Sound designer",
-            "office": "Paris",
-            "department": "Art",
-            "teams": "External project"
-        },
-        {
-            "name": "Bob",
-            "title": "Producer",
-            "office": "London",
-            "department": "Art",
-            "teams": "External project"
-        },
-        {
-            "name": "John",
-            "title": "Programmer",
-            "office": "New York",
-            "department": "IT",
-            "teams": "External project"
-        },
-        {
-            "name": "Alice",
-            "title": "Sound designer",
-            "office": "Paris",
-            "department": "Art",
-            "teams": "External project"
-        },
-        {
-            "name": "Bob",
-            "title": "Producer",
-            "office": "London",
-            "department": "Art",
-            "teams": "External project"
-        },
-        {
-            "name": "John",
-            "title": "Programmer",
-            "office": "New York",
-            "department": "IT",
-            "teams": "External project"
-        },
-        {
-            "name": "Alice",
-            "title": "Sound designer",
-            "office": "Paris",
-            "department": "Art",
-            "teams": "External project"
-        },
-        {
-            "name": "Alice",
-            "title": "Sound designer",
-            "office": "Paris",
-            "department": "Art",
-            "teams": "External project"
-        },
-        {
-            "name": "Bob",
-            "title": "Producer",
-            "office": "London",
-            "department": "Art",
-            "teams": "External project of U.S.A."
-        }
-        ]
-    }
-
-
-
     TableView {
         id: table
-        anchors.fill: parent
-        anchors.topMargin: horizontalHeader.implicitHeight
+        //anchors.fill: parent
+        anchors.top: horizontalHeader.bottom
+        anchors.left: parent.left
+        width: parent.width
         columnSpacing: 1
         rowSpacing: 1
         clip: true
@@ -127,10 +79,13 @@ Rectangle {
         columnWidthProvider: function (column) {
             return table.width / 5;/// table.model.columnCount();
         }
+
         onWidthChanged: table.forceLayout()
 
 
-        model: model
+        //model: model
+        model: personalTableModel
+
 
         delegate: Rectangle {
             implicitWidth: table.columnWidthProvider(column)
@@ -138,7 +93,7 @@ Rectangle {
             //border.width: 1
 
             Text {
-                text: display
+                text: "display"
                 horizontalAlignment: Text.AlignHCenter
                 //verticalAlignment:  Text.AlignVCenter
                 anchors.centerIn: parent
@@ -147,11 +102,15 @@ Rectangle {
                 elide: Text.ElideRight
 
             }
-
-
         }
         //*/
 
 
+        Component.onCompleted: {
+            console.log("Update")
+            app.usersListRequest()
+        }
+
     }
 }
+

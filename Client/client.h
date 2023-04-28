@@ -9,6 +9,7 @@
 #include <QTcpSocket>
 
 #include "../messages.h"
+#include "../datastructures.h"
 
 class Client : public QObject
 {
@@ -22,10 +23,17 @@ public:
     void SendToServer(QString str);
     QString ReadFromServer();
 
+    void SendRequest (QString);
     bool VerifyRequest (QString username, QString password);
 
+    void UsersListRequest();
+    void AddUserRequest();
+    void loadUserDataRequest(QString username);
+
 signals:
-    void Verified(bool result);
+    void onVerified(bool result);
+    void onGetUsersList(QVector<User>);
+    void onGetUserData(User);
 
 public slots:
     void ReadSocket();
