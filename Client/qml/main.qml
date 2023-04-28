@@ -63,6 +63,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 width: parent.width
 
+
                 Label {
                     id: labelLogin
                     text: "Login"
@@ -107,7 +108,11 @@ ApplicationWindow {
                 app.userName = textLogin.text
                 app.password = textPassword.text
 
+                //loginWindow.hide()
+                //mainWindow.show()
+
                 app.verify()
+
 
             }
         }
@@ -129,8 +134,9 @@ ApplicationWindow {
                 {
                     console.log("true")
                     loginWindow.hide()
-
                     mainWindow.show()
+
+                    app.loadCurUserDataRequest()
                 }
                 else
                 {
@@ -139,8 +145,6 @@ ApplicationWindow {
 
         }
     }//*/
-
-
 
 
  /***********************************************************************/
@@ -186,7 +190,17 @@ ApplicationWindow {
                 Layout.fillWidth: true
             }
 
-            ToolButton { text: 'User' }
+            ToolButton {
+
+                Label {
+                    anchors.centerIn: parent.Center
+                    text: app.userName
+                }
+
+                onClicked: {
+                    loader.loadFragment("qrc:/qml/Pages/user.qml")
+                }
+            }
             ToolSeparator {}
             ToolButton { text: 'Action 4' }
             ToolButton {
@@ -217,19 +231,31 @@ ApplicationWindow {
 
             ListElement {
                 name: 'personal'
-                page_source: "qrc:/Pages/personal.qml"
+                page_source: "qrc:/qml/Pages/personal.qml"
             }
             ListElement {
                 name: 'files'
-                page_source: "qrc:/Pages/files.qml"
+                page_source: "qrc:/qml/Pages/files.qml"
             }
             ListElement {
                 name: 'calendar'
-                page_source: "qrc:/Pages/calendar.qml"
+                page_source: "qrc:/qml/Pages/calendar.qml"
             }
             ListElement {
                 name: 'Test'
-                page_source: "qrc:/Pages/Test.qml"
+                page_source: "qrc:/qml/Pages/Test.qml"
+            }
+            ListElement {
+                name: 'Rights'
+                page_source: "qrc:/qml/Pages/rights.qml"
+            }
+            ListElement {
+                name: 'Offices'
+                page_source: "qrc:/qml/Pages/offices.qml"
+            }
+            ListElement {
+                name: 'User'
+                page_source: "qrc:/qml/Pages/user.qml"
             }
         }
 
@@ -296,6 +322,7 @@ ApplicationWindow {
 
                 }
 
+
             }
 
         }
@@ -308,7 +335,7 @@ ApplicationWindow {
     Loader {
         id: loader
         anchors.fill: parent
-        source: "qrc:/Pages/personal.qml"
+        source: "qrc:/qml/Pages/personal.qml"
 
         function loadFragment(page_source){
             loader.source = page_source

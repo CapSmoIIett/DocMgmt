@@ -28,12 +28,15 @@ qt_add_executable(appDocMgmtQt
     client.h
     imagines.qrc
     qml.qrc
-    model.cpp
-    model.h
+    personalmodel.cpp
+    personalmodel.h
     appengine.cpp
     appengine.h
+    rightsmodel.cpp
+    rightsmodel.h
 
     ../messages.h
+    ../datastructures.h
 )
 
 
@@ -47,6 +50,9 @@ qt_add_qml_module(appDocMgmtQt
         qml/Pages/files.qml
         qml/Pages/personal.qml
         qml/Pages/Test.qml
+        qml/Pages/user.qml
+        qml/Pages/rights.qml
+        qml/Pages/offices.qml
         qml/Components/CellBox.qml
         qml/Components/LargeChartView.qml
         qml/Components/DrawerItem.qml

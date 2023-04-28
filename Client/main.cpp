@@ -6,22 +6,20 @@
 
 #include "header.h"
 #include "client.h"
-#include "model.h"
-#include "appengine.h"
 
-void test::hello()
-{
-    Client cl;
-}
+#include "appengine.h"
+#include "personalmodel.h"
+#include "rightsmodel.h"
+
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    //qmlRegisterType<PersonalTableModel>("PersonalModel", 1, 0, "PersonalModel");
+
     QQmlApplicationEngine engine;
     const QUrl url(u"qrc:/DocMgmtQt/qml/main.qml"_qs);
-
-    //const QUrl url(u"qrc:/DocMgmtQt/authenticationWindow.qml"_qs);
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -32,6 +30,12 @@ int main(int argc, char *argv[])
 
     AppEngine appEngine;
     engine.rootContext()->setContextProperty("app", &appEngine);
+
+    PersonalTableModel ptable(&appEngine);
+    engine.rootContext()->setContextProperty("personalTableModel", &ptable);
+
+    RightsTableModel rtable(&appEngine);
+    engine.rootContext()->setContextProperty("rightsTableModel", &rtable);
 
 
 
