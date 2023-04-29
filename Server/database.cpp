@@ -300,6 +300,42 @@ User Database::GetUserData(QString username)
     return user;
 }
 
+QVector<Right> Database::GetRights()
+{
+    qDebug();
+    qDebug() << "Database::GetRights";
+
+    QSqlQuery query;
+    QVector<Right> rights;
+    int result;
+
+    result = query.exec(QString("SELECT * FROM rights "));
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    //const int indexName = rec.indexOf( "name" );
+    const int indexId = rec.indexOf( "id" );
+
+    while (query.next())
+    {
+        Right right;
+
+        right.s_Name = query.value(indexId).toString();
+
+        rights.push_back(right);
+
+        qDebug() << right.s_Name;
+    }
+
+    return rights;
+}
+
 QString Database::FindFreeDefaultName()
 {
     QString userName = "User";

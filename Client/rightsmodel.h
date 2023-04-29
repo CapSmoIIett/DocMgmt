@@ -19,9 +19,14 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     QVariant data(const QModelIndex &index, int role) const override;
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+
+public slots:
+    void GetRights(QVector<Right> rights);
+
 private:
     AppEngine* p_AppEngine;
-    QVector<User> v_Rights;
+    QVector<Right> v_Rights;
 };
 
 #endif // RIGHTSMODEL_H

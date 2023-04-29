@@ -31,6 +31,7 @@ public:
     bool Verify (QString userName, QString password);
     QVector<User> GetUsersList();
     User GetUserData(QString username);
+    QVector<Right> GetRights();
 
     QString FindFreeDefaultName();
     void AddUser();

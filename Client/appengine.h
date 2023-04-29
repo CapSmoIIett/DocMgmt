@@ -38,6 +38,7 @@ public:
 
     Q_INVOKABLE void loadCurUserDataRequest();
     Q_INVOKABLE void loadUserDataRequest();
+    Q_INVOKABLE void loadRightsRequest();
 
 signals:
     void verified(bool result);

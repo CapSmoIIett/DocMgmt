@@ -35,5 +35,9 @@ Rectangle {
                 anchors.centerIn: parent
             }
         }
+
+        Component.onCompleted: {
+            app.loadRightsRequest()
+        }
     }
 }

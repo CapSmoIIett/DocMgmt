@@ -8,3 +8,8 @@ struct User
     QString s_Right;
     QString s_Office;
 };
+
+struct Right
+{
+    QString s_Name;
+};

@@ -93,6 +93,11 @@ void Client::loadUserDataRequest(QString username)
     SendRequest(QString("Type:%1,Username:%2").arg(MSG_LOAD_DATA_USER).arg(username));
 }
 
+void Client::loadRightsRequest()
+{
+    SendRequest(QString("Type:%1").arg(MSG_LOAD_RIGHTS));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
@@ -171,6 +176,24 @@ void Client::ReadSocket ()
 
         emit onGetUserData(user);
     } break;
+
+    case MSG_LOAD_RIGHTS:
+    {
+        QVector<Right> rights;
+        QString size = header.split(",")[1].split(":")[1];
+
+        qDebug() << "MSG_LOAD_RIGHTS" << size;
+
+        for (int i = 0; i < size.toInt(); i++)
+        {
+            Right right;
+            right.s_Name = header.split(",")[1 + i + 1].split(":")[1];
+
+            rights.push_back(right);
+        }
+
+        emit onGetRights(rights);
+    }
     }
 
     qDebug() << buffer.toStdString().c_str();

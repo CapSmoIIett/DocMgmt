@@ -98,5 +98,10 @@ void AppEngine::loadUserDataRequest()
     client.loadUserDataRequest(user.s_Full_Name);
 }
 
+void AppEngine::loadRightsRequest()
+{
+    client.loadRightsRequest();
+}
+
 
 

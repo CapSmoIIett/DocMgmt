@@ -128,6 +128,19 @@ void Server::ReadSocket()
         emit SendToClient(data);
     }break;
 
+    case MSG_LOAD_RIGHTS:
+    {
+        auto rights = db.GetRights();
+
+        QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_RIGHTS).arg(rights.size());
+        for (int i = 0; i < rights.size(); i++)
+        {
+            data += QString("Name%1:%2,").arg(i).arg(rights[i].s_Name);
+        }
+
+        emit SendToClient(data);
+    }
+
     }
 
     qDebug() << buffer.toStdString().c_str();

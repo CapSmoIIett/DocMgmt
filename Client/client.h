@@ -29,11 +29,13 @@ public:
     void UsersListRequest();
     void AddUserRequest();
     void loadUserDataRequest(QString username);
+    void loadRightsRequest();
 
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);
     void onGetUserData(User);
+    void onGetRights(QVector<Right>);
 
 public slots:
     void ReadSocket();
