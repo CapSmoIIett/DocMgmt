@@ -82,7 +82,8 @@ bool Database::createTables()
 
     result = query.exec("CREATE TABLE IF NOT EXISTS rights"
                 "("
-                    "id serial primary key"
+                    "id serial primary key,"
+                    "id varchar(255)"
                 ")");
 
     if (!result)
@@ -321,27 +322,29 @@ QVector<Right> Database::GetRights()
     QSqlRecord rec = query.record();
     //const int indexName = rec.indexOf( "name" );
     const int indexId = rec.indexOf( "id" );
+    const int indexName = rec.indexOf( "name" );
 
     while (query.next())
     {
         Right right;
 
-        right.s_Name = query.value(indexId).toString();
+        right.i_ID = query.value(indexId).toInt();
+        right.s_Name = query.value(indexName).toString();
 
         rights.push_back(right);
 
-        qDebug() << right.s_Name;
+        qDebug() << right.i_ID << right.s_Name;
     }
 
     return rights;
 }
 
-QString Database::FindFreeDefaultName()
+QString Database::FindFreeDefaultName(QString table, QString param,QString insert_name)
 {
-    QString userName = "User";
-
     qDebug();
     qDebug() << "Database::FindFreeDefaultName";
+
+    QString name = insert_name;
 
     QSqlQuery query;
     int result = 0;
@@ -349,11 +352,11 @@ QString Database::FindFreeDefaultName()
 
     do
     {
-        userName = (it++ == 0) ? QString("User") : QString("User%1").arg(it);
+        name = (it++ == 0) ? insert_name : insert_name + QString::number(it);
 
-        query.prepare("SELECT * FROM users WHERE full_name = :name");
+        query.prepare(QString("SELECT * FROM %1 WHERE %2 = :name").arg(table).arg(param));
 
-        query.bindValue(":name", userName);
+        query.bindValue(":name", name);
 
         result = query.exec();
 
@@ -365,7 +368,9 @@ QString Database::FindFreeDefaultName()
     }
     while (query.next());
 
-    return userName;
+    qDebug() << name;
+
+    return name;
 }
 
 void Database::AddUser()
@@ -373,13 +378,37 @@ void Database::AddUser()
     qDebug();
     qDebug() << "Database::AddUser";
 
-    auto name = FindFreeDefaultName();
+    auto name = FindFreeDefaultName("users", "full_name", "User");
 
     QSqlQuery query;
     int result = 0;
     int it = 0;
 
     query.prepare("INSERT INTO users (password, rights_id , full_name, office_id) VALUES (1111, 0, :name, 0) ");
+
+    query.bindValue(":name", name);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+}
+
+void Database::AddRight()
+{
+    qDebug();
+    qDebug() << "Database::AddRight";
+
+    auto name = FindFreeDefaultName("rights", "name", "Right");
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    query.prepare("INSERT INTO rights (id, name) VALUES ((SELECT MAX(id) + 1 from rights), :name) ");
 
     query.bindValue(":name", name);
 

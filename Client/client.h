@@ -30,6 +30,7 @@ public:
     void AddUserRequest();
     void loadUserDataRequest(QString username);
     void loadRightsRequest();
+    void addRightsRequest();
 
 signals:
     void onVerified(bool result);

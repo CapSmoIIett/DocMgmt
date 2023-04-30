@@ -103,5 +103,10 @@ void AppEngine::loadRightsRequest()
     client.loadRightsRequest();
 }
 
+void AppEngine::addRightsRequest()
+{
+    client.addRightsRequest();
+}
+
 
 

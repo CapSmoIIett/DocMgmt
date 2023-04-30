@@ -9,12 +9,6 @@ class PersonalTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    // Перечисляем все роли, которые будут использоваться в TableView
-    enum Roles {
-        FULL_NAME,
-        RIGHT,
-        OFFICE
-    };
 
     explicit PersonalTableModel (AppEngine* engine, QObject* parent = nullptr);
 
@@ -25,10 +19,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-
-
-signals:
-    void onRowCountChanged(int amountRows);
 
 public slots:
     void GetUserList(QVector<User>);

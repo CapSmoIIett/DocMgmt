@@ -33,8 +33,10 @@ public:
     User GetUserData(QString username);
     QVector<Right> GetRights();
 
-    QString FindFreeDefaultName();
+
+    QString FindFreeDefaultName(QString table = "users", QString param = "full_name", QString name = "User");
     void AddUser();
+    void AddRight();
 
 
 private:

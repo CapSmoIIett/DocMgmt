@@ -24,7 +24,7 @@ int RightsTableModel::rowCount(const QModelIndex &parent) const
 
 int RightsTableModel::columnCount(const QModelIndex &parent) const
 {
-    return 1;
+    return 2;
 }
 
 QHash<int, QByteArray> RightsTableModel::roleNames() const
@@ -35,19 +35,35 @@ QHash<int, QByteArray> RightsTableModel::roleNames() const
 QVariant RightsTableModel::data(const QModelIndex &index, int role) const
 {
     if (index.row() >= v_Rights.size())
-        return QVariant("null");
+        return QVariant("");
+
+    qDebug();
+    qDebug() << "RightsTableModel::data " << index << role;
 
     Right right = v_Rights[index.row()];
 
-    switch (role)
+    if (role == Qt::DisplayRole)
+    {
+        switch (index.column())
+        {
+        case 0: return right.i_ID;
+        case 1: return right.s_Name;
+        default:
+            break;
+        }
+    }
+
+    /*
+     * switch (role)
     {
     case Qt::DisplayRole:
         return right.s_Name;//QString("%1, %2").arg(index.row()).arg(index.column());
     default:
         break;
     }
+*/
 
-    return QVariant();
+    return QVariant("");
 }
 
 QVariant RightsTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -57,9 +73,14 @@ QVariant RightsTableModel::headerData(int section, Qt::Orientation orientation, 
         switch (section)
         {
         case 0:
+            return QString("ID");
+        case 1:
             return QString("Name");
+        default:
+            break;
         }
     }
+    return QVariant("");
 }
 
 void RightsTableModel::GetRights(QVector<Right> rights)
@@ -69,7 +90,7 @@ void RightsTableModel::GetRights(QVector<Right> rights)
 
     for (auto r : rights)
     {
-        qDebug() << r.s_Name;
+        qDebug() << r.i_ID << r.s_Name;
     }
 
     v_Rights = rights;
@@ -77,6 +98,6 @@ void RightsTableModel::GetRights(QVector<Right> rights)
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     endInsertRows();
 
-    emit dataChanged(index(0, 0), index(v_Rights.size() - 1, 1), {Qt::DisplayRole});
+    emit dataChanged(index(0, 0), index(v_Rights.size() - 1, 2), {Qt::DisplayRole});
 }
 

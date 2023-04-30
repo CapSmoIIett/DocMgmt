@@ -98,6 +98,11 @@ void Client::loadRightsRequest()
     SendRequest(QString("Type:%1").arg(MSG_LOAD_RIGHTS));
 }
 
+void Client::addRightsRequest()
+{
+    SendRequest(QString("Type:%1").arg(MSG_ADD_RIGHT));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
@@ -151,9 +156,9 @@ void Client::ReadSocket ()
         for (int i = 0; i < size.toInt(); i++)
         {
             User user;
-            user.s_Full_Name = header.split(",")[1 + i + 1].split(":")[1];
-            user.s_Office = header.split(",")[1 + i + 2].split(":")[1];
-            user.s_Right = header.split(",")[1 + i + 3].split(":")[1];
+            user.s_Full_Name = header.split(",")[1 + (i * 3) + 1].split(":")[1];
+            user.s_Office = header.split(",")[1 + (i * 3) + 2].split(":")[1];
+            user.s_Right = header.split(",")[1 + (i * 3) + 3].split(":")[1];
 
             qDebug() << user.s_Full_Name;
             qDebug() << user.s_Right;
@@ -187,7 +192,14 @@ void Client::ReadSocket ()
         for (int i = 0; i < size.toInt(); i++)
         {
             Right right;
-            right.s_Name = header.split(",")[1 + i + 1].split(":")[1];
+            right.i_ID = header.split(",")[1 + (i * 2)+ 1].split(":")[1].toInt();
+            right.s_Name = header.split(",")[1 + (i * 2) + 2].split(":")[1];
+
+            qDebug() << header.split(",")[1 + i + 1];
+            qDebug() << header.split(",")[1 + i + 2];
+
+            qDebug() << "ID: " << right.i_ID;
+            qDebug() << "Name: " << right.s_Name;
 
             rights.push_back(right);
         }

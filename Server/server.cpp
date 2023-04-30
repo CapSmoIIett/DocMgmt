@@ -135,11 +135,17 @@ void Server::ReadSocket()
         QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_RIGHTS).arg(rights.size());
         for (int i = 0; i < rights.size(); i++)
         {
+            data += QString("ID%1:%2,").arg(i).arg(rights[i].i_ID);
             data += QString("Name%1:%2,").arg(i).arg(rights[i].s_Name);
         }
 
         emit SendToClient(data);
-    }
+    } break;
+
+    case MSG_ADD_RIGHT:
+    {
+        db.AddRight();
+    } break;
 
     }
 

@@ -11,5 +11,6 @@
 #define MSG_ADD_USER		102
 #define MSG_LOAD_DATA_USER	103
 #define MSG_LOAD_RIGHTS 	104
+#define MSG_ADD_RIGHT 		105
 
 #endif // MESSAGES_H

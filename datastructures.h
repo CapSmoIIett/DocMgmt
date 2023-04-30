@@ -11,5 +11,6 @@ struct User
 
 struct Right
 {
+    int i_ID;
     QString s_Name;
 };
