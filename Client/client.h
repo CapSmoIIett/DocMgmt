@@ -31,12 +31,16 @@ public:
     void loadUserDataRequest(QString username);
     void loadRightsRequest();
     void addRightsRequest();
+    void removeUserRequest(int id);
+    void loadOfficesRequest();
+    void addOfficeRequest();
 
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);
     void onGetUserData(User);
     void onGetRights(QVector<Right>);
+    void onGetOffices(QVector<Office>);
 
 public slots:
     void ReadSocket();

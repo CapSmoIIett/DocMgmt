@@ -37,6 +37,11 @@ public:
     QString FindFreeDefaultName(QString table = "users", QString param = "full_name", QString name = "User");
     void AddUser();
     void AddRight();
+    void AddOffice();
+
+    void RemoveUser(int id);
+
+    QVector<Office> GetOffices();
 
 
 private:

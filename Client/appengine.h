@@ -40,6 +40,10 @@ public:
     Q_INVOKABLE void loadUserDataRequest();
     Q_INVOKABLE void loadRightsRequest();
     Q_INVOKABLE void addRightsRequest();
+    Q_INVOKABLE void removeUserRequest(int id);
+    Q_INVOKABLE void loadOfficesRequest();
+    Q_INVOKABLE void addOfficesRequest();
+
 
 
 signals:

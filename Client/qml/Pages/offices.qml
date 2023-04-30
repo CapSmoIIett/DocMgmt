@@ -1,54 +1,88 @@
-
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls 2.2
-import Qt.labs.folderlistmodel 2.2
-import QtQuick 2.9
-import QtQuick.Window 2.2
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.2
-import Qt.labs.folderlistmodel 2.1
-import Qt.labs.platform 1.0
+import QtQuick.Controls
+import Qt.labs.qmlmodels
 
 
 Rectangle {
     anchors.fill: parent
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 10
+    ToolBar {
+        id: toolBar
+        width: parent.width
+        height: updateButton.height + 10
+
+
         RowLayout {
-            Layout.preferredHeight: 40
-            Layout.fillWidth: true
-            TextField {
-                id: path
-                enabled: true
-                text: folderModel.folder
+            anchors.fill: parent
+
+            ToolButton {
+                id: updateButton
+
+                text: "Update"
+                onClicked: {
+                console.log("Update")
+                app.loadOfficesRequest()
+                }
+            }
+
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
             }
-            Button {
-                text: "..."
-                onClicked: folderDialog.open();
-            }
-        }
 
-        ListView {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            model: FolderListModel {
-                id: folderModel
-                folder: ""
+            ToolButton {
+                text: 'Add office'
+                onClicked: {
+                    console.log("Add office")
+                    app.addOfficesRequest()
+                }
             }
-            delegate: Text { text: fileName }
         }
     }
 
-    FolderDialog {
-        id: folderDialog
-        currentFolder: ""
-        folder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-        onFolderChanged: {
-            folderModel.folder = folder;
+    HorizontalHeaderView {
+        id: horizontalHeader
+        syncView: table
+        anchors.top: toolBar.bottom
+        anchors.left: parent.left
+
+        delegate: Text {
+            horizontalAlignment: Text.AlignHCenter
+            text:  model.display
+        }
+    }
+
+    TableView {
+        id: table
+        anchors.fill: parent
+        anchors.topMargin: toolBar.height + horizontalHeader.height
+        clip: true
+
+        columnWidthProvider: function (column) {
+            return table.width / table.model.columnCount();
+        }
+
+        onWidthChanged: table.forceLayout()
+
+        model: officeTableModel
+
+        delegate: Rectangle {
+            implicitWidth: table.columnWidthProvider(column)
+            implicitHeight: 30
+
+            Label {
+                text: display
+                anchors.centerIn: parent
+            }
+        }
+
+
+
+        Component.onCompleted: {
+            app.loadOfficesRequest()
         }
     }
 }

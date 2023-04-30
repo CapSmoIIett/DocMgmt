@@ -14,5 +14,7 @@
         <file>qml/Pages/user.qml</file>
         <file>qml/Pages/rights.qml</file>
         <file>qml/Pages/offices.qml</file>
+        <file>qml/Components/ContextItem.qml</file>
+        <file>qml/Components/ContextMenu.qml</file>
     </qresource>
 </RCC>

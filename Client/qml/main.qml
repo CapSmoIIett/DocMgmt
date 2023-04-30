@@ -270,10 +270,12 @@ ApplicationWindow {
                 Label {
                     id: label
                     text: 'Drawer'
+
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 20
                     Layout.fillWidth: true
+                    //height: menuBar.height + ToolBar.height
                     width: parent
                 }
 
@@ -339,6 +341,11 @@ ApplicationWindow {
 
         function loadFragment(page_source){
             loader.source = page_source
+        }
+
+        Connections {
+            target: loader
+
         }
     }
     //*/

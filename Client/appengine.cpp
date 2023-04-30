@@ -108,5 +108,20 @@ void AppEngine::addRightsRequest()
     client.addRightsRequest();
 }
 
+void AppEngine::removeUserRequest(int id)
+{
+    client.removeUserRequest(id);
+}
+
+void AppEngine::loadOfficesRequest()
+{
+    client.loadOfficesRequest();
+}
+
+void AppEngine::addOfficesRequest()
+{
+    client.addOfficeRequest();
+}
+
 
 

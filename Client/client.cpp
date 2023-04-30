@@ -103,6 +103,21 @@ void Client::addRightsRequest()
     SendRequest(QString("Type:%1").arg(MSG_ADD_RIGHT));
 }
 
+void Client::removeUserRequest(int id)
+{
+    SendRequest(QString("Type:%1,ID:%2").arg(MSG_REMOVE_USER).arg(id));
+}
+
+void Client::loadOfficesRequest()
+{
+    SendRequest(QString("Type:%1").arg(MSG_LOAD_OFFICE));
+}
+
+void Client::addOfficeRequest()
+{
+    SendRequest(QString("Type:%1").arg(MSG_ADD_OFFICE));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
@@ -156,10 +171,12 @@ void Client::ReadSocket ()
         for (int i = 0; i < size.toInt(); i++)
         {
             User user;
-            user.s_Full_Name = header.split(",")[1 + (i * 3) + 1].split(":")[1];
-            user.s_Office = header.split(",")[1 + (i * 3) + 2].split(":")[1];
-            user.s_Right = header.split(",")[1 + (i * 3) + 3].split(":")[1];
+            user.i_ID = header.split(",")[1 + (i * 4) + 1].split(":")[1].toInt();
+            user.s_Full_Name = header.split(",")[1 + (i * 4) + 2].split(":")[1];
+            user.s_Office = header.split(",")[1 + (i * 4) + 3].split(":")[1];
+            user.s_Right = header.split(",")[1 + (i * 4) + 4].split(":")[1];
 
+            qDebug() << user.i_ID;
             qDebug() << user.s_Full_Name;
             qDebug() << user.s_Right;
             qDebug() << user.s_Office;
@@ -175,9 +192,10 @@ void Client::ReadSocket ()
         qDebug() << "MSG_LOAD_DATA_USER";
 
         User user;
-        user.s_Full_Name = header.split(",")[1].split(":")[1];
-        user.s_Office = header.split(",")[2].split(":")[1];
-        user.s_Right = header.split(",")[3].split(":")[1];
+        user.i_ID = header.split(",")[1].split(":")[1].toInt();
+        user.s_Full_Name = header.split(",")[2].split(":")[1];
+        user.s_Office = header.split(",")[3].split(":")[1];
+        user.s_Right = header.split(",")[4].split(":")[1];
 
         emit onGetUserData(user);
     } break;
@@ -205,7 +223,35 @@ void Client::ReadSocket ()
         }
 
         emit onGetRights(rights);
-    }
+    } break;
+
+    case MSG_LOAD_OFFICE:
+    {
+        QVector<Office> offices;
+        QString size = header.split(",")[1].split(":")[1];
+
+        qDebug() << "MSG_LOAD_RIGHTS" << size;
+
+        for (int i = 0; i < size.toInt(); i++)
+        {
+            Office office;
+            office.i_ID = header.split(",")[1 + (i * 3)+ 1].split(":")[1].toInt();
+            office.s_Name = header.split(",")[1 + (i * 3) + 2].split(":")[1];
+            office.s_Address = header.split(",")[1 + (i * 3) + 3].split(":")[1];
+
+            qDebug() << header.split(",")[1 + i + 1];
+            qDebug() << header.split(",")[1 + i + 2];
+
+            qDebug() << "ID: " << office.i_ID;
+            qDebug() << "Name: " << office.s_Name;
+            qDebug() << "Address: " << office.s_Address;
+
+            offices.push_back(office);
+        }
+
+        emit onGetOffices(offices);
+
+    } break;
     }
 
     qDebug() << buffer.toStdString().c_str();

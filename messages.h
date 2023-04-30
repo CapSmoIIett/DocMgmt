@@ -12,5 +12,8 @@
 #define MSG_LOAD_DATA_USER	103
 #define MSG_LOAD_RIGHTS 	104
 #define MSG_ADD_RIGHT 		105
+#define MSG_REMOVE_USER		106
+#define MSG_LOAD_OFFICE		107
+#define MSG_ADD_OFFICE		108
 
 #endif // MESSAGES_H

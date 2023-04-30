@@ -10,6 +10,7 @@
 #include "appengine.h"
 #include "personalmodel.h"
 #include "rightsmodel.h"
+#include "officemodel.h"
 
 
 int main(int argc, char *argv[])
@@ -37,6 +38,8 @@ int main(int argc, char *argv[])
     RightsTableModel rtable(&appEngine);
     engine.rootContext()->setContextProperty("rightsTableModel", &rtable);
 
+    OfficeTableModel otable(&appEngine);
+    engine.rootContext()->setContextProperty("officeTableModel", &otable);
 
 
     QObject* qtquick2Themes = engine.rootObjects()[0]->findChild<QObject*>("qtquick2Themes");

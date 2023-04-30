@@ -83,7 +83,7 @@ bool Database::createTables()
     result = query.exec("CREATE TABLE IF NOT EXISTS rights"
                 "("
                     "id serial primary key,"
-                    "id varchar(255)"
+                    "name varchar(255)"
                 ")");
 
     if (!result)
@@ -95,7 +95,9 @@ bool Database::createTables()
 
     result = query.exec("CREATE TABLE IF NOT EXISTS office"
                 "("
-                    "id serial primary key"
+                    "id serial primary key,"
+                    "name varchar(255),"
+                    "address varchar(255)"
                 ")");
 
     if (!result)
@@ -239,6 +241,7 @@ QVector<User> Database::GetUsersList()
     }
 
     QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
     const int indexFullName = rec.indexOf( "full_name" );
     const int indexOffice = rec.indexOf( "office_id" );
     const int indexRight = rec.indexOf( "rights_id" );
@@ -246,10 +249,12 @@ QVector<User> Database::GetUsersList()
     while (query.next())
     {
         User user;
+        user.i_ID = query.value(indexID).toInt();
         user.s_Full_Name = query.value(indexFullName).toString();
         user.s_Office = query.value(indexOffice).toString();
         user.s_Right = query.value(indexRight).toString();
 
+        qDebug() << user.i_ID;
         qDebug() << user.s_Full_Name;
         qDebug() << user.s_Right;
         qDebug() << user.s_Office;
@@ -283,16 +288,19 @@ User Database::GetUserData(QString username)
     }
 
     QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
     const int indexFullName = rec.indexOf( "full_name" );
     const int indexOffice = rec.indexOf( "office_id" );
     const int indexRight = rec.indexOf( "rights_id" );
 
     if (query.next())
     {
+        user.i_ID = query.value(indexID).toInt();
         user.s_Full_Name = query.value(indexFullName).toString();
         user.s_Office = query.value(indexOffice).toString();
         user.s_Right = query.value(indexRight).toString();
 
+        qDebug() << user.i_ID;
         qDebug() << user.s_Full_Name;
         qDebug() << user.s_Right;
         qDebug() << user.s_Office;
@@ -419,4 +427,91 @@ void Database::AddRight()
         qDebug() << query.lastQuery();
         qDebug() << query.lastError().text();
     }
+}
+
+void Database::AddOffice()
+{
+    qDebug();
+    qDebug() << "Database::AddOffice";
+
+    auto name = FindFreeDefaultName("office", "name", "Office");
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    query.prepare("INSERT INTO office (name) VALUES (:name) ");
+
+    query.bindValue(":name", name);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+}
+
+void Database::RemoveUser(int id)
+{
+    qDebug();
+    qDebug() << "Database::AddRight";
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    query.prepare("DELETE FROM users WHERE id = :id ");
+
+    query.bindValue(":id", id);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+}
+
+QVector<Office> Database::GetOffices()
+{
+    qDebug();
+    qDebug() << "Database::GetOffices";
+
+    QSqlQuery query;
+    QVector<Office> offices;
+    int result;
+
+    result = query.exec(QString("SELECT * FROM office"));
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexId = rec.indexOf( "id" );
+    const int indexName = rec.indexOf( "name" );
+    const int indexAddress = rec.indexOf( "address" );
+
+    while (query.next())
+    {
+        Office office;
+
+        office.i_ID = query.value(indexId).toInt();
+        office.s_Name = query.value(indexName).toString();
+        office.s_Address = query.value(indexAddress).toString();
+
+        offices.push_back(office);
+
+        qDebug() << office.i_ID << office.s_Name;
+    }
+
+    return offices;
+
 }

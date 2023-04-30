@@ -102,6 +102,7 @@ void Server::ReadSocket()
         QString data = QString("Type:%1,Size:%2,").arg(MSG_ALL_USERS).arg(users.size());
         for (int i = 0; i < users.size(); i++)
         {
+            data += QString("ID%1:%2,").arg(i).arg(users[i].i_ID);
             data += QString("Full_Name_%1:%2,").arg(i).arg(users[i].s_Full_Name);
             data += QString("Office_%1:%2,").arg(i).arg(users[i].s_Office);
             data += QString("Right_%1:%2,").arg(i).arg(users[i].s_Right);
@@ -121,6 +122,7 @@ void Server::ReadSocket()
         auto user = db.GetUserData(username);
 
         QString data = QString("Type:%1,").arg(MSG_LOAD_DATA_USER);
+        data += QString("ID%1:%2,").arg(user.i_ID);
         data += QString("Full_Name:%1,").arg(user.s_Full_Name);
         data += QString("Office:%1,").arg(user.s_Office);
         data += QString("Right:%1,").arg(user.s_Right);
@@ -145,6 +147,31 @@ void Server::ReadSocket()
     case MSG_ADD_RIGHT:
     {
         db.AddRight();
+    } break;
+    case MSG_REMOVE_USER:
+    {
+        int id = header.split(",")[1].split(":")[1].toInt();
+
+        db.RemoveUser(id);
+    } break;
+    case MSG_LOAD_OFFICE:
+    {
+        auto offices = db.GetOffices();
+
+        QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_OFFICE).arg(offices.size());
+        for (int i = 0; i < offices.size(); i++)
+        {
+            data += QString("ID%1:%2,").arg(i).arg(offices[i].i_ID);
+            data += QString("Name%1:%2,").arg(i).arg(offices[i].s_Name);
+            data += QString("Address%1:%2,").arg(i).arg(offices[i].s_Address);
+        }
+
+        emit SendToClient(data);
+    } break;
+    case MSG_ADD_OFFICE:
+    {
+        db.AddOffice();
+
     } break;
 
     }

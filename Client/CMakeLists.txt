@@ -34,6 +34,8 @@ qt_add_executable(appDocMgmtQt
     appengine.h
     rightsmodel.cpp
     rightsmodel.h
+    officemodel.cpp
+    officemodel.h
 
     ../messages.h
     ../datastructures.h
@@ -57,6 +59,9 @@ qt_add_qml_module(appDocMgmtQt
         qml/Components/LargeChartView.qml
         qml/Components/DrawerItem.qml
         qml/Components/PageDrawer.qml
+        qml/Components/ContextMenu.qml
+        qml/Components/ContextItem.qml
+
 )
 
 #set(QT_CHARTS_INCLUDE_PATHS "${QT_ROOT}/include/QtCharts")

@@ -10,6 +10,8 @@ import Qt.labs.qmlmodels
 Rectangle {
     anchors.fill: parent
 
+    signal loadUserPage(int userID)
+
     ToolBar {
         id: toolBar
         //anchors.top: parent.top
@@ -66,13 +68,8 @@ Rectangle {
     TableView {
         id: table
 
-        x: 50
-        y:50
-
-        //width: parent.width
         anchors.fill: parent
         anchors.topMargin: toolBar.height + horizontalHeader.height
-        //anchors.left: parent.left
         clip: true
 
 
@@ -88,21 +85,62 @@ Rectangle {
             implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 30
 
-            Label {
-                text: display
+            color: selected ? "blue" : "lightgray"
 
-                width: parent.width
-                elide: Text.ElideRight
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
+            required property bool selected
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+
+                Label {
+                    text: display
+
+                    width: parent.width
+                    elide: Text.ElideRight
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                }
+
+                onClicked: {
+
+                    if (mouse.button === Qt.RightButton)
+                    {
+                        console.log(row);
+                        menu.curRow = row
+                        menu.popup()
+                    }
+                    else if (mouse.button === Qt.LeftButton)
+                    {
+
+
+                    }
+                }
             }
         }
 
+
+        Menu {
+            id: menu
+            y: openMenuButton.height
+
+            property int curRow
+
+            MenuItem {
+                text: 'remove'
+
+                onClicked: {
+                    app.removeUserRequest(menu.curRow)
+                }
+            }
+        }
 
         Component.onCompleted: {
             app.usersListRequest()
         }
     }
+
 }
 /*
 
