@@ -68,6 +68,11 @@ QVariant OfficeTableModel::headerData(int section, Qt::Orientation orientation, 
     return QVariant("");
 }
 
+int OfficeTableModel::getIDbyRow(int row)
+{
+    return v_Offices[row].i_ID;
+}
+
 void OfficeTableModel::GetOffices(QVector<Office> offices)
 {
     qDebug();

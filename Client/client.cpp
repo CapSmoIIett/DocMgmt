@@ -38,6 +38,7 @@ void Client::SendToServer(QString str)
 {
     Data.clear();
     QDataStream out(&Data, QIODevice::WriteOnly);
+
     out.setVersion(QDataStream::Qt_6_4);
     out << str;
     p_TcpSocket->write(Data);
@@ -47,6 +48,8 @@ void Client::SendRequest (QString str)
 {
     qDebug();
     qDebug() << "Client::SendRequest";
+    qDebug() << QTime::currentTime().toString();
+    qDebug() << str;
 
     if (!p_TcpSocket)
     {
@@ -66,7 +69,7 @@ void Client::SendRequest (QString str)
     QByteArray byteArray;
     byteArray.prepend(str.toUtf8());
 
-    qDebug() << byteArray;
+   // qDebug() << byteArray;
 
     socketStream << byteArray;
 }
@@ -93,6 +96,11 @@ void Client::loadUserDataRequest(QString username)
     SendRequest(QString("Type:%1,Username:%2").arg(MSG_LOAD_DATA_USER).arg(username));
 }
 
+void Client::loadUserDataRequest(int id)
+{
+    SendRequest(QString("Type:%1,ID:%2").arg(MSG_LOAD_DATA_USER_BY_ID).arg(id));
+}
+
 void Client::loadRightsRequest()
 {
     SendRequest(QString("Type:%1").arg(MSG_LOAD_RIGHTS));
@@ -110,7 +118,7 @@ void Client::removeUserRequest(int id)
 
 void Client::loadOfficesRequest()
 {
-    SendRequest(QString("Type:%1").arg(MSG_LOAD_OFFICE));
+    SendRequest(QString("Type:%1").arg(MSG_LOAD_OFFICES));
 }
 
 void Client::addOfficeRequest()
@@ -118,10 +126,21 @@ void Client::addOfficeRequest()
     SendRequest(QString("Type:%1").arg(MSG_ADD_OFFICE));
 }
 
+void Client::loadOfficeRequest(int id)
+{
+    SendRequest(QString("Type:%1,ID:%2").arg(MSG_LOAD_OFFICE).arg(id));
+}
+
+void Client::loadRightRequest(int id)
+{
+    SendRequest(QString("Type:%1,ID:%2").arg(MSG_LOAD_RIGHT).arg(id));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
     qDebug() << "Client::ReadSocket";
+    qDebug() << QTime::currentTime().toString() ;
 
     QByteArray buffer;
     QDataStream socketStream(p_TcpSocket);
@@ -176,10 +195,10 @@ void Client::ReadSocket ()
             user.s_Office = header.split(",")[1 + (i * 4) + 3].split(":")[1];
             user.s_Right = header.split(",")[1 + (i * 4) + 4].split(":")[1];
 
-            qDebug() << user.i_ID;
-            qDebug() << user.s_Full_Name;
-            qDebug() << user.s_Right;
-            qDebug() << user.s_Office;
+            //qDebug() << user.i_ID;
+            //qDebug() << user.s_Full_Name;
+            //qDebug() << user.s_Right;
+            //qDebug() << user.s_Office;
 
             users.push_back(user);
         }
@@ -213,11 +232,11 @@ void Client::ReadSocket ()
             right.i_ID = header.split(",")[1 + (i * 2)+ 1].split(":")[1].toInt();
             right.s_Name = header.split(",")[1 + (i * 2) + 2].split(":")[1];
 
-            qDebug() << header.split(",")[1 + i + 1];
-            qDebug() << header.split(",")[1 + i + 2];
+            //qDebug() << header.split(",")[1 + i + 1];
+            //qDebug() << header.split(",")[1 + i + 2];
 
-            qDebug() << "ID: " << right.i_ID;
-            qDebug() << "Name: " << right.s_Name;
+            //qDebug() << "ID: " << right.i_ID;
+            //qDebug() << "Name: " << right.s_Name;
 
             rights.push_back(right);
         }
@@ -225,12 +244,12 @@ void Client::ReadSocket ()
         emit onGetRights(rights);
     } break;
 
-    case MSG_LOAD_OFFICE:
+    case MSG_LOAD_OFFICES:
     {
         QVector<Office> offices;
         QString size = header.split(",")[1].split(":")[1];
 
-        qDebug() << "MSG_LOAD_RIGHTS" << size;
+        qDebug() << "MSG_LOAD_OFFICES" << size;
 
         for (int i = 0; i < size.toInt(); i++)
         {
@@ -239,12 +258,12 @@ void Client::ReadSocket ()
             office.s_Name = header.split(",")[1 + (i * 3) + 2].split(":")[1];
             office.s_Address = header.split(",")[1 + (i * 3) + 3].split(":")[1];
 
-            qDebug() << header.split(",")[1 + i + 1];
-            qDebug() << header.split(",")[1 + i + 2];
+            //qDebug() << header.split(",")[1 + i + 1];
+            //qDebug() << header.split(",")[1 + i + 2];
 
-            qDebug() << "ID: " << office.i_ID;
-            qDebug() << "Name: " << office.s_Name;
-            qDebug() << "Address: " << office.s_Address;
+            //qDebug() << "ID: " << office.i_ID;
+            //qDebug() << "Name: " << office.s_Name;
+            //qDebug() << "Address: " << office.s_Address;
 
             offices.push_back(office);
         }
@@ -252,9 +271,35 @@ void Client::ReadSocket ()
         emit onGetOffices(offices);
 
     } break;
+
+    case MSG_LOAD_OFFICE:
+    {
+        qDebug() << "MSG_LOAD_OFFICE";
+
+        Office office;
+        office.i_ID = header.split(",")[1].split(":")[1].toInt();
+        office.s_Name = header.split(",")[2].split(":")[1];
+        office.s_Address = header.split(",")[3].split(":")[1];
+
+        emit onGetOffice(office);
+
+    } break;
+
+    case MSG_LOAD_RIGHT:
+    {
+        qDebug() << "MSG_LOAD_RIGHT";
+
+        Right right;
+        right.i_ID = header.split(",")[1].split(":")[1].toInt();
+        right.s_Name = header.split(",")[2].split(":")[1];
+
+        emit onGetRight(right);
+    } break;
+
     }
 
-    qDebug() << buffer.toStdString().c_str();
+    qDebug() << QTime::currentTime().toString();
+    qDebug()  << buffer.toStdString().c_str();
 }
 
 void Client::DiscardSocket()

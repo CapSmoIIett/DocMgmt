@@ -4,7 +4,7 @@ AppEngine::AppEngine(QObject* parent) :
     QObject(parent)
 {
     connect(&this->client, &Client::onVerified, this, [this](bool result) { qDebug() << "call"; emit this->verified(result); });
-    connect(&this->client, &Client::onGetUserData, this, [this](User result) { user = result; });
+    connect(&this->client, &Client::onGetUserData, this, &AppEngine::GetCurUser);
 
 }
 
@@ -93,9 +93,9 @@ void AppEngine::loadCurUserDataRequest()
     client.loadUserDataRequest(user.s_Full_Name);
 }
 
-void AppEngine::loadUserDataRequest()
+void AppEngine::loadUserDataRequest(int id)
 {
-    client.loadUserDataRequest(user.s_Full_Name);
+    client.loadUserDataRequest(id);
 }
 
 void AppEngine::loadRightsRequest()
@@ -123,5 +123,21 @@ void AppEngine::addOfficesRequest()
     client.addOfficeRequest();
 }
 
+void AppEngine::loadOfficeRequest(int id)
+{
+    client.loadOfficeRequest(id);
+}
+
+void AppEngine::loadRightRequest(int id)
+{
+    client.loadRightRequest(id);
+}
+
+
+void AppEngine::GetCurUser(User user)
+{
+    if (user.i_ID == this->user.i_ID)
+        this->user = user;
+}
 
 

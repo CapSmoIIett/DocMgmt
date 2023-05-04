@@ -21,8 +21,13 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
+    Q_INVOKABLE int getIDbyRow(int row);
+
 public slots:
     void GetRights(QVector<Right> rights);
+
+signals:
+   Q_INVOKABLE void loadRightPage(int id);
 
 private:
     AppEngine* p_AppEngine;

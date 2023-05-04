@@ -36,6 +36,12 @@ qt_add_executable(appDocMgmtQt
     rightsmodel.h
     officemodel.cpp
     officemodel.h
+    userpage.cpp
+    userpage.h
+    officepage.cpp
+    officepage.h
+    rightpage.cpp
+    rightpage.h
 
     ../messages.h
     ../datastructures.h
@@ -53,8 +59,10 @@ qt_add_qml_module(appDocMgmtQt
         qml/Pages/personal.qml
         qml/Pages/Test.qml
         qml/Pages/user.qml
-        qml/Pages/rights.qml
-        qml/Pages/offices.qml
+        qml/Pages/right.qml
+        qml/Pages/office.qml
+        qml/Pages/rightstable.qml
+        qml/Pages/officestable.qml
         qml/Components/CellBox.qml
         qml/Components/LargeChartView.qml
         qml/Components/DrawerItem.qml

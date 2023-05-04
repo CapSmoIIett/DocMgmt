@@ -268,7 +268,7 @@ QVector<User> Database::GetUsersList()
 User Database::GetUserData(QString username)
 {
     qDebug();
-    qDebug() << "Database::GetUserData";
+    qDebug() << "Database::GetUserData (username)";
 
     QSqlQuery query;
     User user;
@@ -277,6 +277,50 @@ User Database::GetUserData(QString username)
     query.prepare(QString("SELECT * FROM users WHERE full_name = :username"));
 
     query.bindValue(":username", username);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
+    const int indexFullName = rec.indexOf( "full_name" );
+    const int indexOffice = rec.indexOf( "office_id" );
+    const int indexRight = rec.indexOf( "rights_id" );
+
+    if (query.next())
+    {
+        user.i_ID = query.value(indexID).toInt();
+        user.s_Full_Name = query.value(indexFullName).toString();
+        user.s_Office = query.value(indexOffice).toString();
+        user.s_Right = query.value(indexRight).toString();
+
+        qDebug() << user.i_ID;
+        qDebug() << user.s_Full_Name;
+        qDebug() << user.s_Right;
+        qDebug() << user.s_Office;
+    }
+
+    return user;
+}
+
+User Database::GetUserData(int id)
+{
+    qDebug();
+    qDebug() << "Database::GetUserData (id)";
+
+    QSqlQuery query;
+    User user;
+    int result;
+
+    query.prepare(QString("SELECT * FROM users WHERE id = :id"));
+
+    query.bindValue(":id", id);
 
     result = query.exec();
 
@@ -513,5 +557,79 @@ QVector<Office> Database::GetOffices()
     }
 
     return offices;
-
 }
+
+Office Database::GetOffice(int id)
+{
+    qDebug();
+    qDebug() << "Database::GetUserData (id)";
+
+    QSqlQuery query;
+    Office office;
+    int result;
+
+    query.prepare(QString("SELECT * FROM office WHERE id = :id"));
+
+    query.bindValue(":id", id);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
+    const int indexName = rec.indexOf( "name" );
+    const int indexAddress = rec.indexOf( "address" );
+
+    if (query.next())
+    {
+        office.i_ID = query.value(indexID).toInt();
+        office.s_Name = query.value(indexName).toString();
+        office.s_Address = query.value(indexAddress).toString();
+
+    }
+
+    return office;
+}
+
+Right Database::GetRight(int id)
+{
+    qDebug();
+    qDebug() << "Database::GetUserData (id)";
+
+    QSqlQuery query;
+    Right right;
+    int result;
+
+    query.prepare(QString("SELECT * FROM rights WHERE id = :id"));
+
+    query.bindValue(":id", id);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
+    const int indexName = rec.indexOf( "name" );
+
+    if (query.next())
+    {
+        right.i_ID = query.value(indexID).toInt();
+        right.s_Name = query.value(indexName).toString();
+    }
+
+    return right;
+}
+
+

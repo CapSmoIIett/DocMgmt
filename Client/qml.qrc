@@ -12,9 +12,11 @@
         <file>qml/Components/MenuCard.qml</file>
         <file>qml/Components/MenuStack.qml</file>
         <file>qml/Pages/user.qml</file>
-        <file>qml/Pages/rights.qml</file>
-        <file>qml/Pages/offices.qml</file>
         <file>qml/Components/ContextItem.qml</file>
         <file>qml/Components/ContextMenu.qml</file>
+        <file>qml/Pages/office.qml</file>
+        <file>qml/Pages/officestable.qml</file>
+        <file>qml/Pages/right.qml</file>
+        <file>qml/Pages/rightstable.qml</file>
     </qresource>
 </RCC>

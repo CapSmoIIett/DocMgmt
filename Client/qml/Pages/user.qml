@@ -26,7 +26,7 @@ Pane {
         anchors.left: parent.left
         anchors.margins: 15
 
-        text: app.userName;
+        text: userPage.userName;
     }
 
     MenuSeparator {
@@ -52,7 +52,7 @@ Pane {
         anchors.left: officeLabel.right
         anchors.margins: 15
 
-        text: app.office
+        text: userPage.office
     }
 
     Label {
@@ -69,6 +69,10 @@ Pane {
         anchors.left: rightLabel.right
         anchors.margins: 15
 
-        text: app.right
+        text: userPage.right
+    }
+
+    Component.onCompleted: {
+        //userPage.loadUserRequest(0)
     }
 }

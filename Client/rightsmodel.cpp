@@ -83,6 +83,11 @@ QVariant RightsTableModel::headerData(int section, Qt::Orientation orientation, 
     return QVariant("");
 }
 
+int RightsTableModel::getIDbyRow(int row)
+{
+    return v_Rights[row].i_ID;
+}
+
 void RightsTableModel::GetRights(QVector<Right> rights)
 {
     qDebug();
@@ -90,7 +95,7 @@ void RightsTableModel::GetRights(QVector<Right> rights)
 
     for (auto r : rights)
     {
-        qDebug() << r.i_ID << r.s_Name;
+        //qDebug() << r.i_ID << r.s_Name;
     }
 
     v_Rights = rights;

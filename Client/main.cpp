@@ -11,6 +11,9 @@
 #include "personalmodel.h"
 #include "rightsmodel.h"
 #include "officemodel.h"
+#include "userpage.h"
+#include "officepage.h"
+#include "rightpage.h"
 
 
 int main(int argc, char *argv[])
@@ -41,6 +44,14 @@ int main(int argc, char *argv[])
     OfficeTableModel otable(&appEngine);
     engine.rootContext()->setContextProperty("officeTableModel", &otable);
 
+    UserPage upage(&appEngine);
+    engine.rootContext()->setContextProperty("userPage", &upage);
+
+    OfficePage opage(&appEngine);
+    engine.rootContext()->setContextProperty("officePage", &opage);
+
+    RightPage rpage(&appEngine);
+    engine.rootContext()->setContextProperty("rightPage", &rpage);
 
     QObject* qtquick2Themes = engine.rootObjects()[0]->findChild<QObject*>("qtquick2Themes");
     //qtquick2Themes->setProperty("text", qgetenv("QT_QUICK_CONTROLS_STYLE"));

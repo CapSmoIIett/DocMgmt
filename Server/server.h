@@ -14,6 +14,8 @@
 #include <QTcpServer>
 #include <QObject>
 
+#include <QTime>
+
 #include <iostream>
 
 #include "database.h"
@@ -60,15 +62,9 @@ public slots:
 private:
     QSet<QTcpSocket*> set_Sockets;
 
-    //QByteArray Data;
-    //void SendToClient(QString);
-    //void SendPartOfFile();
-
     QString GenerateToken(QString user);
 
     int i_Port;
-
-    //QTcpSocket* p_TcpSocket;
 
     QTcpServer* p_Server;
 

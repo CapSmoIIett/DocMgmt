@@ -20,8 +20,13 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
+    Q_INVOKABLE int getIDbyRow(int row);
+
 public slots:
     void GetUserList(QVector<User>);
+
+signals:
+    Q_INVOKABLE void loadUserPage(int id);
 
 private:
     AppEngine* p_AppEngine;

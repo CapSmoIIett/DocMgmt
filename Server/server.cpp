@@ -50,6 +50,7 @@ void Server::ReadSocket()
 {
     qDebug();
     qDebug() << "Server::ReadSocket";
+    qDebug() << QTime::currentTime().toString() ;
 
 
     auto socket = reinterpret_cast<QTcpSocket*>(sender());
@@ -60,6 +61,7 @@ void Server::ReadSocket()
 
     socketStream.startTransaction();
     socketStream >> buffer;
+    qDebug() << buffer.toStdString().c_str();
 
     if (!socketStream.commitTransaction())
     {
@@ -72,6 +74,8 @@ void Server::ReadSocket()
     //ProcessingMessage(buffer);
 
     QString header = buffer;
+    qDebug() << buffer;
+    qDebug() << QTime::currentTime().toString() ;
 
     QString type = header.split(",")[0].split(":")[1];
     qDebug() << "Type: " << type;
@@ -115,20 +119,35 @@ void Server::ReadSocket()
     {
         db.AddUser();
     } break;
+
     case MSG_LOAD_DATA_USER:
     {
         QString username = header.split(",")[1].split(":")[1];
 
-        auto user = db.GetUserData(username);
+        User user = db.GetUserData(username);
 
         QString data = QString("Type:%1,").arg(MSG_LOAD_DATA_USER);
-        data += QString("ID%1:%2,").arg(user.i_ID);
+        data += QString("ID:%2,").arg(user.i_ID);
         data += QString("Full_Name:%1,").arg(user.s_Full_Name);
         data += QString("Office:%1,").arg(user.s_Office);
         data += QString("Right:%1,").arg(user.s_Right);
 
         emit SendToClient(data);
-    }break;
+    } break;
+    case MSG_LOAD_DATA_USER_BY_ID:
+    {
+        QString id = header.split(",")[1].split(":")[1];
+
+        auto user = db.GetUserData(id.toInt());
+
+        QString data = QString("Type:%1,").arg(MSG_LOAD_DATA_USER);
+        data += QString("ID:%2,").arg(user.i_ID);
+        data += QString("Full_Name:%1,").arg(user.s_Full_Name);
+        data += QString("Office:%1,").arg(user.s_Office);
+        data += QString("Right:%1,").arg(user.s_Right);
+
+        emit SendToClient(data);
+    } break;
 
     case MSG_LOAD_RIGHTS:
     {
@@ -154,11 +173,11 @@ void Server::ReadSocket()
 
         db.RemoveUser(id);
     } break;
-    case MSG_LOAD_OFFICE:
+    case MSG_LOAD_OFFICES:
     {
         auto offices = db.GetOffices();
 
-        QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_OFFICE).arg(offices.size());
+        QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_OFFICES).arg(offices.size());
         for (int i = 0; i < offices.size(); i++)
         {
             data += QString("ID%1:%2,").arg(i).arg(offices[i].i_ID);
@@ -174,9 +193,37 @@ void Server::ReadSocket()
 
     } break;
 
+    case MSG_LOAD_OFFICE:
+    {
+
+        QString id = header.split(",")[1].split(":")[1];
+
+        auto office = db.GetOffice(id.toInt());
+
+        QString data = QString("Type:%1,").arg(MSG_LOAD_OFFICE);
+        data += QString("ID:%1,").arg(office.i_ID);
+        data += QString("Name:%1,").arg(office.s_Name);
+        data += QString("Address:%1,").arg(office.s_Address);
+
+        emit SendToClient(data);
+    } break;
+
+    case MSG_LOAD_RIGHT:
+    {
+        QString id = header.split(",")[1].split(":")[1];
+
+        auto right = db.GetRight(id.toInt());
+
+        QString data = QString("Type:%1,").arg(MSG_LOAD_RIGHT);
+        data += QString("ID:%1,").arg(right.i_ID);
+        data += QString("Name:%1,").arg(right.s_Name);
+
+        emit SendToClient(data);
+    } break;
+
+
     }
 
-    qDebug() << buffer.toStdString().c_str();
 
 }
 
@@ -210,6 +257,7 @@ void Server::SendToClient(QString str)
     qDebug();
     qDebug() << "Server::SendToClient";
     qDebug() << str;
+    qDebug() << QTime::currentTime().toString();
 
     auto socket = reinterpret_cast<QTcpSocket*>(sender());
 

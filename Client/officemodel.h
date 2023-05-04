@@ -21,8 +21,13 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
+    Q_INVOKABLE int getIDbyRow(int row);
+
 public slots:
     void GetOffices(QVector<Office> offices);
+
+signals:
+    Q_INVOKABLE void loadOfficePage(int id);
 
 private:
     AppEngine* p_AppEngine;

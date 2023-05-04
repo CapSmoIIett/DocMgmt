@@ -6,14 +6,17 @@
 #define MSG_WHO_ONLINE		11
 
 
-#define MSG_VERIFY			100
-#define MSG_ALL_USERS		101
-#define MSG_ADD_USER		102
-#define MSG_LOAD_DATA_USER	103
-#define MSG_LOAD_RIGHTS 	104
-#define MSG_ADD_RIGHT 		105
-#define MSG_REMOVE_USER		106
-#define MSG_LOAD_OFFICE		107
-#define MSG_ADD_OFFICE		108
+#define MSG_VERIFY				100
+#define MSG_ALL_USERS			101
+#define MSG_ADD_USER			102
+#define MSG_LOAD_DATA_USER		103
+#define MSG_LOAD_RIGHTS 		104
+#define MSG_ADD_RIGHT 			105
+#define MSG_REMOVE_USER			106
+#define MSG_LOAD_OFFICES		107
+#define MSG_ADD_OFFICE			108
+#define MSG_LOAD_DATA_USER_BY_ID	110
+#define MSG_LOAD_OFFICE			111
+#define MSG_LOAD_RIGHT			112
 
 #endif // MESSAGES_H

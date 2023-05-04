@@ -8,6 +8,8 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include <QTime>
+
 #include "../messages.h"
 #include "../datastructures.h"
 
@@ -21,7 +23,6 @@ public:
     void ConnectToServer();
     bool IsConnected();
     void SendToServer(QString str);
-    QString ReadFromServer();
 
     void SendRequest (QString);
     bool VerifyRequest (QString username, QString password);
@@ -29,11 +30,14 @@ public:
     void UsersListRequest();
     void AddUserRequest();
     void loadUserDataRequest(QString username);
+    void loadUserDataRequest(int id);
     void loadRightsRequest();
     void addRightsRequest();
     void removeUserRequest(int id);
     void loadOfficesRequest();
     void addOfficeRequest();
+    void loadOfficeRequest(int id);
+    void loadRightRequest(int id);
 
 signals:
     void onVerified(bool result);
@@ -41,6 +45,8 @@ signals:
     void onGetUserData(User);
     void onGetRights(QVector<Right>);
     void onGetOffices(QVector<Office>);
+    void onGetRight(Right);
+    void onGetOffice(Office);
 
 public slots:
     void ReadSocket();

@@ -9,6 +9,7 @@ import Qt.labs.qmlmodels
 
 Rectangle {
     anchors.fill: parent
+    id: main
 
     signal loadUserPage(int userID)
 
@@ -93,6 +94,7 @@ Rectangle {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
 
+                hoverEnabled: true
 
                 Label {
                     text: display
@@ -113,8 +115,11 @@ Rectangle {
                     }
                     else if (mouse.button === Qt.LeftButton)
                     {
-
-
+                        console.log("left");
+                        console.log(row);
+                        console.log(personalTableModel.getIDbyRow(row))
+                        //main.loadUserPage(personalTableModel.getIDbyRow(row))
+                        personalTableModel.loadUserPage(personalTableModel.getIDbyRow(row))
                     }
                 }
             }

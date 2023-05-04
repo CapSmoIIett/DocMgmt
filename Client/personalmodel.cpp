@@ -17,12 +17,6 @@ int PersonalTableModel::rowCount(const QModelIndex &parent) const
     //qDebug() << "PersonalTableModel::rowCount";
     //qDebug() << v_Users.size();
 
-    for (auto user : v_Users)
-    {
-        qDebug() << user.s_Full_Name;
-        qDebug() << user.s_Right;
-        qDebug() << user.s_Office;
-    }
 
     return v_Users.size();
 }
@@ -79,7 +73,11 @@ QVariant PersonalTableModel::headerData(int section, Qt::Orientation orientation
         }
     }
     return QVariant();
+}
 
+int PersonalTableModel::getIDbyRow(int row)
+{
+    return v_Users[row].i_ID;
 }
 
 void PersonalTableModel::GetUserList(QVector<User> users)
@@ -89,12 +87,14 @@ void PersonalTableModel::GetUserList(QVector<User> users)
 
     v_Users = users;
 
+    /*
     for (auto user : v_Users)
     {
         qDebug() << user.s_Full_Name;
         qDebug() << user.s_Right;
         qDebug() << user.s_Office;
     }
+    */
 
     //emit onRowCountChanged(users.size());
 

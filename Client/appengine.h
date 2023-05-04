@@ -37,12 +37,14 @@ public:
     Q_INVOKABLE void addUserRequest();
 
     Q_INVOKABLE void loadCurUserDataRequest();
-    Q_INVOKABLE void loadUserDataRequest();
+    Q_INVOKABLE void loadUserDataRequest(int id);
     Q_INVOKABLE void loadRightsRequest();
     Q_INVOKABLE void addRightsRequest();
     Q_INVOKABLE void removeUserRequest(int id);
     Q_INVOKABLE void loadOfficesRequest();
     Q_INVOKABLE void addOfficesRequest();
+    Q_INVOKABLE void loadOfficeRequest(int id);
+    Q_INVOKABLE void loadRightRequest(int id);
 
 
 
@@ -50,6 +52,7 @@ signals:
     void verified(bool result);
 
 public slots:
+    void GetCurUser(User user);
 
 private:
     Client client;

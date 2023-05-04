@@ -31,7 +31,9 @@ public:
     bool Verify (QString userName, QString password);
     QVector<User> GetUsersList();
     User GetUserData(QString username);
+    User GetUserData(int id);
     QVector<Right> GetRights();
+
 
 
     QString FindFreeDefaultName(QString table = "users", QString param = "full_name", QString name = "User");
@@ -43,6 +45,8 @@ public:
 
     QVector<Office> GetOffices();
 
+    Office GetOffice(int id);
+    Right GetRight(int id);
 
 private:
     // Сам объект базы данных, с которым будет производиться работа

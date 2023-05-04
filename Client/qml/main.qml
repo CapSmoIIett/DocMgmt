@@ -30,11 +30,6 @@ ApplicationWindow {
     */
  /***********************************************************************/
 
-    /*
-    LoginWindow {
-        id: loginWind
-    }
-    //*/
 
     Window{
         id: loginWindow
@@ -53,8 +48,6 @@ ApplicationWindow {
             //Layout.minimumWidth: grid.Layout.minimumWidth + 30
             //anchors.fill: parent
             width: parent.width
-
-
 
             GridLayout {
                 id: grid
@@ -133,16 +126,15 @@ ApplicationWindow {
                 if (result)
                 {
                     console.log("true")
+                    app.loadCurUserDataRequest()
                     loginWindow.hide()
                     mainWindow.show()
 
-                    app.loadCurUserDataRequest()
                 }
                 else
                 {
                 }
             }
-
         }
     }//*/
 
@@ -192,10 +184,11 @@ ApplicationWindow {
 
             ToolButton {
 
-                Label {
+                /*Label {
                     anchors.centerIn: parent.Center
                     text: app.userName
-                }
+                }*/
+                text: '_' + app.userName + "shit"
 
                 onClicked: {
                     loader.loadFragment("qrc:/qml/Pages/user.qml")
@@ -247,15 +240,11 @@ ApplicationWindow {
             }
             ListElement {
                 name: 'Rights'
-                page_source: "qrc:/qml/Pages/rights.qml"
+                page_source: "qrc:/qml/Pages/rightstable.qml"
             }
             ListElement {
                 name: 'Offices'
-                page_source: "qrc:/qml/Pages/offices.qml"
-            }
-            ListElement {
-                name: 'User'
-                page_source: "qrc:/qml/Pages/user.qml"
+                page_source: "qrc:/qml/Pages/officestable.qml"
             }
         }
 
@@ -308,7 +297,6 @@ ApplicationWindow {
                                 hello()
                             }
                         }
-
                     }
                 }
 
@@ -323,12 +311,8 @@ ApplicationWindow {
                     focus: true
 
                 }
-
-
             }
-
         }
-
     }
     //*/
 
@@ -343,28 +327,61 @@ ApplicationWindow {
             loader.source = page_source
         }
 
-        Connections {
-            target: loader
+    }
 
+    // Call User page
+    Connections {
+        target: personalTableModel
+        onLoadUserPage: function (id) {
+            console.log("show user")
+            console.log (id)
+
+            console.log("##############################################")
+            userPage.loadUserRequest(id)
         }
     }
-    //*/
-        //component.onCompleted:  console.log("HI") //Qt.createComponent("authenticationWindow.qml")
-
-    /*
-    Component {
-        id: loginWindow
-        Window {
-            flags: Qt.Dialog
-            modality: Qt.ApplicationModal
-
-            Loader {
-                anchors.fill: parent
-                source: "qrc:/Pages/authenticationWindow.qml"
-            }
+    Connections {
+        target: userPage
+        onGetedUser: {
+            loader.loadFragment("qrc:/qml/Pages/user.qml")
         }
     }
-    */
+
+
+    // Call Right page
+    Connections {
+        target: rightsTableModel
+        onLoadRightPage: function (id) {
+            console.log("show right")
+            console.log (id)
+
+            rightPage.loadRightRequest(id)
+        }
+    }
+    Connections {
+        target: rightPage
+        onGetedRight: {
+            loader.loadFragment("qrc:/qml/Pages/right.qml")
+        }
+    }
+
+    // Call Right page
+    Connections {
+        target: officeTableModel
+        onLoadOfficePage: function (id) {
+            console.log("show office")
+            console.log (id)
+
+            officePage.loadOfficeRequest(id)
+        }
+    }
+    Connections {
+        target: officePage
+        onGetedOffice: {
+            loader.loadFragment("qrc:/qml/Pages/office.qml")
+        }
+    }
+
 
     Component.onCompleted: {
         loginWindow.showNormal()
@@ -372,14 +389,6 @@ ApplicationWindow {
             x: 1000//Screen.width / 2 - loginWindow.width / 2;
             y: 0 //Screen.height / 2 - loginWindow.height / 2;
     }
-
-    /*loginWindow.onLogin: {
-        loginwindow.hide()
-        mainwindow.show()
-    }*/
-
-
-
 
     //*/
 }

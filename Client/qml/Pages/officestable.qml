@@ -22,7 +22,7 @@ Rectangle {
                 text: "Update"
                 onClicked: {
                 console.log("Update")
-                app.loadRightsRequest()
+                app.loadOfficesRequest()
                 }
             }
 
@@ -34,10 +34,10 @@ Rectangle {
             }
 
             ToolButton {
-                text: 'Add right'
+                text: 'Add office'
                 onClicked: {
-                    console.log("Add right")
-                    app.addRightsRequest()
+                    console.log("Add office")
+                    app.addOfficesRequest()
                 }
             }
         }
@@ -67,22 +67,61 @@ Rectangle {
 
         onWidthChanged: table.forceLayout()
 
-        model: rightsTableModel
+        model: officeTableModel
 
         delegate: Rectangle {
             implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 30
 
-            Label {
-                text: display
-                anchors.centerIn: parent
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                hoverEnabled: true
+
+                Label {
+                    text: display
+                    anchors.centerIn: parent
+                }
+
+                onClicked: {
+
+                    if (mouse.button === Qt.RightButton)
+                    {
+                        console.log(row);
+                        menu.curRow = row
+                        menu.popup()
+                    }
+                    else if (mouse.button === Qt.LeftButton)
+                    {
+                        console.log("left");
+                        console.log(row);
+                        console.log(officeTableModel.getIDbyRow(row))
+                        //main.loadUserPage(personalTableModel.getIDbyRow(row))
+                        officeTableModel.loadOfficePage(officeTableModel.getIDbyRow(row))
+                    }
+                }
+            }
+        }
+
+        Menu {
+            id: menu
+            y: openMenuButton.height
+
+            property int curRow
+
+            MenuItem {
+                text: 'remove'
+
+                onClicked: {
+                    //app.removeUserRequest(menu.curRow)
+                }
             }
         }
 
 
-
         Component.onCompleted: {
-            app.loadRightsRequest()
+            app.loadOfficesRequest()
         }
     }
 }
