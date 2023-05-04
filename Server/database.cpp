@@ -123,7 +123,7 @@ bool Database::createTables()
 
     if (!query.next())
     {
-        result = query.exec("INSERT INTO rights (id) VALUES (0) ");
+        result = query.exec("INSERT INTO rights (id, name) VALUES (0, 'supervisor') ");
 
         if (!result)
         {
