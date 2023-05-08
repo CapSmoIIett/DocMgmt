@@ -632,4 +632,63 @@ Right Database::GetRight(int id)
     return right;
 }
 
+int Database::GetID(QString table, QString field, QString value)
+{
+    qDebug();
+    qDebug() << "Database::GetID";
+
+    QSqlQuery query;
+    Right right;
+    int result;
+
+    query.prepare(QString("SELECT id FROM %1 WHERE %2 = :value").arg(table).arg(field));
+
+    query.bindValue(":value", value);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
+
+    if (query.next())
+    {
+        return query.value(indexID).toInt();
+    }
+
+    return 0;
+}
+
+void Database::UpdateUserData(User user)
+{
+    qDebug();
+    qDebug() << "Database::UpdateUserData";
+
+    QSqlQuery query;
+    Right right;
+    int result;
+
+    query.prepare(QString("UPDATE users SET full_name = :name, rights_id = :right, office_id = :office WHERE id = :id"));
+
+    query.bindValue(":id", user.i_ID);
+    query.bindValue(":name", user.s_Full_Name);
+    query.bindValue(":office", GetID("office", "name", user.s_Office));
+    query.bindValue(":right", GetID("rights", "name", user.s_Right));
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+}
+
 

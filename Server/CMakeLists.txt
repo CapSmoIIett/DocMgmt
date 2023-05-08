@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 6.4 COMPONENTS Sql Network REQUIRED)
+find_package(Qt6 6.4 COMPONENTS Sql Network Widgets REQUIRED)
 
 ###########################################################################
 
@@ -28,6 +28,8 @@ qt_add_executable(DocMgmtServer
     server.h
     database.cpp
     database.h
+    filebase.cpp
+    filebase.h
 
     ../messages.h
     ../datastructures.h
@@ -42,7 +44,7 @@ set_target_properties(DocMgmtServer PROPERTIES
 )
 
 target_link_libraries(DocMgmtServer
-    PRIVATE Qt6::Sql Qt6::Network)
+    PRIVATE Qt6::Sql Qt6::Network Qt6::Widgets)
 
 install(TARGETS DocMgmtServer
     BUNDLE DESTINATION .

@@ -11,6 +11,7 @@
 #include "personalmodel.h"
 #include "rightsmodel.h"
 #include "officemodel.h"
+#include "filesmodel.h"
 #include "userpage.h"
 #include "officepage.h"
 #include "rightpage.h"
@@ -43,6 +44,9 @@ int main(int argc, char *argv[])
 
     OfficeTableModel otable(&appEngine);
     engine.rootContext()->setContextProperty("officeTableModel", &otable);
+
+    FilesTableModel ftable(&appEngine);
+    engine.rootContext()->setContextProperty("filesTableModel", &ftable);
 
     UserPage upage(&appEngine);
     engine.rootContext()->setContextProperty("userPage", &upage);

@@ -56,6 +56,7 @@ public:
 
     Q_INVOKABLE void downloadFileRequest(QString path, QString name);
 
+    void uploadUserData(User user);
 
 
 signals:

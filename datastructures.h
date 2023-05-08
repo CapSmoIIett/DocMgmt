@@ -1,5 +1,7 @@
+#pragma once
 
 #include <QString>
+#include <QDateTime>
 
 
 struct User
@@ -21,4 +23,15 @@ struct Office
     int i_ID;
     QString s_Name;
     QString s_Address;
+};
+
+
+const QString fileDateFormate = "yyyy-MM-dd HH:mm:ss";
+
+struct File
+{
+    QString s_Name;
+    QDateTime dt_DateModified;
+    QString s_Type;
+    long i_Size;
 };

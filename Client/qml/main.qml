@@ -141,6 +141,8 @@ ApplicationWindow {
                     loginWindow.hide()
                     mainWindow.show()
 
+                    rightsTableModel.loadrightsRequest()
+                    officeTableModel.loadOfficesRequest()
                 }
                 else
                 {

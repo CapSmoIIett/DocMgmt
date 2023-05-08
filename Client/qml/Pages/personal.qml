@@ -86,12 +86,12 @@ Rectangle {
             implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 30
 
-            color: selected ? "blue" : "lightgray"
-
-            required property bool selected
+            color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
 
             MouseArea {
+                id: mouseArea
                 anchors.fill: parent
+                //anchors.width: main.width
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                 hoverEnabled: true

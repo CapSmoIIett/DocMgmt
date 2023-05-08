@@ -156,6 +156,12 @@ void Client::downloadFileRequest(QString path)
     SendRequest(QString("Type:%1,Path:%2").arg(MSG_DOWNLOAD_FILE).arg(path));
 }
 
+void Client::uploadUserData(User user)
+{
+    SendRequest(QString("Type:%1,ID:%2,Name:%3,Right:%4,Office:%5")
+        .arg(MSG_UPLOAD_USER_DATA).arg(user.i_ID).arg(user.s_Full_Name).arg(user.s_Right).arg(user.s_Office));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();

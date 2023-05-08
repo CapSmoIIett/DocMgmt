@@ -88,6 +88,16 @@ int RightsTableModel::getIDbyRow(int row)
     return v_Rights[row].i_ID;
 }
 
+QVector<QString> RightsTableModel::getRightNames()
+{
+    QVector<QString> names;
+
+    for (auto right : v_Rights)
+        names.push_back(right.s_Name);
+
+    return names;
+}
+
 void RightsTableModel::GetRights(QVector<Right> rights)
 {
     qDebug();

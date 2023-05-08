@@ -222,6 +222,54 @@ void Server::ReadSocket()
     } break;
 
 
+
+    case MSG_GET_FILE_LIST:
+    {
+        QString path = header.split(",")[1].split(":")[1];
+
+        auto files = fb.GetFileList(path);
+
+        QString data = QString("Type:%1,Size:%2,").arg(MSG_GET_FILE_LIST).arg(files.size());
+
+        for (int i = 0; i < files.size(); i++)
+        {
+            auto file = files[i];
+
+            data += QString("Name%1:%2,").arg(i).arg(file.s_Name);
+            data += QString("Type%1:%2,").arg(i).arg(file.s_Type);
+            data += QString("Size%1:%2,").arg(i).arg(file.i_Size);
+            data += QString("Date%1:%2,").arg(i).arg(file.dt_DateModified.toString(fileDateFormate));
+        }
+
+        emit SendToClient(data);
+    } break;
+
+    case MSG_DOWNLOAD_FILE:
+    {
+        QString path = header.split(",")[1].split(":")[1];
+
+        auto text = fb.GetFile(path);
+
+        QString data = QString("Type:%1,Size:%2,Path:%3,").arg(MSG_DOWNLOAD_FILE).arg(text.size()).arg(path);
+
+        data += QString("Data:") + text;
+
+        emit SendToClient(data);
+    } break;
+
+    case MSG_UPLOAD_USER_DATA:
+    {
+        User user;
+        user.i_ID = header.split(",")[1].split(":")[1].toInt();
+        user.s_Full_Name = header.split(",")[2].split(":")[1];
+        user.s_Right = header.split(",")[3].split(":")[1];
+        user.s_Office = header.split(",")[4].split(":")[1];
+
+        db.UpdateUserData(user);
+
+    } break;
+
+
     }
 
 

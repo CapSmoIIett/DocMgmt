@@ -37,7 +37,7 @@ Rectangle {
                 text: 'Add office'
                 onClicked: {
                     console.log("Add office")
-                    app.addOfficesRequest()
+                    //app.addOfficesRequest()
                 }
             }
         }

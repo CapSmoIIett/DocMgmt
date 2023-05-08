@@ -47,6 +47,8 @@ public:
 
     void downloadFileRequest(QString);
 
+    void uploadUserData(User);
+
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);

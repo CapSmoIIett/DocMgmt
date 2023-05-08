@@ -42,6 +42,8 @@ qt_add_executable(appDocMgmtQt
     officepage.h
     rightpage.cpp
     rightpage.h
+    filesmodel.cpp
+    filesmodel.h
 
     ../messages.h
     ../datastructures.h

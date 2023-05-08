@@ -73,6 +73,16 @@ int OfficeTableModel::getIDbyRow(int row)
     return v_Offices[row].i_ID;
 }
 
+QVector<QString> OfficeTableModel::getOfficeNames()
+{
+    QVector<QString> names;
+
+    for (auto office : v_Offices)
+        names.push_back(office.s_Name);
+
+    return names;
+}
+
 void OfficeTableModel::GetOffices(QVector<Office> offices)
 {
     qDebug();

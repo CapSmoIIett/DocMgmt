@@ -73,6 +73,8 @@ Rectangle {
             implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 30
 
+            color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
+
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -98,7 +100,7 @@ Rectangle {
                         console.log(row);
                         console.log(officeTableModel.getIDbyRow(row))
                         //main.loadUserPage(personalTableModel.getIDbyRow(row))
-                        officeTableModel.loadOfficePage(officeTableModel.getIDbyRow(row))
+                        //officeTableModel.loadOfficePage(officeTableModel.getIDbyRow(row))
                     }
                 }
             }

@@ -161,6 +161,11 @@ void AppEngine::downloadFileRequest(QString path, QString name)
     client.downloadFileRequest(path.isEmpty() ? name : path + '/' + name);
 }
 
+void AppEngine::uploadUserData(User user)
+{
+    client.uploadUserData(user);
+}
+
 
 void AppEngine::GetCurUser(User user)
 {

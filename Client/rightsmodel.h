@@ -23,6 +23,8 @@ public:
 
     Q_INVOKABLE int getIDbyRow(int row);
 
+    Q_INVOKABLE  QVector<QString> getRightNames();
+
 public slots:
     void GetRights(QVector<Right> rights);
 

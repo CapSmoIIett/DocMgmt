@@ -28,6 +28,7 @@ public:
     void setRight(const QString &password);
 
     Q_INVOKABLE void loadUserRequest(int id);
+    Q_INVOKABLE void uploadData();
 
 public slots:
     void GetUser(User user);

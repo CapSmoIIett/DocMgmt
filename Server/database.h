@@ -48,6 +48,9 @@ public:
     Office GetOffice(int id);
     Right GetRight(int id);
 
+    int GetID(QString table, QString field, QString value);
+    void UpdateUserData(User);
+
 private:
     // Сам объект базы данных, с которым будет производиться работа
     QSqlDatabase    db;

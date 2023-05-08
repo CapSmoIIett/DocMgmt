@@ -47,6 +47,18 @@ void UserPage::loadUserRequest(int id)
     p_AppEngine->loadUserDataRequest(id);
 }
 
+void UserPage::uploadData()
+{
+    qDebug();
+    qDebug() << "UserPage::uploadData";
+    qDebug() << user.i_ID;
+    qDebug() << user.s_Full_Name;
+    qDebug() << user.s_Right;
+    qDebug() << user.s_Office;
+
+    p_AppEngine->uploadUserData(user);
+}
+
 void UserPage::GetUser(User user)
 {
     this->user = user;
