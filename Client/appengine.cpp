@@ -1,10 +1,17 @@
 #include "appengine.h"
 
 AppEngine::AppEngine(QObject* parent) :
-    QObject(parent)
+    QObject(parent),
+    s_IP("127.0.0.1")
 {
     connect(&this->client, &Client::onVerified, this, [this](bool result) { qDebug() << "call"; emit this->verified(result); });
     connect(&this->client, &Client::onGetUserData, this, &AppEngine::GetCurUser);
+
+    connect(this, &AppEngine::onChangeIP, this, [this]()
+    {
+        this->client.setIP(this->s_IP);
+        this->client.ConnectToServer();
+    });
 
 }
 
@@ -51,6 +58,17 @@ void AppEngine::setRight(const QString &right)
 Client& AppEngine::GetClient()
 {
     return client;
+}
+
+QString AppEngine::ip()
+{
+    return s_IP;
+}
+
+void AppEngine::setIP(const QString &ip)
+{
+    s_IP = ip;
+    emit onChangeIP();
 }
 
 bool AppEngine::verify()
@@ -131,6 +149,16 @@ void AppEngine::loadOfficeRequest(int id)
 void AppEngine::loadRightRequest(int id)
 {
     client.loadRightRequest(id);
+}
+
+void AppEngine::loadFilesRequest(QString path)
+{
+    client.loadFilesRequest(path);
+}
+
+void AppEngine::downloadFileRequest(QString path, QString name)
+{
+    client.downloadFileRequest(path.isEmpty() ? name : path + '/' + name);
 }
 
 

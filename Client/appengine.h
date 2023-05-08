@@ -13,6 +13,9 @@ class AppEngine : public QObject
     Q_PROPERTY(QString password READ password WRITE setPassword)
     Q_PROPERTY(QString office READ office WRITE setOffice)
     Q_PROPERTY(QString right READ right WRITE setRight)
+
+    Q_PROPERTY(QString ip READ ip WRITE setIP NOTIFY onChangeIP)
+
     QML_ELEMENT
 
 public:
@@ -30,6 +33,9 @@ public:
     QString right();
     void setRight(const QString &password);
 
+    QString ip();
+    void setIP(const QString &ip);
+
     Client& GetClient();
 
     Q_INVOKABLE bool verify();
@@ -46,10 +52,15 @@ public:
     Q_INVOKABLE void loadOfficeRequest(int id);
     Q_INVOKABLE void loadRightRequest(int id);
 
+    Q_INVOKABLE void loadFilesRequest(QString path);
+
+    Q_INVOKABLE void downloadFileRequest(QString path, QString name);
+
 
 
 signals:
     void verified(bool result);
+    void onChangeIP();
 
 public slots:
     void GetCurUser(User user);
@@ -59,6 +70,7 @@ private:
 
     User user;
     QString s_Password;
+    QString s_IP;
 
 };
 

@@ -51,7 +51,7 @@ ApplicationWindow {
 
             GridLayout {
                 id: grid
-                rows: 2
+                rows: 3
                 flow: GridLayout.TopToBottom
                 anchors.fill: parent
                 width: parent.width
@@ -65,6 +65,10 @@ ApplicationWindow {
                     id: labelPassword
                     text: "Password"
                 }
+                Label {
+                    id: labelIp
+                    text: "IP"
+                }
 
                 TextField {
                     id: textLogin
@@ -73,6 +77,11 @@ ApplicationWindow {
                 TextField {
                     id: textPassword
                     Layout.fillWidth: true
+                }
+                TextField {
+                    id: textIP
+                    Layout.fillWidth: true
+
                 }
             }
         }
@@ -100,6 +109,7 @@ ApplicationWindow {
 
                 app.userName = textLogin.text
                 app.password = textPassword.text
+                app.ip = textIP.text
 
                 //loginWindow.hide()
                 //mainWindow.show()
@@ -113,6 +123,7 @@ ApplicationWindow {
         Component.onCompleted: {
             textLogin.text = "supervisor"
             textPassword.text = "1111"
+            textIP.text =  "127.0.0.1"
         }
 
         Connections {
@@ -379,6 +390,14 @@ ApplicationWindow {
         target: officePage
         onGetedOffice: {
             loader.loadFragment("qrc:/qml/Pages/office.qml")
+        }
+    }
+
+
+    Connections {
+        target: app
+        onChangeIP: {
+            app.ip = textIP.text
         }
     }
 

@@ -9,6 +9,7 @@
 #include <QTcpSocket>
 
 #include <QTime>
+#include <QFile>
 
 #include "../messages.h"
 #include "../datastructures.h"
@@ -20,7 +21,9 @@ class Client : public QObject
 public:
     Client(QString ip = "127.0.0.1", int port = 5500);
 
-    void ConnectToServer();
+    QString getIP();
+    void setIP(const QString &ip);
+
     bool IsConnected();
     void SendToServer(QString str);
 
@@ -39,6 +42,11 @@ public:
     void loadOfficeRequest(int id);
     void loadRightRequest(int id);
 
+
+    void loadFilesRequest(QString);
+
+    void downloadFileRequest(QString);
+
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);
@@ -47,8 +55,10 @@ signals:
     void onGetOffices(QVector<Office>);
     void onGetRight(Right);
     void onGetOffice(Office);
+    void onGetFiles(QVector<File>);
 
 public slots:
+    void ConnectToServer();
     void ReadSocket();
     void DiscardSocket();
 

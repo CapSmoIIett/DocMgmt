@@ -13,6 +13,16 @@ Client::Client(QString ip, int port) :
     ConnectToServer();
 }
 
+QString Client::getIP()
+{
+    return s_IP;
+}
+
+void Client::setIP(const QString &ip)
+{
+    s_IP = ip;
+}
+
 void Client::ConnectToServer()
 {
     if (p_TcpSocket->state() == QTcpSocket::ConnectedState)
@@ -134,6 +144,16 @@ void Client::loadOfficeRequest(int id)
 void Client::loadRightRequest(int id)
 {
     SendRequest(QString("Type:%1,ID:%2").arg(MSG_LOAD_RIGHT).arg(id));
+}
+
+void Client::loadFilesRequest(QString path)
+{
+    SendRequest(QString("Type:%1,Path:%2").arg(MSG_GET_FILE_LIST).arg(path));
+}
+
+void Client::downloadFileRequest(QString path)
+{
+    SendRequest(QString("Type:%1,Path:%2").arg(MSG_DOWNLOAD_FILE).arg(path));
 }
 
 void Client::ReadSocket ()
@@ -296,6 +316,61 @@ void Client::ReadSocket ()
         emit onGetRight(right);
     } break;
 
+
+    case MSG_GET_FILE_LIST:
+    {
+        qDebug() << "MSG_GET_FILE_LIST";
+
+        QVector<File> files;
+        QString size = header.split(",")[1].split(":")[1];
+
+        qDebug() << "Size" << size;
+
+        for (int i = 0; i < size.toInt(); i++)
+        {
+            File file;
+
+            file.s_Name = header.split(",")[1 + (i * 4) + 1].split(":")[1];
+            file.s_Type = header.split(",")[1 + (i * 4) + 2].split(":")[1];
+            file.i_Size = header.split(",")[1 + (i * 4) + 3].split(":")[1].toInt();
+            file.dt_DateModified = QDateTime::fromString(header.split(",")[1 + (i * 4) + 4].split(":")[1]);
+
+            files.push_back(file);
+        }
+
+        emit onGetFiles(files);
+
+    } break;
+
+    case MSG_DOWNLOAD_FILE:
+    {
+        qDebug() << "MSG_DOWNLOAD_FILE";
+
+        QVector<File> files;
+        QString size = header.split(",")[1].split(":")[1];
+        QString name = header.split(",")[2].split(":")[1];
+
+        qDebug() << "Size" << size;
+        qDebug() << "Name" << name;
+
+        QFile file(name);
+
+        if(!file.open(QIODevice::ReadWrite))
+        {
+            qDebug() << "Error open file";
+            qDebug() << file.errorString();
+        }
+        else
+        {
+            QTextStream stream(&file);
+            QString text = header.split(",")[3].split(":")[1];
+            stream << text;
+    void ConnectToServer();
+        }
+
+    } break;
+
+
     }
 
     qDebug() << QTime::currentTime().toString();
@@ -307,3 +382,6 @@ void Client::DiscardSocket()
     p_TcpSocket->deleteLater();
     p_TcpSocket = nullptr;
 }
+
+
+
