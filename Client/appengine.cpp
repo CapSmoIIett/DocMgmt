@@ -4,6 +4,8 @@ AppEngine::AppEngine(QObject* parent) :
     QObject(parent),
     s_IP("127.0.0.1")
 {
+    Logger::Init();
+
     connect(&this->client, &Client::onVerified, this, [this](bool result) { qDebug() << "call"; emit this->verified(result); });
     connect(&this->client, &Client::onGetUserData, this, &AppEngine::GetCurUser);
 
@@ -13,6 +15,11 @@ AppEngine::AppEngine(QObject* parent) :
         this->client.ConnectToServer();
     });
 
+}
+
+AppEngine::~AppEngine()
+{
+    Logger::clean();
 }
 
 QString AppEngine::userName()

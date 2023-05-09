@@ -20,6 +20,7 @@ class AppEngine : public QObject
 
 public:
     explicit AppEngine(QObject *parent = nullptr);
+    ~AppEngine();
 
     QString userName();
     void setUserName(const QString &userName);

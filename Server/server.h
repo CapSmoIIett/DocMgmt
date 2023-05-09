@@ -24,6 +24,7 @@
 #include "../messages.h"
 
 #include "../encrypter.h"
+#include "../logger.h"
 
 struct _Client
 {

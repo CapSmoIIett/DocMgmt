@@ -11,6 +11,8 @@
 #include <QTime>
 #include <QFile>
 
+#include "../logger.h"
+
 #include "../encrypter.h"
 
 #include "../messages.h"

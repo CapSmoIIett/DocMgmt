@@ -16,9 +16,12 @@
 #include "officepage.h"
 #include "rightpage.h"
 
+#include "../logger.h"
+
 
 int main(int argc, char *argv[])
 {
+
     QGuiApplication app(argc, argv);
 
     //qmlRegisterType<PersonalTableModel>("PersonalModel", 1, 0, "PersonalModel");

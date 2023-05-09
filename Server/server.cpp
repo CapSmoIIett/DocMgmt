@@ -4,6 +4,7 @@
 Server::Server(int port) :
     i_Port(port)
 {
+    Logger::Init();
     p_Server = new QTcpServer();
 
     if (!p_Server->listen(QHostAddress::Any, i_Port))
@@ -28,6 +29,8 @@ Server::~Server()
 
     p_Server->close();
     p_Server->deleteLater();
+
+    Logger::clean();
 }
 
 void Server::NewConnection()

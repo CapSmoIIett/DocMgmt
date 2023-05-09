@@ -61,10 +61,14 @@ void Client::SendRequest (QString message)
     qDebug() << QTime::currentTime().toString();
     qDebug() << message;
 
+    qDebug() << "loger";
+
+    //Logger("Client::SendRequest");// << "Test";
+
     QString str = encrypter(Encrypter::VERNAM)(message);
 
-    qDebug() << str;
-    qDebug() << encrypter(Encrypter::VERNAM).Decrypt(str);
+    //qDebug() << str;
+    //qDebug() << encrypter(Encrypter::VERNAM).Decrypt(str);
 
     if (!p_TcpSocket)
     {
