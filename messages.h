@@ -22,5 +22,6 @@
 
 #define MSG_GET_FILE_LIST		200
 #define MSG_DOWNLOAD_FILE		201
+#define MSG_UPLOAD_FILE			202
 
 #endif // MESSAGES_H

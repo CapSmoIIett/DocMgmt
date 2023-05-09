@@ -181,3 +181,27 @@ void AppEngine::GetCurUser(User user)
 }
 
 
+void AppEngine::uploadFile(QString path)
+{
+    path = path.split("///")[1];
+    QString name = path.section('/', -1, -1);
+    qDebug() << path  << " " << name;
+    QFile::copy(path, name);
+
+
+    QFile file(name);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Error open file";
+        qDebug() << file.errorString();
+    }
+
+    QTextStream in(&file);
+
+    QString text = in.readAll();
+
+    file.close();
+
+    client.uploadFile(name, text);
+}
+

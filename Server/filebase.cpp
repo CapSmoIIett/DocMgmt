@@ -68,3 +68,19 @@ QString Filebase::GetFile(QString name)
 
     return text;
 }
+
+void Filebase::CreateFile(QString name, QString text)
+{
+        QFile file(p_dir->path() + '/' +name);
+
+        if(!file.open(QIODevice::ReadWrite))
+        {
+            qDebug() << "Error open file";
+            qDebug() << file.errorString();
+        }
+        else
+        {
+            QTextStream stream(&file);
+            stream << text;
+        }
+}

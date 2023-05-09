@@ -260,6 +260,15 @@ void Server::ReadSocket()
         emit SendToClient(data);
     } break;
 
+    case MSG_UPLOAD_FILE:
+    {
+        QString name = header.split(",")[1].split(":")[1];
+        QString text = header.split(",")[2].split(":")[1];
+
+        fb.CreateFile(name, text);
+
+    } break;
+
     case MSG_UPLOAD_USER_DATA:
     {
         User user;

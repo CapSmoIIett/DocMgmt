@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QString>
 #include <qqml.h>
+#include <QFile>
 
 #include <client.h>
 
@@ -57,8 +58,10 @@ public:
 
     Q_INVOKABLE void downloadFileRequest(QString path, QString name);
 
+
     void uploadUserData(User user);
 
+    Q_INVOKABLE void uploadFile(QString path);
 
 signals:
     void verified(bool result);

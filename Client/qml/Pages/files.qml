@@ -8,6 +8,51 @@ import Qt.labs.qmlmodels
 Rectangle {
     anchors.fill: parent
 
+    property var borderColor: (drop.cantainsDrag)? "#FF9200" : "#909090"
+    onBorderColorChanged: { requestPaint(); }
+
+    DropArea {
+    id: drop
+    anchors.fill: parent
+
+     property var fileExtensionFilters: (["Text (*.txt)", "Obj (*.o)"])
+
+    property bool acceptedDrag: false
+    property bool cantainsDrag: false
+
+    onEntered: (drag) => {
+        let acceptedCount = 0;
+        for(let i=0; i<drag.urls.length; ++i) {
+            if( validateFileExtension(drag.urls[i]) ) { acceptedCount++; }
+        }
+        drag.accepted = ( ((dropArea.multiple && drag.urls.length>0) || ( !dropArea.multiple && drag.urls.length===1)) && acceptedCount===drag.urls.length );
+        drop.cantainsDrag = drag.accepted;
+    }
+
+    onExited: {
+        drop.cantainsDrag = false;
+    }
+
+    onDropped: (drag) => {
+                   console.log("drop");
+        for(let i=0; i<drag.urls.length; ++i) {
+             console.log(drag.urls[i])
+            app.uploadFile(drag.urls[i])
+        }
+        drop.cantainsDrag = false;
+    }
+
+    function validateFileExtension(filePath)
+    {
+        return true;
+        //if ( !filePath ) { return false; }
+        //if ( dropArea.fileExtensionFilters.length===0 ) { return true; }
+        //return ( _private.fileExtensionFiltersStr.indexOf("(*."+((""+filePath).split('.').pop())+")")>-1 );
+    }
+
+
+
+
     ToolBar {
         id: toolBar
         width: parent.width
@@ -46,6 +91,7 @@ Rectangle {
             }
         }
     }
+
 
     RowLayout {
         id: pathLine
@@ -169,5 +215,6 @@ Rectangle {
         Component.onCompleted: {
             app.loadFilesRequest(path.text)
         }
+    }
     }
 }

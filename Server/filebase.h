@@ -23,6 +23,7 @@ public:
 
     QVector<File> GetFileList(QString);
     QString GetFile(QString);
+    void CreateFile(QString name, QString text);
 
 private:
     QDir* p_dir;

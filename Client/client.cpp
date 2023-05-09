@@ -171,6 +171,11 @@ void Client::uploadUserData(User user)
         .arg(MSG_UPLOAD_USER_DATA).arg(user.i_ID).arg(user.s_Full_Name).arg(user.s_Right).arg(user.s_Office));
 }
 
+void Client::uploadFile(QString name, QString text)
+{
+    SendRequest(QString("Type:%1,Name:%2,Text:%3").arg(MSG_UPLOAD_FILE).arg(name).arg(text));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
@@ -368,6 +373,8 @@ void Client::ReadSocket ()
         qDebug() << "Size" << size;
         qDebug() << "Name" << name;
 
+        //TODO ПЕРЕНЕСИ ЗАПИСБ В ФАЙЛ В APPENGINE
+
         QFile file(name);
 
         if(!file.open(QIODevice::ReadWrite))
@@ -380,7 +387,6 @@ void Client::ReadSocket ()
             QTextStream stream(&file);
             QString text = header.split(",")[3].split(":")[1];
             stream << text;
-    void ConnectToServer();
         }
 
     } break;

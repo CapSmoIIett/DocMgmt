@@ -52,6 +52,7 @@ public:
     void downloadFileRequest(QString);
 
     void uploadUserData(User);
+    void uploadFile(QString name, QString text);
 
 signals:
     void onVerified(bool result);
