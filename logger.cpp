@@ -23,7 +23,7 @@ void Logger::Init()
         dir.mkdir(".");
     }
 
-    logFile = new QFile("log\\" + QDateTime::currentDateTime().toString("yyyymmdd") + ".log");
+    logFile = new QFile("log\\" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".log");
     logFile->open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 
     qInstallMessageHandler(Logger::messageOutput);
