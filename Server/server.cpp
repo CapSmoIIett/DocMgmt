@@ -73,8 +73,8 @@ void Server::ReadSocket()
     //QString msg = buffer;
     //ProcessingMessage(buffer);
 
-    QString header = buffer;
-    qDebug() << buffer;
+    QString header = encrypter(Encrypter::VERNAM).Decrypt(buffer);
+    qDebug() << header;
     qDebug() << QTime::currentTime().toString() ;
 
     QString type = header.split(",")[0].split(":")[1];

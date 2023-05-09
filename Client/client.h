@@ -11,6 +11,8 @@
 #include <QTime>
 #include <QFile>
 
+#include "../encrypter.h"
+
 #include "../messages.h"
 #include "../datastructures.h"
 
@@ -71,5 +73,8 @@ private:
 
     QString s_IP;
     int i_Port;
+
+    Encrypter encrypter;
+
 };
 

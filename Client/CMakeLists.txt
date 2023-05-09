@@ -45,6 +45,12 @@ qt_add_executable(appDocMgmtQt
     filesmodel.cpp
     filesmodel.h
 
+    ../encrypter.cpp
+    ../encrypter.h
+
+    ../logger.h
+    ../logger.cpp
+
     ../messages.h
     ../datastructures.h
 )

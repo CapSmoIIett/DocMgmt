@@ -18,9 +18,12 @@
 
 #include <iostream>
 
+
 #include "database.h"
 #include "filebase.h"
 #include "../messages.h"
+
+#include "../encrypter.h"
 
 struct _Client
 {
@@ -74,5 +77,7 @@ private:
 public:
     Database db;
     Filebase fb;
+
+    Encrypter encrypter;
 };
 

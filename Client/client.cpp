@@ -54,12 +54,17 @@ void Client::SendToServer(QString str)
     p_TcpSocket->write(Data);
 }
 
-void Client::SendRequest (QString str)
+void Client::SendRequest (QString message)
 {
     qDebug();
     qDebug() << "Client::SendRequest";
     qDebug() << QTime::currentTime().toString();
+    qDebug() << message;
+
+    QString str = encrypter(Encrypter::VERNAM)(message);
+
     qDebug() << str;
+    qDebug() << encrypter(Encrypter::VERNAM).Decrypt(str);
 
     if (!p_TcpSocket)
     {

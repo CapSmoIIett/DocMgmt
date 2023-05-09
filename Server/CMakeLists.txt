@@ -31,6 +31,12 @@ qt_add_executable(DocMgmtServer
     filebase.cpp
     filebase.h
 
+    ../encrypter.h
+    ../encrypter.cpp
+
+    ../logger.h
+    ../logger.cpp
+
     ../messages.h
     ../datastructures.h
 )
