@@ -10,6 +10,12 @@ Filebase::Filebase()
 
     p_dir = new QDir(QDir::currentPath() + "/" + FILES_FOLDER_NAME);
 
+    db = QSqlDatabase::database("DocMgmt");
+    CreateTables();
+
+    connect(&timer, &QTimer::timeout, this, &Filebase::UpdateFileBase);
+    timer.start(3000);
+
     qDebug();
     qDebug() << "Filebase: " << p_dir->currentPath();
 
@@ -83,4 +89,71 @@ void Filebase::CreateFile(QString name, QString text)
             QTextStream stream(&file);
             stream << text;
         }
+}
+
+void Filebase::UpdateFileBase()
+{
+        qDebug();
+    QDir dir (p_dir->path());
+    QFileInfoList fileInfo = dir.entryInfoList();
+
+    QSqlQuery query;
+    bool result = 0;
+
+    for (auto info : fileInfo)
+    {
+        File file;
+
+        file.s_Name = info.fileName();
+        query.prepare(QString("SELECT * FROM files WHERE name = :name"));
+
+        query.bindValue(":name", info.fileName());
+
+        result = query.exec();
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+        }
+
+        if (!query.next())
+        {
+            query.prepare("INSERT INTO files (name, access_lvl) VALUES (:name, :lvl) ");
+
+            query.bindValue(":name", info.fileName());
+            query.bindValue(":lvl", 0);
+
+            result = query.exec();
+
+            if (!result)
+            {
+                qDebug() << query.lastQuery();
+                qDebug() << query.lastError().text();
+            }
+        }
+
+    }
+
+}
+
+
+bool Filebase::CreateTables()
+{
+    QSqlQuery query;
+    bool result = 0;
+
+    result = query.exec("CREATE TABLE IF NOT EXISTS files"
+                "("
+                    "id serial primary key,"
+                    "name varchar(255) null,"
+                    "access_lvl int"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
 }
