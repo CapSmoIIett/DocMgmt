@@ -56,12 +56,19 @@ public:
 
     Q_INVOKABLE void loadFilesRequest(QString path);
 
-    Q_INVOKABLE void downloadFileRequest(QString path, QString name);
+    Q_INVOKABLE void downloadFileRequest(QString path, QString name, User user);
+    Q_INVOKABLE void changeAccessLvl(QString path, QString name, int lvl);
+    Q_INVOKABLE User getCurUser();
 
 
     void uploadUserData(User user);
+    void uploadRightData(Right right);
 
     Q_INVOKABLE void uploadFile(QString path);
+
+
+    Q_INVOKABLE void sendMessage(QString text, int id);
+    Q_INVOKABLE void uploadMessages(int id);
 
 signals:
     void verified(bool result);

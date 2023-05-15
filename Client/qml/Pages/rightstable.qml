@@ -122,7 +122,6 @@ Rectangle {
             }
         }
 
-
         Component.onCompleted: {
             app.loadRightsRequest()
         }

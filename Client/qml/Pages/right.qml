@@ -37,6 +37,52 @@ Pane {
         width: parent.width
     }
 
+    GridLayout {
+        id: grid
+        rows: 2
+        columns: 6
+        flow: GridLayout.TopToBottom
+        anchors.top: separator.bottom
+        width: parent.width
+
+
+        Label {
+            id: accessLvlLabel
+            anchors.margins: 15
+
+            text: "Right: "
+        }
+
+        ComboBox {
+            id: accessLvl
+            anchors.margins: 15
+            width: 100
+            //Layout.fillWidth: true
+
+            model: 8
+
+            onEditTextChanged: save.enabled = true
+
+        }
+    }
+
+    Button {
+        id: save
+        anchors.top: grid.bottom
+        anchors.margins: 15
+        Layout.fillWidth: true
+        enabled: false
+
+        text: "Save Changes"
+
+        onClicked: {
+            console.log(accessLvl.currentIndex)
+            rightPage.lvl = accessLvl.currentIndex
+
+            rightPage.uploadData()
+        }
+    }
+
     Component.onCompleted: {
         //rightPage.loadRightRequest(0)
     }

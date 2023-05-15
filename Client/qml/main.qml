@@ -16,6 +16,10 @@ ApplicationWindow {
 
     color: "#DDDDDD"
 
+    Material.theme: Material.Light
+    Material.primary: Material.Purple
+    Material.accent:"#3d5afe"
+
     /*
 
     Material.theme: Material.Light
@@ -34,7 +38,7 @@ ApplicationWindow {
     Window{
         id: loginWindow
         minimumWidth: 450
-        minimumHeight: 180
+        minimumHeight: 230
 
         x: (Screen.width - loginWindow.width) / 2
         y: (Screen.height - loginWindow.height) / 2

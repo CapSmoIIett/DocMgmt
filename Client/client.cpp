@@ -65,7 +65,7 @@ void Client::SendRequest (QString message)
 
     //Logger("Client::SendRequest");// << "Test";
 
-    QString str = encrypter(Encrypter::VERNAM)(message);
+    QString str = message;//encrypter(Encrypter::VERNAM)(message);
 
     //qDebug() << str;
     //qDebug() << encrypter(Encrypter::VERNAM).Decrypt(str);
@@ -160,9 +160,9 @@ void Client::loadFilesRequest(QString path)
     SendRequest(QString("Type:%1,Path:%2").arg(MSG_GET_FILE_LIST).arg(path));
 }
 
-void Client::downloadFileRequest(QString path)
+void Client::downloadFileRequest(QString path, int user_id)
 {
-    SendRequest(QString("Type:%1,Path:%2").arg(MSG_DOWNLOAD_FILE).arg(path));
+    SendRequest(QString("Type:%1,Path:%2,User:%3").arg(MSG_DOWNLOAD_FILE).arg(path).arg(user_id));
 }
 
 void Client::uploadUserData(User user)
@@ -171,16 +171,36 @@ void Client::uploadUserData(User user)
         .arg(MSG_UPLOAD_USER_DATA).arg(user.i_ID).arg(user.s_Full_Name).arg(user.s_Right).arg(user.s_Office));
 }
 
+void Client::uploadRightData(Right right)
+{
+    SendRequest(QString("Type:%1,ID:%2,Name:%3,LVL:%4")
+        .arg(MSG_UPLOAD_RIGHT_DATA).arg(right.i_ID).arg(right.s_Name).arg(right.i_acs_lvl));
+}
+
 void Client::uploadFile(QString name, QString text)
 {
-    SendRequest(QString("Type:%1,Name:%2,Text:%3").arg(MSG_UPLOAD_FILE).arg(name).arg(text));
+    SendRequest(QString("Type:%1,Name:%2,Text:%3").arg(MSG_UPLOAD_FILE).arg(name).arg(text.toUtf8()));
+}
+
+void Client::sendMessage(QString text, int id_sender, int id_accepter)
+{
+    SendRequest(QString("Type:%1,Text:%2,SEND:%3,ACCEPT:%4").arg(MSG_SEND_MSG).arg(text).arg(id_sender).arg(id_accepter));
+}
+
+void Client::uploadMessages(int id1, int id2)
+{
+    SendRequest(QString("Type:%1,ID3:%2,ID2:%3").arg(MSG_SEND_MSG).arg(id1).arg(id2));
+}
+
+void Client::changeAccessLvlFileRequest(QString name, int lvl)
+{
+    qDebug() << name << " " << lvl;
+    SendRequest(QString("Type:%1,Name:%2,LVL:%3").arg(MSG_CHANGE_ACS_LVL).arg(name).arg(lvl));
 }
 
 void Client::ReadSocket ()
 {
     qDebug();
-    qDebug() << "Client::ReadSocket";
-    qDebug() << QTime::currentTime().toString() ;
 
     QByteArray buffer;
     QDataStream socketStream(p_TcpSocket);
@@ -206,6 +226,7 @@ void Client::ReadSocket ()
     QString header = buffer;
 
     QString type = header.split(",")[0].split(":")[1];
+    //qDebug() << header;
     qDebug() << "Type: " << type;
 
 
@@ -248,13 +269,12 @@ void Client::ReadSocket ()
 
     case MSG_LOAD_DATA_USER:
     {
-        qDebug() << "MSG_LOAD_DATA_USER";
-
         User user;
         user.i_ID = header.split(",")[1].split(":")[1].toInt();
         user.s_Full_Name = header.split(",")[2].split(":")[1];
         user.s_Office = header.split(",")[3].split(":")[1];
         user.s_Right = header.split(",")[4].split(":")[1];
+
 
         emit onGetUserData(user);
     } break;
@@ -269,14 +289,10 @@ void Client::ReadSocket ()
         for (int i = 0; i < size.toInt(); i++)
         {
             Right right;
-            right.i_ID = header.split(",")[1 + (i * 2)+ 1].split(":")[1].toInt();
-            right.s_Name = header.split(",")[1 + (i * 2) + 2].split(":")[1];
+            right.i_ID = header.split(",")[1 + (i * 3)+ 1].split(":")[1].toInt();
+            right.s_Name = header.split(",")[1 + (i * 3) + 2].split(":")[1];
+            right.i_acs_lvl = header.split(",")[1 + (i * 3)+ 3].split(":")[1].toInt();
 
-            //qDebug() << header.split(",")[1 + i + 1];
-            //qDebug() << header.split(",")[1 + i + 2];
-
-            //qDebug() << "ID: " << right.i_ID;
-            //qDebug() << "Name: " << right.s_Name;
 
             rights.push_back(right);
         }
@@ -332,6 +348,7 @@ void Client::ReadSocket ()
         Right right;
         right.i_ID = header.split(",")[1].split(":")[1].toInt();
         right.s_Name = header.split(",")[2].split(":")[1];
+        right.i_acs_lvl = header.split(",")[3].split(":")[1].toInt();
 
         emit onGetRight(right);
     } break;
@@ -350,10 +367,11 @@ void Client::ReadSocket ()
         {
             File file;
 
-            file.s_Name = header.split(",")[1 + (i * 4) + 1].split(":")[1];
-            file.s_Type = header.split(",")[1 + (i * 4) + 2].split(":")[1];
-            file.i_Size = header.split(",")[1 + (i * 4) + 3].split(":")[1].toInt();
-            file.dt_DateModified = QDateTime::fromString(header.split(",")[1 + (i * 4) + 4].split(":")[1]);
+            file.s_Name = header.split(",")[1 + (i * 5) + 1].split(":")[1];
+            file.s_Type = header.split(",")[1 + (i * 5) + 2].split(":")[1];
+            file.i_Size = header.split(",")[1 + (i * 5) + 3].split(":")[1].toInt();
+            file.i_acs_lvl = header.split(",")[1 + (i * 5) + 4].split(":")[1].toInt();
+            file.dt_DateModified = QDateTime::fromString(header.split(",")[1 + (i * 5) + 5].split(":")[1]);
 
             files.push_back(file);
         }
@@ -366,28 +384,53 @@ void Client::ReadSocket ()
     {
         qDebug() << "MSG_DOWNLOAD_FILE";
 
-        QVector<File> files;
         QString size = header.split(",")[1].split(":")[1];
         QString name = header.split(",")[2].split(":")[1];
+        int flag = header.split(",")[3].split(":")[1].toInt();
 
         qDebug() << "Size" << size;
         qDebug() << "Name" << name;
+        qDebug() << flag;
 
         //TODO ПЕРЕНЕСИ ЗАПИСБ В ФАЙЛ В APPENGINE
 
+
         QFile file(name);
 
-        if(!file.open(QIODevice::ReadWrite))
+        if(!file.open(QIODevice::ReadWrite | (flag == 0 ? QIODevice::Truncate : QIODevice::Append)))
         {
             qDebug() << "Error open file";
             qDebug() << file.errorString();
+            break;
         }
-        else
+
+        if (flag == FLAG_FILE_TRANSFER_START)
         {
-            QTextStream stream(&file);
-            QString text = header.split(",")[3].split(":")[1];
-            stream << text;
+            file.resize(0);
+            file.close();
+            SendRequest(QString("Type:%1,Path:%2,Flag:%3").arg(MSG_DOWNLOAD_FILE).arg(name).arg(FLAG_FILE_TRANSFER_CONTINUE));
+            break;
         }
+
+        int pos = buffer.indexOf("Data:");
+        int endPos = buffer.indexOf(":", pos);
+        QByteArray text = buffer.mid(endPos + 1);
+
+        file.write(text);
+
+        if (flag != 0 && text.size() == KB)
+        {
+            qDebug();
+            SendRequest(QString("Type:%1,Path:%2,Flag:%3").arg(MSG_DOWNLOAD_FILE).arg(name).arg(FLAG_FILE_TRANSFER_CONTINUE));
+        }
+        qDebug() <<text.size();
+
+        file.close();
+
+    } break;
+
+    case MSG_SEND_MSG:
+    {
 
     } break;
 
@@ -395,7 +438,7 @@ void Client::ReadSocket ()
     }
 
     qDebug() << QTime::currentTime().toString();
-    qDebug()  << buffer.toStdString().c_str();
+    //qDebug()  << buffer;
 }
 
 void Client::DiscardSocket()

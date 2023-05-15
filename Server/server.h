@@ -51,6 +51,7 @@ public:
 
 signals:
     void SendedClient(QString str);
+    void SendedSpecificClient(QTcpSocket* socket, QString str);
 
 public slots:
     //void read();
@@ -63,9 +64,12 @@ public slots:
     void DisplayError(QAbstractSocket::SocketError socketError);
 
     void SendToClient(QString str);
+    void SendToClient(QByteArray str);
+    void SendToSpecificClient(QTcpSocket* socket, QString str);
 
 private:
     QSet<QTcpSocket*> set_Sockets;
+    QMap<QTcpSocket*, User> map_Users;
 
     QString GenerateToken(QString user);
 

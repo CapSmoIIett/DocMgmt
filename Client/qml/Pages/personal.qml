@@ -24,6 +24,12 @@ Rectangle {
         RowLayout {
             anchors.fill: parent
 
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                width: 30
+            }
             ToolButton {
                 id: updateButton
 
@@ -48,20 +54,59 @@ Rectangle {
                     app.addUserRequest()
                 }
             }
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                width: 30
+            }
         }
     }
     //*/
 
+    ScrollBar {
+        id: tableVerticalBar
+        height: parent.height - toolBar.height - 15
+        anchors.topMargin: 15
+
+        anchors.top: toolBar.bottom
+        anchors.right: parent.right
+        active: tableHorizontalBar.active
+        policy:ScrollBar.AlwaysOn
+    }
+
+
+    Rectangle {
+        anchors.fill: parent
+
+        anchors.topMargin: toolBar.height + 15
+        anchors.margins: 15
+
+        //border.width: 1
 
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
-        anchors.top: toolBar.bottom
+        //anchors.top: toolBar.bottom
         anchors.left: parent.left
+        height: 40
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display
+        delegate: Rectangle {
+            height: parent.height
+            width: table.columnWidthProvider(column)
+            color: "#CE93D8"
+
+            Label {
+                width: parent.width
+                elide: Text.ElideRight
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+
+                text:  model.display
+                font.family: "Helvetica"
+                font.weight: Font.Bold
+                //font.pointSize: 20
+            }
         }
     }
     //*/
@@ -70,8 +115,14 @@ Rectangle {
         id: table
 
         anchors.fill: parent
-        anchors.topMargin: toolBar.height + horizontalHeader.height
+        anchors.topMargin: horizontalHeader.height + 10
+        //anchors.leftMargin: tableVerticalBar.width
         clip: true
+
+        Keys.onUpPressed: scrollBar.decrease()
+        Keys.onDownPressed: scrollBar.increase()
+
+        ScrollBar.vertical: tableVerticalBar
 
 
         columnWidthProvider: function (column) {
@@ -83,10 +134,17 @@ Rectangle {
         model: personalTableModel
 
         delegate: Rectangle {
+            Rectangle {
+                id:cell
             implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 30
 
-            color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
+            //color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
+
+            //color: (row % 2 == 0) ? "#FFFFFF" : "#f1dff4"
+
+
+            border.width: 1
 
             MouseArea {
                 id: mouseArea
@@ -98,6 +156,7 @@ Rectangle {
 
                 Label {
                     text: display
+
 
                     width: parent.width
                     elide: Text.ElideRight
@@ -123,7 +182,18 @@ Rectangle {
                     }
                 }
             }
+            }
+            Rectangle{
+                anchors.margins: 0
+                anchors.top: cell.bottom
+
+                border.width: 1
+
+                height: 0.2
+                width: parent.width
+            }
         }
+
 
 
         Menu {
@@ -144,6 +214,7 @@ Rectangle {
         Component.onCompleted: {
             app.usersListRequest()
         }
+    }
     }
 
 }

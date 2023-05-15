@@ -49,10 +49,15 @@ public:
 
     void loadFilesRequest(QString);
 
-    void downloadFileRequest(QString);
+    void downloadFileRequest(QString, int);
+    void changeAccessLvlFileRequest(QString, int);
 
     void uploadUserData(User);
+    void uploadRightData(Right);
     void uploadFile(QString name, QString text);
+
+    void sendMessage(QString, int, int);
+    void uploadMessages(int, int);
 
 signals:
     void onVerified(bool result);

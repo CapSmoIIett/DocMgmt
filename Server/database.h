@@ -50,6 +50,11 @@ public:
 
     int GetID(QString table, QString field, QString value);
     void UpdateUserData(User);
+    void UpdateRightData(Right);
+    int GetUserAccessLvl(int id);
+
+
+    void SaveMsg(QString, int, int);
 
 private:
     // Сам объект базы данных, с которым будет производиться работа

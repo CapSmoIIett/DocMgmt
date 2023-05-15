@@ -64,6 +64,13 @@ Rectangle {
         RowLayout {
             anchors.fill: parent
 
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                width: 30
+            }
+
             ToolButton {
                 id: updateButton
 
@@ -88,6 +95,13 @@ Rectangle {
                     console.log("Add right")
                     app.addRightsRequest()
                 }
+            }
+
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                width: 30
             }
         }
     }
@@ -138,7 +152,7 @@ Rectangle {
 
 
         columnWidthProvider: function (column) {
-            return table.width / 3//table.model.columnCount();
+            return table.width / table.model.columnCount();
         }
 
         onWidthChanged: table.forceLayout()
@@ -179,7 +193,15 @@ Rectangle {
                     else if (mouse.button === Qt.LeftButton)
                     {
                         console.log("left");
-                        console.log(row);
+                        console.log(model.column);
+                        if (model.column === 3)
+                        {
+                            console.log("left");
+                            console.log(model.column);
+                            accessLvlMenu.curRow = row
+                            accessLvlMenu.popup()
+                        }
+
                         //console.log(personalTableModel.getIDbyRow(row))
                         //main.loadUserPage(personalTableModel.getIDbyRow(row))
                         //personalTableModel.loadUserPage(personalTableModel.getIDbyRow(row))
@@ -199,7 +221,7 @@ Rectangle {
                 text: 'download'
 
                 onClicked: {
-                    app.downloadFileRequest(path.text, filesTableModel.getNameByRow(menu.curRow))
+                    app.downloadFileRequest(path.text, filesTableModel.getNameByRow(menu.curRow), app.getCurUser())
                 }
             }
 
@@ -208,6 +230,22 @@ Rectangle {
 
                 onClicked: {
                     //app.removeUserRequest(menu.curRow)
+                }
+            }
+        }
+
+        Menu {
+            id: accessLvlMenu
+            property int curRow
+
+            Repeater {
+                model: 8
+
+                MenuItem {
+                    text: index
+                    onClicked: {
+                        app.changeAccessLvl(path.text, filesTableModel.getNameByRow(accessLvlMenu.curRow), index)
+                    }
                 }
             }
         }

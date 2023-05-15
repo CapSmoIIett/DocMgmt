@@ -39,6 +39,16 @@ void UserPage::setRight(const QString &right)
     user.s_Right = right;
 }
 
+int UserPage::id()
+{
+    return user.i_ID;
+}
+
+void UserPage::setID(const int &id)
+{
+    user.i_ID = id;
+}
+
 void UserPage::loadUserRequest(int id)
 {
     qDebug();
@@ -65,3 +75,12 @@ void UserPage::GetUser(User user)
     emit getedUser();
 }
 
+void UserPage::GetMessages(QVector<Message> messages)
+{
+    v_Messages = messages;
+}
+
+void UserPage::GetMessage(Message msg)
+{
+    v_Messages.push_back(msg);
+}

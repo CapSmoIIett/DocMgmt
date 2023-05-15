@@ -41,6 +41,32 @@ QVector<File> Filebase::GetFileList(QString path)
     {
         File file;
 
+        QSqlQuery query;
+        int result = 0;
+        int it = 0;
+
+        query.prepare("SELECT access_lvl FROM files WHERE name = :name");
+
+        query.bindValue(":name", info.fileName());
+
+        result = query.exec();
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+        }
+
+        QSqlRecord rec = query.record();
+        const int indexLvl = rec.indexOf( "access_lvl" );
+
+        if (query.next())
+        {
+            file.i_acs_lvl = query.value(indexLvl).toInt();
+        }
+        else
+            file.i_acs_lvl = 0;
+
         file.s_Name = info.fileName();
         file.i_Size = info.size();
         file.dt_DateModified = info.lastModified();
@@ -52,12 +78,9 @@ QVector<File> Filebase::GetFileList(QString path)
     return files;
 }
 
-QString Filebase::GetFile(QString name)
+QByteArray Filebase::GetFileBytes(QString name)
 {
-    qDebug();
-    qDebug() << "Filebase::GetFile";
-    qDebug() << name;
-    qDebug() << p_dir->path();
+    qDebug() <<p_dir->path() + '/' + name;
 
     QFile file (p_dir->path() + '/' + name);
     if(!file.open(QIODevice::ReadOnly))
@@ -66,16 +89,49 @@ QString Filebase::GetFile(QString name)
         qDebug() << file.errorString();
     }
 
-    QTextStream in(&file);
+    QDataStream in(&file);
+    char* raw;
 
-    QString text = in.readAll();
+    uint len = static_cast<uint>(file.size());
+    QByteArray data(file.size(), 0);
+
+    qDebug() << "len: " << len;
+
+    in.readRawData(data.data(), data.size());
+    qDebug() << "data: " << data;
 
     file.close();
 
-    return text;
+    return data;
 }
 
-void Filebase::CreateFile(QString name, QString text)
+//QDataStream Filebase::GetFileStream(QString name)
+QFile* Filebase::GetFilePointer(QString name)
+{
+    qDebug() << name;
+
+    QFile* file  = new QFile(p_dir->path() + '/' + name);
+    if(!file->open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Error open file";
+        qDebug() << file->errorString();
+    }
+
+    //QDataStream in(&file);
+
+    return file;
+}
+
+int Filebase::GetFileSize(QString name)
+{
+    qDebug();
+    QFileInfo fileInfo (p_dir->path() + '/' + name);
+
+    return fileInfo.size();
+
+}
+
+void Filebase::CreateFile(QString name, QByteArray text)
 {
         QFile file(p_dir->path() + '/' +name);
 
@@ -91,9 +147,56 @@ void Filebase::CreateFile(QString name, QString text)
         }
 }
 
+void Filebase::ChangeAccessLvl(QString name, int lvl)
+{
+    QSqlQuery query;
+    Right right;
+    int result;
+
+    query.prepare(QString("UPDATE files SET access_lvl = :lvl WHERE name = :name"));
+
+    query.bindValue(":lvl", lvl);
+    query.bindValue(":name", name);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+}
+
+int Filebase::GetAccessLvl(QString name)
+{
+    qDebug() << name;
+
+    QSqlQuery query;
+    int result;
+
+    result = query.exec(QString("SELECT access_lvl FROM files"));
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return -1;
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexLvl = rec.indexOf( "access_lvl" );
+
+    if (query.next())
+    {
+        return query.value(indexLvl).toInt();
+    }
+
+    return LOWEST_ACS_LVL;
+}
+
 void Filebase::UpdateFileBase()
 {
-        qDebug();
+    qDebug();
     QDir dir (p_dir->path());
     QFileInfoList fileInfo = dir.entryInfoList();
 

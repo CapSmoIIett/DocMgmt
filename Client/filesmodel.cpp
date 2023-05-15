@@ -16,7 +16,7 @@ int FilesTableModel::rowCount(const QModelIndex& parent) const
 
 int FilesTableModel::columnCount(const QModelIndex &parent) const
 {
-    return 3;
+    return 4;
 }
 
 QHash<int, QByteArray> FilesTableModel::roleNames() const
@@ -42,6 +42,7 @@ QVariant FilesTableModel::data(const QModelIndex& index, int role) const
         case 0: return file.s_Name;
         case 1: return file.s_Type;
         case 2: return (int)file.i_Size;
+        case 3: return (int)file.i_acs_lvl;
         default:
             break;
         }
@@ -60,6 +61,7 @@ QVariant FilesTableModel::headerData(int section, Qt::Orientation orientation, i
         case 0: return QString("Name");
         case 1: return QString("Type");
         case 2: return QString("Size");
+        case 3: return QString("LVL");
         default:
             break;
         }
@@ -69,8 +71,10 @@ QVariant FilesTableModel::headerData(int section, Qt::Orientation orientation, i
 
 QString FilesTableModel::getNameByRow(int row)
 {
+    qDebug() << row;
     return v_Files[row].s_Name;
 }
+
 
 void FilesTableModel::GetFiles(QVector<File> files)
 {
@@ -84,7 +88,7 @@ void FilesTableModel::GetFiles(QVector<File> files)
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     endInsertRows();
 
-    emit dataChanged(index(0, 0), index(v_Files.size() - 1, 3), {Qt::DisplayRole});
+    emit dataChanged(index(0, 0), index(v_Files.size() - 1, 4), {Qt::DisplayRole});
 
 }
 

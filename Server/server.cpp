@@ -16,7 +16,8 @@ Server::Server(int port) :
     qDebug() << "Start listening";
 
     connect(p_Server, &QTcpServer::newConnection, this, &Server::NewConnection);
-    connect(this, &Server::SendedClient, this, &Server::SendToClient);
+    //connect(this, &Server::SendedClient, this, &Server::SendToClient);
+    //connect(this, &Server::SendedSpecificClient, this, &Server::SendToSpecificClient);
 }
 
 Server::~Server()
@@ -76,7 +77,7 @@ void Server::ReadSocket()
     //QString msg = buffer;
     //ProcessingMessage(buffer);
 
-    QString header = encrypter(Encrypter::VERNAM).Decrypt(buffer);
+    QString header = buffer;//encrypter(Encrypter::VERNAM).Decrypt(buffer);
     qDebug() << header;
     qDebug() << QTime::currentTime().toString() ;
 
@@ -96,6 +97,9 @@ void Server::ReadSocket()
         bool isVerified = false;
 
         isVerified = db.Verify(username, password);
+
+        map_Users[socket] = db.GetUserData(username);
+        ///map_Users.insert(socket, db.GetUserData(username));
 
         qDebug() << "Verified: " << isVerified;
 
@@ -161,6 +165,7 @@ void Server::ReadSocket()
         {
             data += QString("ID%1:%2,").arg(i).arg(rights[i].i_ID);
             data += QString("Name%1:%2,").arg(i).arg(rights[i].s_Name);
+            data += QString("Lvl%1:%2,").arg(i).arg(rights[i].i_acs_lvl);
         }
 
         emit SendToClient(data);
@@ -220,8 +225,32 @@ void Server::ReadSocket()
         QString data = QString("Type:%1,").arg(MSG_LOAD_RIGHT);
         data += QString("ID:%1,").arg(right.i_ID);
         data += QString("Name:%1,").arg(right.s_Name);
+        data += QString("Lvl:%1,").arg(right.i_acs_lvl);
 
         emit SendToClient(data);
+    } break;
+
+    case MSG_UPLOAD_USER_DATA:
+    {
+        User user;
+        user.i_ID = header.split(",")[1].split(":")[1].toInt();
+        user.s_Full_Name = header.split(",")[2].split(":")[1];
+        user.s_Right = header.split(",")[3].split(":")[1];
+        user.s_Office = header.split(",")[4].split(":")[1];
+
+        db.UpdateUserData(user);
+
+    } break;
+
+    case MSG_UPLOAD_RIGHT_DATA:
+    {
+        Right right;
+        right.i_ID = header.split(",")[1].split(":")[1].toInt();
+        right.s_Name = header.split(",")[2].split(":")[1];
+        right.i_acs_lvl = header.split(",")[3].split(":")[1].toInt();
+
+        db.UpdateRightData(right);
+
     } break;
 
 
@@ -241,6 +270,7 @@ void Server::ReadSocket()
             data += QString("Name%1:%2,").arg(i).arg(file.s_Name);
             data += QString("Type%1:%2,").arg(i).arg(file.s_Type);
             data += QString("Size%1:%2,").arg(i).arg(file.i_Size);
+            data += QString("LVL%1:%2,").arg(i).arg(file.i_acs_lvl);
             data += QString("Date%1:%2,").arg(i).arg(file.dt_DateModified.toString(fileDateFormate));
         }
 
@@ -251,13 +281,99 @@ void Server::ReadSocket()
     {
         QString path = header.split(",")[1].split(":")[1];
 
-        auto text = fb.GetFile(path);
 
-        QString data = QString("Type:%1,Size:%2,Path:%3,").arg(MSG_DOWNLOAD_FILE).arg(text.size()).arg(path);
+        int file_size = fb.GetFileSize(path);
 
-        data += QString("Data:") + text;
+        if (file_size < KB)
+        {
 
-        emit SendToClient(data);
+            int user_id = header.split(",")[2].split(":")[1].toInt();
+
+            qDebug() << db.GetUserAccessLvl(user_id) << " " << fb.GetAccessLvl(path);
+
+            if (db.GetUserAccessLvl(user_id) > fb.GetAccessLvl(path))
+            {
+                qDebug() << "Not enogh lvl";
+                break;
+            }
+
+
+            auto text = fb.GetFileBytes(path);
+            QString data = QString("Type:%1,Size:%2,Path:%3,Flag:0,").arg(MSG_DOWNLOAD_FILE).arg(text.size()).arg(path);
+
+            qDebug() << "text: " << text;
+
+            data += QString("Data:");
+            QByteArray bytes = data.toUtf8() + text;
+
+            emit SendToClient(bytes);
+        }
+        else
+        {
+            static int size = 0;
+            static QDataStream* in = nullptr;
+            static QFile* file = nullptr;
+
+
+
+            if (!header.contains(QString("Flag")))
+            {
+                int user_id = header.split(",")[2].split(":")[1].toInt();
+
+                qDebug() << db.GetUserAccessLvl(user_id) << " " << fb.GetAccessLvl(path);
+
+                if (db.GetUserAccessLvl(user_id) > fb.GetAccessLvl(path))
+                {
+                    qDebug() << "Not enogh lvl";
+                    break;
+                }
+
+                size = fb.GetFileSize(path);
+
+                file = fb.GetFilePointer(path);
+                in = new QDataStream(file);
+
+                QString data = QString("Type:%1,Size:%2,Path:%3,Flag:%4,").arg(MSG_DOWNLOAD_FILE).arg(0).arg(path).arg(FLAG_FILE_TRANSFER_START);
+                emit SendToClient(data.toUtf8());
+
+                break;
+            }
+
+            if (size > KB)
+            {
+                QString msg = QString("Type:%1,Size:%2,Path:%3,Flag:%4,Data:").arg(MSG_DOWNLOAD_FILE).arg(KB).arg(path).arg(FLAG_FILE_TRANSFER_CONTINUE);
+                QByteArray bytes (KB, 0);
+
+                qDebug() << "size: " << size;
+
+                in->readRawData(bytes.data(), bytes.size());
+
+                qDebug() << bytes.size();
+
+                emit SendToClient(msg.toUtf8() + bytes);
+
+                size -= KB;
+            }
+            else if (size > 0)
+            {
+                QString msg = QString("Type:%1,Size:%2,Path:%3,Flag:%4,Data:").arg(MSG_DOWNLOAD_FILE).arg(KB).arg(path).arg(FLAG_FILE_TRANSFER_CONTINUE);
+                QByteArray bytes (size, 0);
+
+                qDebug() << "size: " << size;
+
+                in->readRawData(bytes.data(), bytes.size());
+
+                emit SendToClient(msg.toUtf8() + bytes);
+
+                file->close();
+                delete in;
+                delete file;
+            }
+
+
+        }
+
+
     } break;
 
     case MSG_UPLOAD_FILE:
@@ -265,21 +381,40 @@ void Server::ReadSocket()
         QString name = header.split(",")[1].split(":")[1];
         QString text = header.split(",")[2].split(":")[1];
 
-        fb.CreateFile(name, text);
+        fb.CreateFile(name, text.toUtf8());
 
     } break;
 
-    case MSG_UPLOAD_USER_DATA:
+    case MSG_CHANGE_ACS_LVL:
     {
-        User user;
-        user.i_ID = header.split(",")[1].split(":")[1].toInt();
-        user.s_Full_Name = header.split(",")[2].split(":")[1];
-        user.s_Right = header.split(",")[3].split(":")[1];
-        user.s_Office = header.split(",")[4].split(":")[1];
+        QString name = header.split(",")[1].split(":")[1];
+        int lvl = header.split(",")[2].split(":")[1].toInt();
 
-        db.UpdateUserData(user);
+        fb.ChangeAccessLvl(name, lvl);
 
     } break;
+
+    case MSG_SEND_MSG:
+    {
+        QString text = header.split(",")[1].split(":")[1];
+        int id_sender = header.split(",")[2].split(":")[1].toInt();
+        int id_accepter = header.split(",")[3].split(":")[1].toInt();
+
+        db.SaveMsg(text, id_sender, id_accepter);
+
+        QTcpSocket* accepter = nullptr;
+        for (QMap<QTcpSocket*, User>::Iterator it = map_Users.begin(); it != map_Users.end(); it++)
+        {
+            if (it.value().i_ID == id_accepter)
+                accepter = it.key();
+        }
+
+        QString data = QString("Type:%1,Text:%2,Sender:%3").arg(MSG_SEND_MSG).arg(text).arg(id_sender);
+
+        emit SendToSpecificClient(accepter, data);
+
+    } break;
+
 
 
     }
@@ -291,13 +426,22 @@ void Server::DiscardSocket()
 {
     auto socket = reinterpret_cast<QTcpSocket*>(sender());
 
+    qDebug() << QString("%1 :: disconect").arg(socket->socketDescriptor());
+
     auto it = set_Sockets.find(socket);
 
     if (it != set_Sockets.end())
     {
-        qDebug() << QString("%1 :: disconect").arg(socket->socketDescriptor());
         set_Sockets.remove(*it);
     }
+
+    auto it2 = map_Users.find(socket);
+
+    if (it2 != map_Users.end())
+    {
+        map_Users.remove(socket);
+    }
+
 
     socket->deleteLater();
 }
@@ -314,10 +458,7 @@ void Server::DisplayError(QAbstractSocket::SocketError socketError)
 
 void Server::SendToClient(QString str)
 {
-    qDebug();
-    qDebug() << "Server::SendToClient";
     qDebug() << str;
-    qDebug() << QTime::currentTime().toString();
 
     auto socket = reinterpret_cast<QTcpSocket*>(sender());
 
@@ -328,10 +469,32 @@ void Server::SendToClient(QString str)
     byteArray.prepend(str.toUtf8());
 
     socketStream << byteArray;
-
 }
 
+void Server::SendToClient(QByteArray str)
+{
+    qDebug() << str;
 
+    auto socket = reinterpret_cast<QTcpSocket*>(sender());
+
+    QDataStream socketStream(socket);
+    socketStream.setVersion(QDataStream::Qt_6_4);
+
+    socketStream << str;
+}
+
+void Server::SendToSpecificClient(QTcpSocket* socket, QString str)
+{
+    qDebug() << socket << " " << str;
+
+    QDataStream socketStream(socket);
+    socketStream.setVersion(QDataStream::Qt_6_4);
+
+    QByteArray byteArray;
+    byteArray.prepend(str.toUtf8());
+
+    socketStream << byteArray;
+}
 
 
 void Server::ProcessingMessage(QString header)

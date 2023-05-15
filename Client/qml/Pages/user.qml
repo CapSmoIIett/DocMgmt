@@ -11,6 +11,15 @@ import Qt.labs.folderlistmodel
 Pane {
     anchors.fill: parent
 
+    Row {
+    anchors.fill: parent
+
+    Rectangle {
+        width: parent.width / 2
+        height: parent.height
+        id: left
+
+
     Rectangle {
         id: top
         color: "#EBD4D1"
@@ -107,6 +116,42 @@ Pane {
         //userPage.loadUserRequest(0)
         for(var i = 0; i < offices.model.count; ++i) if (offices.model.get(i) === userPage.right)  offices.currentIndex(i)
     }
+    }
 
 
+    Rectangle {
+        id: chat
+
+        width: parent.width / 2
+        height: parent.height
+
+        ListView {
+            Layout.fillHeight: true
+            anchors.left: chat.left
+            anchors.top: chat.top
+        }
+
+        RowLayout {
+            Layout.preferredHeight: 40
+            width: parent.width
+            anchors.bottom: chat.bottom
+
+            TextField {
+                id:text
+                enabled: true
+                Layout.fillWidth: true
+            }
+            Button {
+                text: "Send"
+                onClicked: {
+                    app.sendMessage(text, userPage.id)
+                }
+            }
+
+            Component.onCompleted: {
+            }
+    }
+
+    }
+}
 }

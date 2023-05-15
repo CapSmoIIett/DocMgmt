@@ -84,6 +84,7 @@ bool Database::createTables()
                 "("
                     "id serial primary key,"
                     "name varchar(255)"
+                    "access_lvl int"
                 ")");
 
     if (!result)
@@ -107,6 +108,20 @@ bool Database::createTables()
         return false;
     }
 
+    result = query.exec("CREATE TABLE IF NOT EXISTS messages"
+                "("
+                    "id_sender int,"
+                    "id_recipient int,"
+                    "name varchar(255),"
+                    "date_time datetime"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
 
     /*****************************************************
      * Add rights for supervisor
@@ -123,7 +138,7 @@ bool Database::createTables()
 
     if (!query.next())
     {
-        result = query.exec("INSERT INTO rights (id, name) VALUES (0, 'supervisor') ");
+        result = query.exec("INSERT INTO rights (id, name, access_lvl) VALUES (0, 'supervisor', 0) ");
 
         if (!result)
         {
@@ -375,6 +390,7 @@ QVector<Right> Database::GetRights()
     //const int indexName = rec.indexOf( "name" );
     const int indexId = rec.indexOf( "id" );
     const int indexName = rec.indexOf( "name" );
+    const int indexLVL = rec.indexOf( "access_lvl" );
 
     while (query.next())
     {
@@ -382,6 +398,7 @@ QVector<Right> Database::GetRights()
 
         right.i_ID = query.value(indexId).toInt();
         right.s_Name = query.value(indexName).toString();
+        right.i_acs_lvl = query.value(indexLVL).toInt();
 
         rights.push_back(right);
 
@@ -428,7 +445,6 @@ QString Database::FindFreeDefaultName(QString table, QString param,QString inser
 void Database::AddUser()
 {
     qDebug();
-    qDebug() << "Database::AddUser";
 
     auto name = FindFreeDefaultName("users", "full_name", "User");
 
@@ -460,9 +476,10 @@ void Database::AddRight()
     int result = 0;
     int it = 0;
 
-    query.prepare("INSERT INTO rights (id, name) VALUES ((SELECT MAX(id) + 1 from rights), :name) ");
+    query.prepare("INSERT INTO rights (id, name, access_lvl) VALUES ((SELECT MAX(id) + 1 from rights), :name, :lvl) ");
 
     query.bindValue(":name", name);
+    query.bindValue(":lvl", LOWEST_ACS_LVL);
 
     result = query.exec();
 
@@ -499,8 +516,7 @@ void Database::AddOffice()
 
 void Database::RemoveUser(int id)
 {
-    qDebug();
-    qDebug() << "Database::AddRight";
+    qDebug() << id;
 
     QSqlQuery query;
     int result = 0;
@@ -599,8 +615,7 @@ Office Database::GetOffice(int id)
 
 Right Database::GetRight(int id)
 {
-    qDebug();
-    qDebug() << "Database::GetUserData (id)";
+    qDebug() << id;
 
     QSqlQuery query;
     Right right;
@@ -622,11 +637,13 @@ Right Database::GetRight(int id)
     QSqlRecord rec = query.record();
     const int indexID = rec.indexOf( "id" );
     const int indexName = rec.indexOf( "name" );
+    const int indexLvl = rec.indexOf( "access_lvl" );
 
     if (query.next())
     {
         right.i_ID = query.value(indexID).toInt();
         right.s_Name = query.value(indexName).toString();
+        right.i_acs_lvl = query.value(indexLvl).toInt();
     }
 
     return right;
@@ -638,7 +655,6 @@ int Database::GetID(QString table, QString field, QString value)
     qDebug() << "Database::GetID";
 
     QSqlQuery query;
-    Right right;
     int result;
 
     query.prepare(QString("SELECT id FROM %1 WHERE %2 = :value").arg(table).arg(field));
@@ -668,10 +684,8 @@ int Database::GetID(QString table, QString field, QString value)
 void Database::UpdateUserData(User user)
 {
     qDebug();
-    qDebug() << "Database::UpdateUserData";
 
     QSqlQuery query;
-    Right right;
     int result;
 
     query.prepare(QString("UPDATE users SET full_name = :name, rights_id = :right, office_id = :office WHERE id = :id"));
@@ -691,4 +705,83 @@ void Database::UpdateUserData(User user)
 
 }
 
+void Database::UpdateRightData(Right right)
+{
+
+    qDebug() << right.i_ID << " " << right.s_Name << " " << right.i_acs_lvl;
+
+    QSqlQuery query;
+    int result;
+
+    query.prepare(QString("UPDATE rights SET name = :name, access_lvl = :lvl WHERE id = :id"));
+
+    query.bindValue(":id", right.i_ID);
+    query.bindValue(":name", right.s_Name);
+    query.bindValue(":lvl", right.i_acs_lvl);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+}
+
+int Database::GetUserAccessLvl(int id)
+{
+    qDebug() << id;
+
+    QSqlQuery query;
+    int result;
+
+    query.prepare(QString("SELECT rights.access_lvl AS lvl FROM users  INNER JOIN rights ON users.rights_id = rights.id WHERE users.id = :id"));
+
+    query.bindValue(":id", id);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexLvl = rec.indexOf( "lvl" );
+
+    if (query.next())
+    {
+        return query.value(indexLvl).toInt();
+    }
+
+    return LOWEST_ACS_LVL;
+}
+
+void Database::SaveMsg(QString text, int id_sender, int id_recipient)
+{
+    qDebug();
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    query.prepare("INSERT INTO messages (id_sender, id_recipient, text, date_time) VALUES (:sender, :recipient, :text, TO_DATE(':dtime, 'DD/MM/YYYY HH:MI:SS')) ");
+
+    query.bindValue(":id_sender", id_sender);
+    query.bindValue(":id_recipient", id_recipient);
+    query.bindValue(":text", text);
+    query.bindValue(":dtime", QDateTime::currentDateTime().toString("DD/MM/YYYY HH:MM:SS"));
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+}
 

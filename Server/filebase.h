@@ -30,8 +30,12 @@ public:
     ~Filebase();
 
     QVector<File> GetFileList(QString);
-    QString GetFile(QString);
-    void CreateFile(QString name, QString text);
+    QByteArray GetFileBytes(QString);
+    QFile* GetFilePointer(QString);
+    int GetFileSize(QString name);
+    void CreateFile(QString name, QByteArray text);
+    void ChangeAccessLvl(QString name, int lvl);
+    int GetAccessLvl(QString name);
 
 public slots:
     void UpdateFileBase();

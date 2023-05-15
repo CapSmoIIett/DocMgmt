@@ -6,15 +6,6 @@ RightsTableModel::RightsTableModel(AppEngine* engine, QObject *parent) :
     p_AppEngine(engine)
 {
     connect(&engine->GetClient(), &Client::onGetRights, this, &RightsTableModel::GetRights);
-    /*
-    for (int i = 0; i < 10; i++)
-    {
-        Right r;
-        r.s_Name = '1';
-        v_Rights.push_back(r);
-    }
-//*/
-
 }
 
 int RightsTableModel::rowCount(const QModelIndex &parent) const
@@ -24,7 +15,7 @@ int RightsTableModel::rowCount(const QModelIndex &parent) const
 
 int RightsTableModel::columnCount(const QModelIndex &parent) const
 {
-    return 2;
+    return 3;
 }
 
 QHash<int, QByteArray> RightsTableModel::roleNames() const
@@ -48,20 +39,11 @@ QVariant RightsTableModel::data(const QModelIndex &index, int role) const
         {
         case 0: return right.i_ID;
         case 1: return right.s_Name;
+        case 2: return right.i_acs_lvl;
         default:
             break;
         }
     }
-
-    /*
-     * switch (role)
-    {
-    case Qt::DisplayRole:
-        return right.s_Name;//QString("%1, %2").arg(index.row()).arg(index.column());
-    default:
-        break;
-    }
-*/
 
     return QVariant("");
 }
@@ -76,6 +58,8 @@ QVariant RightsTableModel::headerData(int section, Qt::Orientation orientation, 
             return QString("ID");
         case 1:
             return QString("Name");
+        case 2:
+            return QString("Lvl");
         default:
             break;
         }
@@ -103,16 +87,11 @@ void RightsTableModel::GetRights(QVector<Right> rights)
     qDebug();
     qDebug() << "RightsTableModel::GetRights";
 
-    for (auto r : rights)
-    {
-        //qDebug() << r.i_ID << r.s_Name;
-    }
-
     v_Rights = rights;
 
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     endInsertRows();
 
-    emit dataChanged(index(0, 0), index(v_Rights.size() - 1, 2), {Qt::DisplayRole});
+    emit dataChanged(index(0, 0), index(v_Rights.size() - 1, 3), {Qt::DisplayRole});
 }
 

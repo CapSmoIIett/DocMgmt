@@ -115,6 +115,7 @@ void AppEngine::addUserRequest()
 
 void AppEngine::loadCurUserDataRequest()
 {
+    qDebug() << user.s_Full_Name;
     client.loadUserDataRequest(user.s_Full_Name);
 }
 
@@ -163,9 +164,11 @@ void AppEngine::loadFilesRequest(QString path)
     client.loadFilesRequest(path);
 }
 
-void AppEngine::downloadFileRequest(QString path, QString name)
+void AppEngine::downloadFileRequest(QString path, QString name, User user)
 {
-    client.downloadFileRequest(path.isEmpty() ? name : path + '/' + name);
+    qDebug() << (path.isEmpty() ? name : path + '/' + name);
+    qDebug() << user.i_ID << " " << user.s_Full_Name;
+    client.downloadFileRequest(path.isEmpty() ? name : path + '/' + name, user.i_ID);
 }
 
 void AppEngine::uploadUserData(User user)
@@ -173,10 +176,26 @@ void AppEngine::uploadUserData(User user)
     client.uploadUserData(user);
 }
 
+void AppEngine::uploadRightData(Right right)
+{
+    client.uploadRightData(right);
+}
+
+void AppEngine::changeAccessLvl(QString path, QString name, int lvl)
+{
+    client.changeAccessLvlFileRequest(path.isEmpty() ? name : path + '/' + name, lvl);
+}
+
+User AppEngine::getCurUser()
+{
+    return user;
+}
 
 void AppEngine::GetCurUser(User user)
 {
-    if (user.i_ID == this->user.i_ID)
+    qDebug() << this->user.i_ID;
+    qDebug() << user.i_ID << user.s_Full_Name;
+    if (user.i_ID == this->user.i_ID || user.s_Full_Name == this->user.s_Full_Name)
         this->user = user;
 }
 
@@ -203,5 +222,15 @@ void AppEngine::uploadFile(QString path)
     file.close();
 
     client.uploadFile(name, text);
+}
+
+void AppEngine::sendMessage(QString text, int id)
+{
+    client.sendMessage(text, user.i_ID, id);
+}
+
+void AppEngine::uploadMessages(int id)
+{
+    client.uploadMessages(user.i_ID, id);
 }
 
