@@ -9,6 +9,17 @@ Client::Client(QString ip, int port) :
 
     connect(p_TcpSocket, &QTcpSocket::readyRead, this, &Client::ReadSocket);
     connect(p_TcpSocket, &QTcpSocket::disconnected, this, &Client::DiscardSocket);
+    connect(p_TcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError socketError)
+    {
+        qDebug() << socketError;
+
+        if (socketError == QAbstractSocket::OperationError)
+        {
+            p_TcpSocket->abort();
+            p_TcpSocket->close();
+        }
+        //p_TcpSocket->reset();
+    });
 
     ConnectToServer();
 }
@@ -23,11 +34,23 @@ void Client::setIP(const QString &ip)
     s_IP = ip;
 }
 
+int Client::getPort()
+{
+    return i_Port;
+}
+
+void Client::setPort(const int &port)
+{
+    i_Port = port;
+}
+
 void Client::ConnectToServer()
 {
+    qDebug();
     if (p_TcpSocket->state() == QTcpSocket::ConnectedState)
     {
         qDebug() << "lready connected";
+
         return;
     }
 

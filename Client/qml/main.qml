@@ -38,7 +38,7 @@ ApplicationWindow {
     Window{
         id: loginWindow
         minimumWidth: 450
-        minimumHeight: 230
+        minimumHeight: 270
 
         x: (Screen.width - loginWindow.width) / 2
         y: (Screen.height - loginWindow.height) / 2
@@ -55,7 +55,7 @@ ApplicationWindow {
 
             GridLayout {
                 id: grid
-                rows: 3
+                rows: 4
                 flow: GridLayout.TopToBottom
                 anchors.fill: parent
                 width: parent.width
@@ -73,6 +73,10 @@ ApplicationWindow {
                     id: labelIp
                     text: "IP"
                 }
+                Label {
+                    id: labelPort
+                    text: "Port"
+                }
 
                 TextField {
                     id: textLogin
@@ -84,6 +88,11 @@ ApplicationWindow {
                 }
                 TextField {
                     id: textIP
+                    Layout.fillWidth: true
+
+                }
+                TextField {
+                    id: textPort
                     Layout.fillWidth: true
 
                 }
@@ -113,7 +122,11 @@ ApplicationWindow {
 
                 app.userName = textLogin.text
                 app.password = textPassword.text
+                console.log(textIP.text)
                 app.ip = textIP.text
+                console.log(textPort.text)
+                app.port = textPort.text
+
 
                 //loginWindow.hide()
                 //mainWindow.show()
@@ -128,6 +141,7 @@ ApplicationWindow {
             textLogin.text = "supervisor"
             textPassword.text = "1111"
             textIP.text =  "127.0.0.1"
+            textPort.text =  "5500"
         }
 
         Connections {

@@ -16,6 +16,7 @@ class AppEngine : public QObject
     Q_PROPERTY(QString right READ right WRITE setRight)
 
     Q_PROPERTY(QString ip READ ip WRITE setIP NOTIFY onChangeIP)
+    Q_PROPERTY(QString port READ port WRITE setPort NOTIFY onChangePort)
 
     QML_ELEMENT
 
@@ -37,6 +38,9 @@ public:
 
     QString ip();
     void setIP(const QString &ip);
+
+    QString port();
+    void setPort(const QString &port);
 
     Client& GetClient();
 
@@ -73,6 +77,7 @@ public:
 signals:
     void verified(bool result);
     void onChangeIP();
+    void onChangePort();
 
 public slots:
     void GetCurUser(User user);
@@ -83,6 +88,7 @@ private:
     User user;
     QString s_Password;
     QString s_IP;
+    QString s_Port;
 
 };
 

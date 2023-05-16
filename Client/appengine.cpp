@@ -15,6 +15,11 @@ AppEngine::AppEngine(QObject* parent) :
         this->client.ConnectToServer();
     });
 
+    connect(this, &AppEngine::onChangePort, this, [this]()
+    {
+        this->client.setPort(this->s_Port.toInt());
+        this->client.ConnectToServer();
+    });
 }
 
 AppEngine::~AppEngine()
@@ -78,6 +83,19 @@ void AppEngine::setIP(const QString &ip)
     emit onChangeIP();
 }
 
+QString AppEngine::port()
+{
+    qDebug();
+    return s_Port;
+}
+
+void AppEngine::setPort(const QString &port)
+{
+    s_Port = port;
+    qDebug() << s_Port;
+    emit onChangePort();
+}
+
 bool AppEngine::verify()
 {
     qDebug();
@@ -85,7 +103,10 @@ bool AppEngine::verify()
     qDebug() << user.s_Full_Name << " " << s_Password;
 
     if (!client.IsConnected())
+    {
         client.ConnectToServer();
+        return false;
+    }
 
     client.VerifyRequest(user.s_Full_Name, s_Password);
 

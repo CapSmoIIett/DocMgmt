@@ -28,6 +28,9 @@ public:
     QString getIP();
     void setIP(const QString &ip);
 
+    int getPort();
+    void setPort(const int &port);
+
     bool IsConnected();
     void SendToServer(QString str);
 

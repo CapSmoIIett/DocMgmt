@@ -7,13 +7,17 @@ Server::Server(int port) :
     Logger::Init();
     p_Server = new QTcpServer();
 
+    i_Port++;
+
     if (!p_Server->listen(QHostAddress::Any, i_Port))
     {
         qDebug() << "Error listening";
+        qDebug() << p_Server->serverError();
         return;
     }
 
     qDebug() << "Start listening";
+    qDebug() << i_Port;
 
     connect(p_Server, &QTcpServer::newConnection, this, &Server::NewConnection);
     //connect(this, &Server::SendedClient, this, &Server::SendToClient);
