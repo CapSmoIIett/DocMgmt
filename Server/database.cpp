@@ -83,7 +83,7 @@ bool Database::createTables()
     result = query.exec("CREATE TABLE IF NOT EXISTS rights"
                 "("
                     "id serial primary key,"
-                    "name varchar(255)"
+                    "name varchar(255),"
                     "access_lvl int"
                 ")");
 
@@ -113,7 +113,7 @@ bool Database::createTables()
                     "id_sender int,"
                     "id_recipient int,"
                     "name varchar(255),"
-                    "date_time datetime"
+                    "date_time timestamp"
                 ")");
 
     if (!result)
