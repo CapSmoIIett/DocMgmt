@@ -33,6 +33,7 @@ private:
 struct EncryptionAlgorithm //: public QObject
 {
     virtual QString operator() (const QString&) {return "";}
+    virtual QString Encrypt (const QString&) {return "";}
     virtual QString Decrypt (const QString&) {return "";}
 
     virtual void SetKey(QString key) {this->key = key;}

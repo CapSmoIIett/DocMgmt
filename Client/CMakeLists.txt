@@ -21,12 +21,15 @@ link_directories(${PostgreSQL_LIBRARY_DIRS})
 
 ###########################################################################
 
+#set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/images/fox_icon.ico")
+
+###########################################################################
+
 qt_add_executable(appDocMgmtQt
     main.cpp
     header.h
     client.cpp
     client.h
-    imagines.qrc
     qml.qrc
     personalmodel.cpp
     personalmodel.h
@@ -44,6 +47,13 @@ qt_add_executable(appDocMgmtQt
     rightpage.h
     filesmodel.cpp
     filesmodel.h
+    messenger.h
+    messenger.cpp
+
+    images.qrc
+
+    ${app_icon_resource_windows}
+    #/images/fox_icon.ico
 
     ../encrypter.cpp
     ../encrypter.h

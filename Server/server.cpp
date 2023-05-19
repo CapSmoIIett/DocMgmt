@@ -7,8 +7,6 @@ Server::Server(int port) :
     Logger::Init();
     p_Server = new QTcpServer();
 
-    i_Port++;
-
     if (!p_Server->listen(QHostAddress::Any, i_Port))
     {
         qDebug() << "Error listening";
@@ -416,6 +414,29 @@ void Server::ReadSocket()
         QString data = QString("Type:%1,Text:%2,Sender:%3").arg(MSG_SEND_MSG).arg(text).arg(id_sender);
 
         emit SendToSpecificClient(accepter, data);
+
+    } break;
+
+    case MSG_UPLOAD_MSGS:
+    {
+        int id1  = header.split(",")[1].split(":")[1].toInt();
+        int id2  = header.split(",")[2].split(":")[1].toInt();
+
+        auto messages = db.GetMessages(id1, id2);
+
+        QString data = QString("Type:%1,Size:%2,").arg(MSG_UPLOAD_MSGS).arg(messages.size());
+
+        for (int i = 0; i < messages.size(); i++)
+        {
+            auto msg = messages[i];
+
+            data += QString("Text%1:%2,").arg(i).arg(msg.text);
+            data += QString("Sender%1:%2,").arg(i).arg(msg.sender);
+            data += QString("Recipient%1:%2,").arg(i).arg(msg.recepient);
+            data += QString("Date%1:%2,").arg(i).arg(msg.date_time.toString());
+        }
+
+        emit SendToClient(data);
 
     } break;
 

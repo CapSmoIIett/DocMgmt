@@ -33,5 +33,6 @@
 
 
 #define MSG_SEND_MSG			300
+#define MSG_UPLOAD_MSGS			301
 
 #endif // MESSAGES_H

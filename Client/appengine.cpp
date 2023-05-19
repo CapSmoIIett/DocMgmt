@@ -67,6 +67,16 @@ void AppEngine::setRight(const QString &right)
     user.s_Right = right;
 }
 
+int AppEngine::id()
+{
+    return user.i_ID;
+}
+
+void AppEngine::setID(const int &id)
+{
+    user.i_ID = id;
+}
+
 Client& AppEngine::GetClient()
 {
     return client;
@@ -247,6 +257,9 @@ void AppEngine::uploadFile(QString path)
 
 void AppEngine::sendMessage(QString text, int id)
 {
+    qDebug();
+    if (text.isEmpty())
+        return;
     client.sendMessage(text, user.i_ID, id);
 }
 

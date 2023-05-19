@@ -16,6 +16,8 @@ ApplicationWindow {
 
     color: "#DDDDDD"
 
+    title: 'FoxFile'
+
     Material.theme: Material.Light
     Material.primary: Material.Purple
     Material.accent:"#3d5afe"
@@ -38,7 +40,13 @@ ApplicationWindow {
     Window{
         id: loginWindow
         minimumWidth: 450
-        minimumHeight: 270
+        minimumHeight: 290
+
+        Material.theme: Material.Light
+        Material.primary: Material.Purple
+        Material.accent:"#3d5afe"
+
+        title: 'FoxFile'
 
         x: (Screen.width - loginWindow.width) / 2
         y: (Screen.height - loginWindow.height) / 2
@@ -46,12 +54,16 @@ ApplicationWindow {
         signal onLogin
 
         GroupBox {
+            anchors.fill: parent
             id: gridBox
             title: "Verification"
-            Layout.fillWidth: true
+            //Layout.fillWidth: true
             //Layout.minimumWidth: grid.Layout.minimumWidth + 30
             //anchors.fill: parent
-            width: parent.width
+            //width: parent.width
+            anchors.margins: 10
+            //anchors.topMargin: 100
+            anchors.bottomMargin: 65
 
             GridLayout {
                 id: grid
@@ -173,6 +185,7 @@ ApplicationWindow {
  /***********************************************************************/
 
     menuBar: MenuBar {
+        //height:20
         Menu {
             title: '&File'
             Action { text: '&New...' }
@@ -198,6 +211,7 @@ ApplicationWindow {
  /***********************************************************************/
 
     header: ToolBar {
+
         RowLayout {
             anchors.fill: parent
 
@@ -219,14 +233,14 @@ ApplicationWindow {
                     anchors.centerIn: parent.Center
                     text: app.userName
                 }*/
-                text: '_' + app.userName + "shit"
+                text: "User"//'_' + app.userName + "shit"
 
                 onClicked: {
                     loader.loadFragment("qrc:/qml/Pages/user.qml")
                 }
             }
             ToolSeparator {}
-            ToolButton { text: 'Action 4' }
+            //ToolButton { text: 'Action 4' }
             ToolButton {
                 icon.source: 'qrc:/images/baseline-more_vert-24px.svg'
                 onClicked: menu.open()

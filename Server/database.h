@@ -55,6 +55,7 @@ public:
 
 
     void SaveMsg(QString, int, int);
+    QVector<Message> GetMessages(int, int);
 
 private:
     // Сам объект базы данных, с которым будет производиться работа

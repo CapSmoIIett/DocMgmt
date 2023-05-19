@@ -3,5 +3,7 @@
         <file>images/baseline-category-24px.svg</file>
         <file>images/baseline-menu-24px.svg</file>
         <file>images/baseline-more_vert-24px.svg</file>
+        <file>images/fox_icon.ico</file>
+        <file>images/fox_icon.png</file>
     </qresource>
 </RCC>

@@ -12,7 +12,7 @@ Pane {
 
     Rectangle {
         id: top
-        color: "#EBD4D1"
+        color: Material.color(Material.Purple)
         height: parent.height / 6
         width: parent.width
         anchors.margins: 0
@@ -39,7 +39,7 @@ Pane {
 
     GridLayout {
         id: grid
-        rows: 2
+        rows: 1
         columns: 6
         flow: GridLayout.TopToBottom
         anchors.top: separator.bottom
@@ -50,7 +50,7 @@ Pane {
             id: accessLvlLabel
             anchors.margins: 15
 
-            text: "Right: "
+            text: "Access Lvl: "
         }
 
         ComboBox {

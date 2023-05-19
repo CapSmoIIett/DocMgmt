@@ -16,6 +16,13 @@ Rectangle {
         RowLayout {
             anchors.fill: parent
 
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                width: 30
+            }
+
             ToolButton {
                 id: updateButton
 
@@ -39,6 +46,13 @@ Rectangle {
                     console.log("Add right")
                     app.addRightsRequest()
                 }
+            }
+
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                width: 30
             }
         }
     }

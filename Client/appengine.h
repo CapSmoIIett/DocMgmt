@@ -14,6 +14,7 @@ class AppEngine : public QObject
     Q_PROPERTY(QString password READ password WRITE setPassword)
     Q_PROPERTY(QString office READ office WRITE setOffice)
     Q_PROPERTY(QString right READ right WRITE setRight)
+    Q_PROPERTY(int id READ id WRITE setID)
 
     Q_PROPERTY(QString ip READ ip WRITE setIP NOTIFY onChangeIP)
     Q_PROPERTY(QString port READ port WRITE setPort NOTIFY onChangePort)
@@ -35,6 +36,9 @@ public:
 
     QString right();
     void setRight(const QString &password);
+
+    int id();
+    void setID(const int &ip);
 
     QString ip();
     void setIP(const QString &ip);

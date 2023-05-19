@@ -768,12 +768,12 @@ void Database::SaveMsg(QString text, int id_sender, int id_recipient)
     int result = 0;
     int it = 0;
 
-    query.prepare("INSERT INTO messages (id_sender, id_recipient, text, date_time) VALUES (:sender, :recipient, :text, TO_DATE(':dtime, 'DD/MM/YYYY HH:MI:SS')) ");
+    query.prepare("INSERT INTO messages (id_sender, id_recipient, text, date_time) VALUES (:sender, :recipient, :text, TO_TIMESTAMP(:dtime, 'DD/MM/YYYY HH24:MI:SS')) ");
 
-    query.bindValue(":id_sender", id_sender);
-    query.bindValue(":id_recipient", id_recipient);
+    query.bindValue(":sender", id_sender);
+    query.bindValue(":recipient", id_recipient);
     query.bindValue(":text", text);
-    query.bindValue(":dtime", QDateTime::currentDateTime().toString("DD/MM/YYYY HH:MM:SS"));
+    query.bindValue(":dtime", QDateTime::currentDateTime().toString("dd/MM/yyyy HH:MM:ss"));
 
     result = query.exec();
 
@@ -783,5 +783,47 @@ void Database::SaveMsg(QString text, int id_sender, int id_recipient)
         qDebug() << query.lastError().text();
     }
 
+}
+
+QVector<Message> Database::GetMessages(int id1, int id2)
+{
+    qDebug() << id1 << " " << id2;
+
+    QSqlQuery query;
+    QVector<Message> messages;
+    int result;
+
+    query.prepare(QString("SELECT * FROM messages WHERE (id_sender = :id1 AND id_recipient = :id2) OR (id_sender = :id2 AND id_recipient = :id1)"));
+
+    query.bindValue(":id1", id1);
+    query.bindValue(":id2", id2);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexText = rec.indexOf( "text" );
+    const int indexSender = rec.indexOf( "id_sender" );
+    const int indexRecipient = rec.indexOf( "id_recipient" );
+    const int indexTimestamp = rec.indexOf( "date_time" );
+
+    while (query.next())
+    {
+        Message msg;
+        msg.text = query.value(indexText).toString();
+        msg.sender = query.value(indexSender).toInt();
+        msg.recepient = query.value(indexRecipient).toInt();
+        msg.date_time = query.value(indexTimestamp).toDateTime();
+
+        messages.push_back(msg);
+    }
+
+    return messages;
 }
 

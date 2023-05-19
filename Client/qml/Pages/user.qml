@@ -15,14 +15,14 @@ Pane {
     anchors.fill: parent
 
     Rectangle {
-        width: parent.width / 2
+        width: (app.id === userPage.id) ? parent.width : parent.width / 2
         height: parent.height
         id: left
 
 
     Rectangle {
         id: top
-        color: "#EBD4D1"
+        color: Material.color(Material.Purple)
         height: parent.height / 6
         width: parent.width
         anchors.margins: 0
@@ -115,6 +115,12 @@ Pane {
     Component.onCompleted: {
         //userPage.loadUserRequest(0)
         for(var i = 0; i < offices.model.count; ++i) if (offices.model.get(i) === userPage.right)  offices.currentIndex(i)
+
+        //messenger.clear()
+        //messenger.clear()
+        //app.uploadMessages(userPage.id)
+
+
     }
     }
 
@@ -122,19 +128,67 @@ Pane {
     Rectangle {
         id: chat
 
+        visible: app.id !== userPage.id
+
         width: parent.width / 2
         height: parent.height
 
         ListView {
-            Layout.fillHeight: true
-            anchors.left: chat.left
-            anchors.top: chat.top
+            //anchors.top: parent
+            rotation:180
+            anchors.fill: parent
+            anchors.bottomMargin:  line.height + 30
+            anchors.rightMargin: 25
+            anchors.margins: 15
+            anchors.leftMargin: 30
+            //Layout.fillHeight: true
+            //anchors.left: chat.left
+            //anchors.top: chat.top
+
+            //color: "green"
+            //verticalLayoutDirection: ListView.BottomToTop
+
+            model: messenger
+            //model:
+                ListModel {
+                ListElement{
+                    display: "name1"
+                    user: 0
+                }
+                ListElement{
+                    display: "name2"
+                    user: 1
+                }
+                ListElement{
+                    display: "name1"
+                    user: 0
+                }
+            }
+
+            delegate: Rectangle {
+                rotation:180
+                width: parent.width
+                height: 30;
+                anchors.leftMargin: 40//user === 0 ? 0 : 20
+
+                color: "red"//"DDDDDD"
+                border.width: 1
+                //text:  model.display
+                Label {
+                    text: display
+                    anchors.centerIn: parent
+                    horizontalAlignment: Qt.AlignHCenter
+                    //anchors.
+                }
+            }
         }
 
         RowLayout {
+            id: line
             Layout.preferredHeight: 40
             width: parent.width
             anchors.bottom: chat.bottom
+            anchors.margins: 15
 
             TextField {
                 id:text
@@ -144,11 +198,19 @@ Pane {
             Button {
                 text: "Send"
                 onClicked: {
-                    app.sendMessage(text, userPage.id)
+                    //userPage.addMessage(text.text);
+
+                    messenger.addMessage(text.text)
+                    app.sendMessage(text.text, userPage.id)
+                    text.text = ""
+
+                    //messenger.update()
+                    //Qt.inputMethod.reset(text)
                 }
             }
 
             Component.onCompleted: {
+                app.uploadMessages(userPage.id)
             }
     }
 

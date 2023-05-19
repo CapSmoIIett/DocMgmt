@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlProperty>
+#include <QIcon>
 
 
 #include "header.h"
@@ -15,6 +16,7 @@
 #include "userpage.h"
 #include "officepage.h"
 #include "rightpage.h"
+#include "messenger.h"
 
 #include "../logger.h"
 
@@ -26,10 +28,13 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    app.setWindowIcon(QIcon("qrc:/images/fox_icon.png"));
+    //'qrc:/images/baseline-more_vert-24px.svg'
+
     //qmlRegisterType<PersonalTableModel>("PersonalModel", 1, 0, "PersonalModel");
 
     QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/DocMgmtQt/qml/main.qml"_qs);
+    const QUrl url(u"qrc:/qml/main.qml"_qs);
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -61,6 +66,9 @@ int main(int argc, char *argv[])
 
     RightPage rpage(&appEngine);
     engine.rootContext()->setContextProperty("rightPage", &rpage);
+
+    Messenger msger(&appEngine);
+    engine.rootContext()->setContextProperty("messenger", &msger);
 
     QObject* qtquick2Themes = engine.rootObjects()[0]->findChild<QObject*>("qtquick2Themes");
     //qtquick2Themes->setProperty("text", qgetenv("QT_QUICK_CONTROLS_STYLE"));

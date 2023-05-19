@@ -90,7 +90,7 @@ Rectangle {
 
             ToolButton {
                 width: 30
-                text: 'Add right'
+                text: 'Add file'
                 onClicked: {
                     console.log("Add right")
                     app.addRightsRequest()

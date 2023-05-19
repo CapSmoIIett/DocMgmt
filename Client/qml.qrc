@@ -18,5 +18,8 @@
         <file>qml/Pages/officestable.qml</file>
         <file>qml/Pages/right.qml</file>
         <file>qml/Pages/rightstable.qml</file>
+        <file>qml/authenticationWindow.qml</file>
+        <file>qml/files.qml</file>
+        <file>qml/main.qml</file>
     </qresource>
 </RCC>

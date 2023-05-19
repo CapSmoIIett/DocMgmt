@@ -26,12 +26,6 @@
 #include "../encrypter.h"
 #include "../logger.h"
 
-struct _Client
-{
-    QTcpSocket* socket;
-    QString ip;
-};
-
 class Server : public QObject //public QTcpServer
 {
     Q_OBJECT

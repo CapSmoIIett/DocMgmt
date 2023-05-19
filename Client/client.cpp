@@ -212,7 +212,7 @@ void Client::sendMessage(QString text, int id_sender, int id_accepter)
 
 void Client::uploadMessages(int id1, int id2)
 {
-    SendRequest(QString("Type:%1,ID3:%2,ID2:%3").arg(MSG_SEND_MSG).arg(id1).arg(id2));
+    SendRequest(QString("Type:%1,ID1:%2,ID2:%3").arg(MSG_UPLOAD_MSGS).arg(id1).arg(id2));
 }
 
 void Client::changeAccessLvlFileRequest(QString name, int lvl)
@@ -457,6 +457,30 @@ void Client::ReadSocket ()
 
     } break;
 
+    case MSG_UPLOAD_MSGS:
+    {
+        qDebug();
+
+        QVector<Message> messages;
+        QString size = header.split(",")[1].split(":")[1];
+
+        qDebug() << "Size" << size;
+
+        for (int i = 0; i < size.toInt(); i++)
+        {
+            Message msg;
+
+            msg.text = header.split(",")[1 + (i * 4) + 1].split(":")[1];
+            msg.sender = header.split(",")[1 + (i * 4) + 2].split(":")[1].toInt();
+            msg.recepient = header.split(",")[1 + (i * 4) + 3].split(":")[1].toInt();
+            msg.date_time = QDateTime::fromString(header.split(",")[1 + (i * 4) + 4].split(":")[1]);
+
+            messages.push_back(msg);
+        }
+
+        emit onGetMessages(messages);
+
+    } break;
 
     }
 

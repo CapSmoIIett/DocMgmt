@@ -74,13 +74,3 @@ void UserPage::GetUser(User user)
     this->user = user;
     emit getedUser();
 }
-
-void UserPage::GetMessages(QVector<Message> messages)
-{
-    v_Messages = messages;
-}
-
-void UserPage::GetMessage(Message msg)
-{
-    v_Messages.push_back(msg);
-}

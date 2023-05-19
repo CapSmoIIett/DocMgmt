@@ -42,6 +42,8 @@ struct Message
 {
     QString text;
     QDateTime date_time;
+    int sender;
+    int recepient;
 };
 
 #define LOWEST_ACS_LVL 7

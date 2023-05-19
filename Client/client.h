@@ -71,6 +71,8 @@ signals:
     void onGetRight(Right);
     void onGetOffice(Office);
     void onGetFiles(QVector<File>);
+    void onGetMessages(QVector<Message>);
+    void onGetMessage(Message);
 
 public slots:
     void ConnectToServer();

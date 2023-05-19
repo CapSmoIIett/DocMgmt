@@ -36,8 +36,6 @@ public:
 
 public slots:
     void GetUser(User user);
-    void GetMessages(QVector<Message>);
-    void GetMessage(Message msg);
 
 signals:
     void getedUser();
@@ -46,7 +44,6 @@ private:
     AppEngine* p_AppEngine;
     User user;
 
-    QVector<Message> v_Messages;
 };
 
 #endif // USERPAGE_H
