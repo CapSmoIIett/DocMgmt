@@ -10,6 +10,12 @@ class PersonalTableModel : public QAbstractTableModel
     Q_OBJECT
 public:
 
+    enum Role {
+        Display = Qt::DisplayRole,
+        Type = Qt::UserRole
+    };
+    Q_ENUM(Role)
+
     explicit PersonalTableModel (AppEngine* engine, QObject* parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

@@ -232,6 +232,14 @@ Rectangle {
                     //app.removeUserRequest(menu.curRow)
                 }
             }
+
+            MenuItem {
+                text: 'sign'
+
+                onClicked: {
+                    app.sign(path.text, filesTableModel.getNameByRow(menu.curRow))
+                }
+            }
         }
 
         Menu {

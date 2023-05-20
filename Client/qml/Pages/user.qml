@@ -14,101 +14,138 @@ Pane {
     Row {
     anchors.fill: parent
 
+    anchors.margins: 15
+
     Rectangle {
         width: (app.id === userPage.id) ? parent.width : parent.width / 2
         height: parent.height
         id: left
 
+        Rectangle {
+            id: top
 
-    Rectangle {
-        id: top
-        color: Material.color(Material.Purple)
-        height: parent.height / 6
-        width: parent.width
-        anchors.margins: 0
+            color: Material.color(Material.Purple)
+            height: 110 //parent.height / 6
+            width: parent.width
+            //anchors.topMargin: 20
+            anchors.leftMargin: 55
+            //anchors.margins: 0
 
-    }
-
-    Label {
-        id: labelUsername
-        anchors.top: top.bottom
-        anchors.left: parent.left
-        anchors.margins: 15
-
-        text: userPage.userName;
-    }
-
-    MenuSeparator {
-        id: separator
-        anchors.top: labelUsername.bottom
-        anchors.left: parent.left
-        anchors.topMargin: 15
-        anchors.bottomMargin: 15
-        width: parent.width
-    }
-
-    GridLayout {
-        id: grid
-        rows: 2
-        columns: 6
-        flow: GridLayout.TopToBottom
-        anchors.top: separator.bottom
-        width: parent.width
+        }
 
 
+        Rectangle {
+            radius: width*0.5
+            height: 110
+            width: 110
+            //anchors.topMargin: 20
+            anchors.margins: 30
+            color: Material.color(Material.Purple)
 
-        Label {
-            id: officeLabel
-            anchors.margins: 15
-
-            text: "Office: "
+            Image {
+                anchors.centerIn: parent
+                source: app.getIcon500UrlById(userPage.id)
+            }
         }
 
         Label {
-            id: rightLabel
+            id: labelUsername
+            anchors.top: top.bottom
+            anchors.left: parent.left
             anchors.margins: 15
 
-            text: "Right: "
+            font.family: "Helvetica"
+            font.pointSize: 20
+
+            text: userPage.userName;
         }
 
-        ComboBox {
-            id: offices
+        MenuSeparator {
+            id: separator
+            anchors.top: labelUsername.bottom
+            anchors.left: parent.left
+            anchors.topMargin: 15
+            anchors.bottomMargin: 15
+            width: parent.width
+        }
+
+        GridLayout {
+            id: grid
+            rows: 2
+            columns: 6
+            flow: GridLayout.TopToBottom
+            anchors.top: separator.bottom
+
+
+            width: parent.width
+
+
+
+            Label {
+                id: officeLabel
+                anchors.margins: 15
+
+                text: "Office: "
+            }
+
+            Label {
+                id: rightLabel
+                anchors.margins: 15
+
+                text: "Right: "
+            }
+
+            ComboBox {
+                id: offices
+                anchors.margins: 15
+                width: 100
+                //Layout.fillWidth: true
+
+                model: officeTableModel.getOfficeNames()
+
+                onEditTextChanged: save.enabled = true
+
+            }
+
+            ComboBox {
+                id: rights
+                anchors.margins: 15
+                width: 100
+                //Layout.fillWidth: true
+
+                model: rightsTableModel.getRightNames()
+
+                onEditTextChanged: save.enabled = true
+            }
+        }
+
+        Row {
+            anchors.top: grid.bottom
             anchors.margins: 15
-            width: 100
-            //Layout.fillWidth: true
+            width: parent.width
 
-            model: officeTableModel.getOfficeNames()
+            Label {
+                elide: Label.ElideRight
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+                Layout.fillWidth: true
+            }
 
-            onEditTextChanged: save.enabled = true
-
-        }
-
-        ComboBox {
-            id: rights
+            Button {
+            id: save
+            anchors.top: grid.bottom
             anchors.margins: 15
-            width: 100
-            //Layout.fillWidth: true
+            Layout.fillWidth: true
+            enabled: false
 
-            model: rightsTableModel.getRightNames()
+            text: "Save Changes"
 
-            onEditTextChanged: save.enabled = true
-        }
-    }
-
-    Button {
-        id: save
-        anchors.top: grid.bottom
-        anchors.margins: 15
-        Layout.fillWidth: true
-        enabled: false
-
-        text: "Save Changes"
-
-        onClicked: {
+            onClicked: {
             userPage.office = offices.currentText
             userPage.right = rights.currentText
 
             userPage.uploadData()
+            }
         }
     }
 

@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    app.setWindowIcon(QIcon("qrc:/images/fox_icon.png"));
+    //app.setWindowIcon(QIcon("qrc:/images/fox_icon.png"));
+    app.setWindowIcon(QIcon("fox_icon.ico"));
     //'qrc:/images/baseline-more_vert-24px.svg'
 
     //qmlRegisterType<PersonalTableModel>("PersonalModel", 1, 0, "PersonalModel");

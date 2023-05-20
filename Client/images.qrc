@@ -5,5 +5,14 @@
         <file>images/baseline-more_vert-24px.svg</file>
         <file>images/fox_icon.ico</file>
         <file>images/fox_icon.png</file>
+        <file>images/characters/gunter-100.png</file>
+        <file>images/characters/gunter-500.png</file>
+        <file>images/characters/gunter-50.png</file>
+        <file>images/characters/finn-50.png</file>
+        <file>images/characters/ice-king-50.png</file>
+        <file>images/characters/jake-50.png</file>
+        <file>images/characters/lumpy-space-princess-50.png</file>
+        <file>images/characters/marceline-50.png</file>
+        <file>images/characters/princess-bubblegum-50.png</file>
     </qresource>
 </RCC>

@@ -26,18 +26,24 @@ int PersonalTableModel::columnCount(const QModelIndex &parent) const
     //qDebug();
     //qDebug() << "PersonalTableModel::columnCount";
 
-    return 3;
+    return 4;
 }
 
 QHash<int, QByteArray> PersonalTableModel::roleNames() const
 {
-    return {{Qt::DisplayRole, "display"}};
+    QHash<int, QByteArray> hash;
+    return {{Qt::DisplayRole, "display"}, {Role::Type, "type"}};
 }
 
 QVariant PersonalTableModel::data(const QModelIndex &index, int role) const
 {
     qDebug();
     qDebug() << "PersonalTableModel::data";
+
+    if (role == Role::Type)
+    {
+        return index.column() == 0 ? "icon" : "str";
+    }
 
     if (!index.isValid() || role !=  Qt::DisplayRole)
         return QVariant("null");
@@ -47,11 +53,13 @@ QVariant PersonalTableModel::data(const QModelIndex &index, int role) const
 
     User user = v_Users[index.row()];
 
+
     switch (index.column())
     {
-    case 0: return user.s_Full_Name;
-    case 1: return user.s_Right;
-    case 2: return user.s_Office;
+    case 0: return user.i_ID;
+    case 1: return user.s_Full_Name;
+    case 2: return user.s_Right;
+    case 3: return user.s_Office;
     default: break;
     }
 
@@ -65,10 +73,12 @@ QVariant PersonalTableModel::headerData(int section, Qt::Orientation orientation
         switch (section)
         {
         case 0:
-            return QString("Full Name");
+            return QString("Avatar");
         case 1:
-            return QString("Right");
+            return QString("Full Name");
         case 2:
+            return QString("Right");
+        case 3:
             return QString("Office");
         }
     }
@@ -101,5 +111,5 @@ void PersonalTableModel::GetUserList(QVector<User> users)
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     endInsertRows();
 
-    emit dataChanged(index(0, 0), index(v_Users.size() - 1, 3), {Qt::DisplayRole});
+    emit dataChanged(index(0, 0), index(v_Users.size() - 1, 4), {Qt::DisplayRole, Role::Type});
 }

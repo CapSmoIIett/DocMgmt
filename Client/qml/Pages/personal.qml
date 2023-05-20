@@ -82,30 +82,31 @@ Rectangle {
         anchors.topMargin: toolBar.height + 15
         anchors.margins: 15
 
-        //border.width: 1
+       // border.width: 1
 
-    HorizontalHeaderView {
-        id: horizontalHeader
-        syncView: table
-        //anchors.top: toolBar.bottom
-        anchors.left: parent.left
-        height: 40
+        HorizontalHeaderView {
+            id: horizontalHeader
+            syncView: table
+            //anchors.top: toolBar.bottom
+            anchors.left: parent.left
+            height: 40
 
-        delegate: Rectangle {
-            height: parent.height
-            width: table.columnWidthProvider(column)
-            color: "#CE93D8"
+            delegate: Rectangle {
+                height: parent.height
+                width: table.columnWidthProvider(column)
+                color: "#CE93D8"
 
-            Label {
-                width: parent.width
-                elide: Text.ElideRight
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
+                Label {
+                    width: parent.width
+                    elide: Text.ElideRight
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
 
-                text:  model.display
-                font.family: "Helvetica"
-                font.weight: Font.Bold
-                //font.pointSize: 20
+                    text:  model.display
+                    font.family: "Helvetica"
+                    font.weight: Font.Bold
+                    //font.pointSize: 20
+                }
             }
         }
     }
@@ -115,7 +116,7 @@ Rectangle {
         id: table
 
         anchors.fill: parent
-        anchors.topMargin: horizontalHeader.height + 10
+        anchors.topMargin: horizontalHeader.height + 85
         //anchors.leftMargin: tableVerticalBar.width
         clip: true
 
@@ -126,75 +127,91 @@ Rectangle {
 
 
         columnWidthProvider: function (column) {
-            return table.width / 3//table.model.columnCount();
+            return table.width / 4//table.model.columnCount();
         }
 
         onWidthChanged: table.forceLayout()
 
         model: personalTableModel
 
-        delegate: Rectangle {
-            Rectangle {
-                id:cell
-            implicitWidth: table.columnWidthProvider(column)
-            implicitHeight: 30
+        delegate: DelegateChooser {
+            role: "type"
 
-            //color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
+            DelegateChoice {
+                roleValue: "str"
 
-            //color: (row % 2 == 0) ? "#FFFFFF" : "#f1dff4"
+                Rectangle {
+                    Rectangle {
+                        id:cell
+                        implicitWidth: table.columnWidthProvider(column)
+                        implicitHeight: 50
 
+                        //color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
 
-            border.width: 1
-
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                //anchors.width: main.width
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                hoverEnabled: true
-
-                Label {
-                    text: display
+                        //color: (row % 2 == 0) ? "#FFFFFF" : "#f1dff4"
 
 
-                    width: parent.width
-                    elide: Text.ElideRight
-                    anchors.centerIn: parent
-                    horizontalAlignment: Text.AlignHCenter
-                }
+                        border.width: 1
 
-                onClicked: {
+                        MouseArea {
+                            id: mouseArea
+                            anchors.fill: parent
+                            //anchors.width: main.width
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                    if (mouse.button === Qt.RightButton)
-                    {
-                        console.log(row);
-                        menu.curRow = row
-                        menu.popup()
+                            hoverEnabled: true
+
+                            Label {
+                                text: display
+
+
+                                width: parent.width
+                                elide: Text.ElideRight
+                                anchors.centerIn: parent
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+
+                            onClicked: {
+
+                                if (mouse.button === Qt.RightButton)
+                                {
+                                    console.log(row);
+                                    menu.curRow = row
+                                    menu.popup()
+                                }
+                                else if (mouse.button === Qt.LeftButton)
+                                {
+                                    console.log("left");
+                                    console.log(row);
+                                    console.log(personalTableModel.getIDbyRow(row))
+                                    //main.loadUserPage(personalTableModel.getIDbyRow(row))
+                                    personalTableModel.loadUserPage(personalTableModel.getIDbyRow(row))
+                                }
+                            }
+                        }
                     }
-                    else if (mouse.button === Qt.LeftButton)
-                    {
-                        console.log("left");
-                        console.log(row);
-                        console.log(personalTableModel.getIDbyRow(row))
-                        //main.loadUserPage(personalTableModel.getIDbyRow(row))
-                        personalTableModel.loadUserPage(personalTableModel.getIDbyRow(row))
-                    }
+                    /*Rectangle{
+                        anchors.margins: 0
+                        anchors.top: cell.bottom
+
+                        border.width: 1
+
+                        height: 0.2
+                        width: parent.width
+                    }*/
                 }
             }
-            }
-            Rectangle{
-                anchors.margins: 0
-                anchors.top: cell.bottom
+            DelegateChoice {
+                Rectangle {
 
-                border.width: 1
-
-                height: 0.2
-                width: parent.width
+                    border.width: 1
+                    Image {
+                        anchors.centerIn: parent
+                        source: app.getIcon100UrlById(display)
+                    }
+                }
             }
         }
-
-
 
         Menu {
             id: menu
@@ -214,7 +231,6 @@ Rectangle {
         Component.onCompleted: {
             app.usersListRequest()
         }
-    }
     }
 
 }

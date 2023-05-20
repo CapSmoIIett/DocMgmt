@@ -46,6 +46,7 @@ public:
     QString port();
     void setPort(const QString &port);
 
+
     Client& GetClient();
 
     Q_INVOKABLE bool verify();
@@ -68,6 +69,8 @@ public:
     Q_INVOKABLE void changeAccessLvl(QString path, QString name, int lvl);
     Q_INVOKABLE User getCurUser();
 
+    Q_INVOKABLE User sign(QString path, QString name);
+
 
     void uploadUserData(User user);
     void uploadRightData(Right right);
@@ -77,6 +80,9 @@ public:
 
     Q_INVOKABLE void sendMessage(QString text, int id);
     Q_INVOKABLE void uploadMessages(int id);
+
+    Q_INVOKABLE QString getIcon100UrlById(int id);
+    Q_INVOKABLE QString getIcon500UrlById(int id);
 
 signals:
     void verified(bool result);

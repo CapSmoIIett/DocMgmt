@@ -25,6 +25,10 @@ link_directories(${PostgreSQL_LIBRARY_DIRS})
 
 ###########################################################################
 
+#target_include_directories(appDocMgmtQt public "../versypdf")
+
+###########################################################################
+
 qt_add_executable(appDocMgmtQt
     main.cpp
     header.h

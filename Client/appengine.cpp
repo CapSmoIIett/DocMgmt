@@ -1,5 +1,11 @@
 #include "appengine.h"
 
+#include <QHash>
+
+//#include "VersyPDF.h"
+#include "../versypdf/VersyPDF.h"
+
+
 AppEngine::AppEngine(QObject* parent) :
     QObject(parent),
     s_IP("127.0.0.1")
@@ -222,6 +228,12 @@ User AppEngine::getCurUser()
     return user;
 }
 
+User AppEngine::sign(QString path, QString name)
+{
+    PDFDocHandle Doc = NULL;
+    PDFLibHandle Lib = NULL;
+}
+
 void AppEngine::GetCurUser(User user)
 {
     qDebug() << this->user.i_ID;
@@ -268,3 +280,28 @@ void AppEngine::uploadMessages(int id)
     client.uploadMessages(user.i_ID, id);
 }
 
+QString AppEngine::getIcon100UrlById(int id)
+{
+    static QHash<int, QString> icons = {
+        {0, "qrc:/images/characters/finn-50.png"},
+        {1, "qrc:/images/characters/ice-king-50.png"},
+        {2, "qrc:/images/characters/jake-50.png"},
+        {3, "qrc:/images/characters/lumpy-space-princess-50.png"},
+        {4, "qrc:/images/characters/marceline-50.png"},
+        {5, "qrc:/images/characters/princess-bubblegum-50.png"},
+        {6, "qrc:/images/characters/ice-50.png"},
+        {7, "qrc:/images/characters/ice-50.png"},
+        {8, "qrc:/images/characters/gunter-50.png"}
+    };
+
+    return icons[id % icons.size()];
+}
+
+QString AppEngine::getIcon500UrlById(int id)
+{
+    static QHash<int, QString> icons = {
+        {0, "qrc:/images/characters/gunter-100.png"}
+    };
+
+    return icons[id % icons.size()];
+}
