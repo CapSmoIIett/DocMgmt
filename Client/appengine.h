@@ -81,8 +81,8 @@ public:
     Q_INVOKABLE void sendMessage(QString text, int id);
     Q_INVOKABLE void uploadMessages(int id);
 
+    Q_INVOKABLE QString getIcon50UrlById(int id);
     Q_INVOKABLE QString getIcon100UrlById(int id);
-    Q_INVOKABLE QString getIcon500UrlById(int id);
 
 signals:
     void verified(bool result);

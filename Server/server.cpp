@@ -411,7 +411,8 @@ void Server::ReadSocket()
                 accepter = it.key();
         }
 
-        QString data = QString("Type:%1,Text:%2,Sender:%3").arg(MSG_SEND_MSG).arg(text).arg(id_sender);
+        QString data = QString("Type:%1,Text:%2,Sender:%3,Recepient:%4,Date:%5").arg(MSG_SEND_MSG).arg(text).
+                       arg(id_sender).arg(id_accepter).arg(QDateTime::currentDateTime().toString());
 
         emit SendToSpecificClient(accepter, data);
 

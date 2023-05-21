@@ -44,7 +44,7 @@ Pane {
 
             Image {
                 anchors.centerIn: parent
-                source: app.getIcon500UrlById(userPage.id)
+                source: app.getIcon100UrlById(userPage.id)
             }
         }
 
@@ -170,53 +170,51 @@ Pane {
         width: parent.width / 2
         height: parent.height
 
+        anchors.leftMargin: 30
+
         ListView {
             //anchors.top: parent
+
             rotation:180
             anchors.fill: parent
             anchors.bottomMargin:  line.height + 30
-            anchors.rightMargin: 25
+            anchors.rightMargin: 50
             anchors.margins: 15
-            anchors.leftMargin: 30
-            //Layout.fillHeight: true
-            //anchors.left: chat.left
-            //anchors.top: chat.top
-
-            //color: "green"
-            //verticalLayoutDirection: ListView.BottomToTop
+            anchors.leftMargin: 40
 
             model: messenger
-            //model:
-                ListModel {
-                ListElement{
-                    display: "name1"
-                    user: 0
-                }
-                ListElement{
-                    display: "name2"
-                    user: 1
-                }
-                ListElement{
-                    display: "name1"
-                    user: 0
-                }
-            }
 
             delegate: Rectangle {
-                rotation:180
-                width: parent.width
-                height: 30;
-                anchors.leftMargin: 40//user === 0 ? 0 : 20
+                id: cell
 
-                color: "red"//"DDDDDD"
-                border.width: 1
-                //text:  model.display
-                Label {
-                    text: display
-                    anchors.centerIn: parent
-                    horizontalAlignment: Qt.AlignHCenter
-                    //anchors.
+                width: parent.width // / 5 * 3
+                height: 30
+
+                Rectangle {
+                    id: msg
+
+                    rotation:180
+                    width: parent.width / 5 * 3
+                    height: 30
+
+                    anchors.right: isYouSentIt ? undefined : cell.right
+
+                    color: Material.color((isYouSentIt) ? Material.Purple : Material.Pink)
+                    //border.width: 1
+
+
+                    Label {
+                        text: display
+                        anchors.centerIn: parent
+                        horizontalAlignment: Qt.AlignHCenter
+                    }
                 }
+
+                Rectangle {
+                    width: parent.width
+                    height: 5
+                }
+
             }
         }
 
@@ -226,6 +224,7 @@ Pane {
             width: parent.width
             anchors.bottom: chat.bottom
             anchors.margins: 15
+            anchors.leftMargin: 30
 
             TextField {
                 id:text
@@ -247,7 +246,12 @@ Pane {
             }
 
             Component.onCompleted: {
+                console.log(app.id)
+                console.log(userPage.id)
+                messenger.clear()
+                messenger.setUsersID(app.id, userPage.id)
                 app.uploadMessages(userPage.id)
+                messenger.update()
             }
     }
 

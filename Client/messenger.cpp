@@ -32,6 +32,7 @@ Messenger::Messenger(AppEngine* engine, QObject *parent) :
     */
 
     connect(&engine->GetClient(), &Client::onGetMessages, this, &Messenger::GetMessages);
+    connect(&engine->GetClient(), &Client::onGetMessage, this, &Messenger::GetMessage);
 
 }
 
@@ -43,8 +44,23 @@ int Messenger::rowCount(const QModelIndex& parent) const
 
 QVariant Messenger::data( const QModelIndex& index, int role) const
 {
+    qDebug() << index.row();
+
+    if (role == Role::Sender)
+    {
+        qDebug() << v_Messages[v_Messages.size() - index.row() - 1].sender << " " <<  this->i_CurUser ;
+        return v_Messages[v_Messages.size() - index.row() - 1].sender == this->i_CurUser;
+    }
+
     qDebug() << v_Messages[v_Messages.size() - index.row() - 1].text;
+
     return v_Messages[v_Messages.size() - index.row() - 1].text;
+}
+
+QHash<int, QByteArray> Messenger::roleNames() const
+{
+    QHash<int, QByteArray> hash;
+    return {{Qt::DisplayRole, "display"}, {Role::Sender, "isYouSentIt"}};
 }
 
 
@@ -61,7 +77,19 @@ void Messenger::GetMessages(QVector<Message> messages)
 
 void Messenger::GetMessage(Message msg)
 {
+    if (msg.sender != this->i_SecondUser)
+        return;
+
+    qDebug() << msg.text;
+    qDebug() << msg.sender;
+
+    beginInsertRows(QModelIndex(), 0, 0);
+
     v_Messages.push_back(msg);
+
+    endInsertRows();
+
+    emit dataChanged(index(0, 0), index(v_Messages.size() - 1, 1), {Qt::DisplayRole});
 }
 
 void Messenger::addMessage(QString str)
@@ -86,7 +114,7 @@ void Messenger::addMessage(QString str)
     //update();
 }
 
-void Messenger::clear(QString)
+void Messenger::clear()
 {
     v_Messages.clear();
 }

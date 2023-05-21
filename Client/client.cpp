@@ -454,6 +454,21 @@ void Client::ReadSocket ()
 
     case MSG_SEND_MSG:
     {
+        QString text = header.split(",")[1].split(":")[1];
+        int sender = header.split(",")[2].split(":")[1].toInt();
+        int recepient = header.split(",")[3].split(":")[1].toInt();
+        QDateTime dtime = QDateTime::fromString(header.split(",")[4].split(":")[1]);
+
+        qDebug() << sender << " " << recepient;
+
+        Message msg;
+        msg.text = text;
+        msg.sender = sender;
+        msg.recepient = recepient;
+        msg.date_time = dtime;
+
+
+        emit onGetMessage(msg);
 
     } break;
 

@@ -207,7 +207,7 @@ Rectangle {
                     border.width: 1
                     Image {
                         anchors.centerIn: parent
-                        source: app.getIcon100UrlById(display)
+                        source: app.getIcon50UrlById(display)
                     }
                 }
             }

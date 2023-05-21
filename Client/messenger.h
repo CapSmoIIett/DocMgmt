@@ -12,13 +12,19 @@ class Messenger : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    enum Role {
+        Display = Qt::DisplayRole,
+        Sender = Qt::UserRole
+    };
+
     Messenger(AppEngine* engine, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data( const QModelIndex& index, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void addMessage(QString);
-    Q_INVOKABLE void clear(QString);
+    Q_INVOKABLE void clear();
     Q_INVOKABLE void setUsersID(int main, int second);
     Q_INVOKABLE void update();
 

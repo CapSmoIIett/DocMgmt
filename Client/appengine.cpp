@@ -280,7 +280,7 @@ void AppEngine::uploadMessages(int id)
     client.uploadMessages(user.i_ID, id);
 }
 
-QString AppEngine::getIcon100UrlById(int id)
+QString AppEngine::getIcon50UrlById(int id)
 {
     static QHash<int, QString> icons = {
         {0, "qrc:/images/characters/finn-50.png"},
@@ -297,10 +297,18 @@ QString AppEngine::getIcon100UrlById(int id)
     return icons[id % icons.size()];
 }
 
-QString AppEngine::getIcon500UrlById(int id)
+QString AppEngine::getIcon100UrlById(int id)
 {
     static QHash<int, QString> icons = {
-        {0, "qrc:/images/characters/gunter-100.png"}
+        {0, "qrc:/images/characters/finn-100.png"},
+        {1, "qrc:/images/characters/ice-king-100.png"},
+        {2, "qrc:/images/characters/jake-100.png"},
+        {3, "qrc:/images/characters/lumpy-space-princess-100.png"},
+        {4, "qrc:/images/characters/marceline-100.png"},
+        {5, "qrc:/images/characters/princess-bubblegum-100.png"},
+        {6, "qrc:/images/characters/ice-100.png"},
+        {7, "qrc:/images/characters/ice-100.png"},
+        {8, "qrc:/images/characters/gunter-100.png"}
     };
 
     return icons[id % icons.size()];
