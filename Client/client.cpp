@@ -221,6 +221,18 @@ void Client::changeAccessLvlFileRequest(QString name, int lvl)
     SendRequest(QString("Type:%1,Name:%2,LVL:%3").arg(MSG_CHANGE_ACS_LVL).arg(name).arg(lvl));
 }
 
+void Client::loadCalendarRequest(int month, int year)
+{
+    qDebug() << month << " " << year;
+    SendRequest(QString("Type:%1,Month:%2,Year:%3").arg(MSG_UPLOAD_CALENDAR).arg(month).arg(year));
+}
+
+void Client::setHolidayRequest(QDate date, QString name)
+{
+    qDebug() << name;
+    SendRequest(QString("Type:%1,Name:%2,Date:%3").arg(MSG_SET_HOLIDAY).arg(name).arg(date.toString()));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
@@ -305,17 +317,16 @@ void Client::ReadSocket ()
     case MSG_LOAD_RIGHTS:
     {
         QVector<Right> rights;
-        QString size = header.split(",")[1].split(":")[1];
+        int size = header.split(",")[1].split(":")[1].toInt();
 
         qDebug() << "MSG_LOAD_RIGHTS" << size;
 
-        for (int i = 0; i < size.toInt(); i++)
+        for (int i = 0; i < size; i++)
         {
             Right right;
             right.i_ID = header.split(",")[1 + (i * 3)+ 1].split(":")[1].toInt();
             right.s_Name = header.split(",")[1 + (i * 3) + 2].split(":")[1];
             right.i_acs_lvl = header.split(",")[1 + (i * 3)+ 3].split(":")[1].toInt();
-
 
             rights.push_back(right);
         }
@@ -374,6 +385,38 @@ void Client::ReadSocket ()
         right.i_acs_lvl = header.split(",")[3].split(":")[1].toInt();
 
         emit onGetRight(right);
+    } break;
+
+    case MSG_UPLOAD_CALENDAR:
+    {
+        int size = header.split(",")[1].split(":")[1].toInt();
+        int month = header.split(",")[2].split(":")[1].toInt();
+        int year = header.split(",")[3].split(":")[1].toInt();
+
+        qDebug() << size << " " << month << " " << year;
+
+        QVector<QString> users;
+        QVector<QVector<QDate>> holidays;
+
+        int it = 4;
+        for (int i = 0; i < size; i++)
+        {
+            QString name = header.split(",")[it++].split(":")[1];
+            int size = header.split(",")[it++].split(":")[1].toInt();
+
+            users.push_back(name);
+
+            QVector<QDate> dates;
+            for (int j = 0; j < size; j++)
+            {
+                int day = header.split(",")[it++].split(":")[1].toInt();
+                dates.push_back(QDate(year, month, day));
+            }
+            holidays.push_back(dates);
+        }
+
+        emit onGetHolidays(users, holidays);
+
     } break;
 
 

@@ -123,6 +123,19 @@ bool Database::createTables()
         return false;
     }
 
+    result = query.exec("CREATE TABLE IF NOT EXISTS holidays"
+                "("
+                    "id_user int,"
+                    "date date primary key"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
     /*****************************************************
      * Add rights for supervisor
      */
@@ -827,3 +840,150 @@ QVector<Message> Database::GetMessages(int id1, int id2)
     return messages;
 }
 
+
+std::tuple<QVector<QString>, QVector<QVector<QDate>>> Database::GetHolidays(int month, int year)
+{
+    qDebug() << month << " " << year;
+
+    QSqlQuery queryUsers;
+    QSqlQuery queryHolidays;
+    QVector<QString> users;
+    QVector<QVector<QDate>> holidays;
+    int result;
+
+    result = queryUsers.exec("SELECT id, full_name FROM users ORDER BY id");
+
+    if (!result)
+    {
+        qDebug() << queryUsers.lastQuery();
+        qDebug() << queryUsers.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = queryUsers.record();
+    const int indexID = rec.indexOf( "id" );
+    const int indexName = rec.indexOf( "full_name" );
+
+    while (queryUsers.next())
+    {
+        int id = queryUsers.value(indexID).toInt();
+        QString name = queryUsers.value(indexName).toString();
+
+        qDebug() << id << " " << name;
+
+        users.push_back(name);
+
+        queryHolidays.prepare("SELECT date FROM holidays WHERE id_user = :id AND EXTRACT(year from date) = :year AND EXTRACT(month from date) = :month ORDER BY id_user");
+
+        queryHolidays.bindValue(":id", id);
+        queryHolidays.bindValue(":year", year);
+        queryHolidays.bindValue(":month", month);
+
+        result = queryHolidays.exec();
+
+        if (!result)
+        {
+            qDebug() << queryHolidays.lastQuery();
+            qDebug() << queryHolidays.lastError().text();
+            return {};
+        }
+
+        QSqlRecord rec = queryHolidays.record();
+        const int indexDate = rec.indexOf( "date" );
+
+        QVector<QDate> dates;
+        while (queryHolidays.next())
+        {
+            QDate date = queryHolidays.value(indexDate).toDate();
+            qDebug() << date.toString();
+            dates.push_back(date);
+        }
+        holidays.push_back(dates);
+    }
+
+    return std::make_tuple(users, holidays);
+}
+
+int Database::GetUserID(QString name)
+{
+    qDebug();
+
+    QSqlQuery query;
+    int result = 0;
+
+    query.prepare("SELECT id FROM users WHERE full_name = :name");
+
+    query.bindValue(":name", name);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexDate = rec.indexOf( "id" );
+
+    if (query.next())
+    {
+        return query.value(indexDate).toInt();
+    }
+
+    return -1;
+}
+
+void Database::SetHoliday(QDate date, int id)
+{
+
+    qDebug();
+
+    QSqlQuery query;
+    int result = 0;
+
+    query.prepare("SELECT * FROM holidays WHERE id_user = :id AND date = :date");
+
+    query.bindValue(":id", id);
+    query.bindValue(":date", date);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+    if (!query.next())
+    {
+        query.prepare("INSERT INTO holidays (id_user, date) VALUES (:id, :date)");
+
+        query.bindValue(":id", id);
+        query.bindValue(":date", date);
+
+        result = query.exec();
+
+        if (!result)
+        {
+            qDebug() << query.lastQuery();
+            qDebug() << query.lastError().text();
+        }
+
+        return;
+    }
+
+    query.prepare("DELETE FROM holidays WHERE id_user = :id AND date = :date");
+
+    query.bindValue(":id", id);
+    query.bindValue(":date", date);
+
+    result = query.exec();
+
+    if (!result) {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
+
+    return;
+}

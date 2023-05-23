@@ -69,7 +69,7 @@ public:
     Q_INVOKABLE void changeAccessLvl(QString path, QString name, int lvl);
     Q_INVOKABLE User getCurUser();
 
-    Q_INVOKABLE User sign(QString path, QString name);
+    Q_INVOKABLE bool sign(QString path, QString name);
 
 
     void uploadUserData(User user);
@@ -83,6 +83,9 @@ public:
 
     Q_INVOKABLE QString getIcon50UrlById(int id);
     Q_INVOKABLE QString getIcon100UrlById(int id);
+
+    Q_INVOKABLE void loadCalendarRequest(int month, int year);
+    Q_INVOKABLE void setHolidayRequest(QDate date, QString name);
 
 signals:
     void verified(bool result);

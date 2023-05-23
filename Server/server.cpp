@@ -255,6 +255,43 @@ void Server::ReadSocket()
 
     } break;
 
+    case MSG_UPLOAD_CALENDAR:
+    {
+        int month = header.split(",")[1].split(":")[1].toInt();
+        int year = header.split(",")[2].split(":")[1].toInt();
+
+        auto tp = db.GetHolidays(month, year);
+
+        auto users = std::get<0>(tp);
+        auto holidays = std::get<1>(tp);
+
+        QString data = QString("Type:%1,Size:%2,Month:%3,Year:%4,").arg(MSG_UPLOAD_CALENDAR).arg(users.size())
+           .arg(month).arg(year);
+
+        for (int i = 0; i < users.size(); i++)
+        {
+            data += QString("User%1:%2,").arg(i).arg(users[i]);
+            data += QString("Size%1:%2,").arg(i).arg(holidays[i].size());
+
+            for (int j = 0; j < holidays[i].size(); j++)
+            {
+                data += QString("date%1_%2:%3,").arg(i).arg(j).arg(holidays[i][j].toString("dd"));
+            }
+        }
+
+        emit SendToClient(data);
+    } break;
+
+    case MSG_SET_HOLIDAY:
+    {
+        QString name = header.split(",")[1].split(":")[1];
+        QDate date = QDate::fromString(header.split(",")[2].split(":")[1]);
+
+        db.SetHoliday(date, db.GetUserID(name));
+
+    } break;
+
+
 
 
     case MSG_GET_FILE_LIST:

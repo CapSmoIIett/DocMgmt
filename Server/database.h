@@ -57,6 +57,10 @@ public:
     void SaveMsg(QString, int, int);
     QVector<Message> GetMessages(int, int);
 
+    std::tuple<QVector<QString>, QVector<QVector<QDate>>> GetHolidays(int, int);
+    int GetUserID(QString name);
+    void SetHoliday(QDate, int);
+
 private:
     // Сам объект базы данных, с которым будет производиться работа
     QSqlDatabase    db;

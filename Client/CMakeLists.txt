@@ -29,6 +29,12 @@ link_directories(${PostgreSQL_LIBRARY_DIRS})
 
 ###########################################################################
 
+
+#include_directories("cryptopp/")
+#link_directories()
+
+###########################################################################
+
 qt_add_executable(appDocMgmtQt
     main.cpp
     header.h
@@ -53,6 +59,8 @@ qt_add_executable(appDocMgmtQt
     filesmodel.h
     messenger.h
     messenger.cpp
+    calendar.cpp
+    calendar.h
 
     images.qrc
 

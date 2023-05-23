@@ -20,6 +20,8 @@
 #define MSG_LOAD_RIGHT			112
 #define MSG_UPLOAD_USER_DATA 	113
 #define MSG_UPLOAD_RIGHT_DATA	114
+#define MSG_UPLOAD_CALENDAR		115
+#define MSG_SET_HOLIDAY			116
 
 
 #define MSG_GET_FILE_LIST		200
@@ -34,5 +36,7 @@
 
 #define MSG_SEND_MSG			300
 #define MSG_UPLOAD_MSGS			301
+
+
 
 #endif // MESSAGES_H

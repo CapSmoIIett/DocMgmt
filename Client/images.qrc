@@ -19,5 +19,7 @@
         <file>images/characters/lumpy-space-princess.png</file>
         <file>images/characters/marceline-100.png</file>
         <file>images/characters/p.png</file>
+        <file>images/back.png</file>
+        <file>images/forward.png</file>
     </qresource>
 </RCC>

@@ -17,6 +17,7 @@
 #include "officepage.h"
 #include "rightpage.h"
 #include "messenger.h"
+#include "calendar.h"
 
 #include "../logger.h"
 
@@ -70,6 +71,9 @@ int main(int argc, char *argv[])
 
     Messenger msger(&appEngine);
     engine.rootContext()->setContextProperty("messenger", &msger);
+
+    Calendar calendar(&appEngine);
+    engine.rootContext()->setContextProperty("calendar", &calendar);
 
     QObject* qtquick2Themes = engine.rootObjects()[0]->findChild<QObject*>("qtquick2Themes");
     //qtquick2Themes->setProperty("text", qgetenv("QT_QUICK_CONTROLS_STYLE"));

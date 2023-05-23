@@ -62,6 +62,9 @@ public:
     void sendMessage(QString, int, int);
     void uploadMessages(int, int);
 
+    void loadCalendarRequest(int month, int year);
+    void setHolidayRequest(QDate date, QString name);
+
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);
@@ -73,6 +76,7 @@ signals:
     void onGetFiles(QVector<File>);
     void onGetMessages(QVector<Message>);
     void onGetMessage(Message);
+    void onGetHolidays(QVector<QString>&, QVector<QVector<QDate>>&);
 
 public slots:
     void ConnectToServer();

@@ -228,10 +228,69 @@ User AppEngine::getCurUser()
     return user;
 }
 
-User AppEngine::sign(QString path, QString name)
+bool AppEngine::sign(QString path, QString name)
 {
+    /*char * fileName = (path + "/" + name).toLocal8Bit().data();
     PDFDocHandle Doc = NULL;
     PDFLibHandle Lib = NULL;
+    bool result = false;
+
+    Lib = InitPDFLibrary(NULL, NULL);
+
+    if (Lib)
+    {
+        qWarning() << "Init lib error";
+        return false;
+    }
+
+
+    PDFTRY(Lib)
+    {
+        qDebug() << fileName;
+        Doc = PDFDocLoadFromFile(Lib, fileName);
+    }
+    PDFEXCEPT(Lib)
+    { }
+    PDFTRYEND();
+
+    if (!Doc)
+    {
+        qWarning() << "Doc not open";
+        return false;
+    }
+
+    PDFTRY(Lib)
+    {
+        PDFDocAppendSignatureFromBuffer(Doc, buffer, )
+    }
+    PDFEXCEPT(Lib)
+    { }
+    PDFTRYEND();
+
+    if (PPGetLastError(Lib))
+    {
+        qWarning() << PPGetLastError(Lib);
+        return false;
+    }
+
+    ppInt32 size = 0;
+
+    PDFTRY(Lib)
+    {
+        void* bytes = PDFDocSaveToBuffer(Doc, &size);
+
+        result = true;
+    }
+    PDFEXCEPT(Lib)
+    { }
+    PDFTRYEND();
+
+    PDFDocClose(Doc);
+
+    DonePDFLibrary(&Lib);
+    Lib = NULL;
+
+    return result;*/
 }
 
 void AppEngine::GetCurUser(User user)
@@ -312,4 +371,14 @@ QString AppEngine::getIcon100UrlById(int id)
     };
 
     return icons[id % icons.size()];
+}
+
+void AppEngine::loadCalendarRequest(int month, int year)
+{
+    client.loadCalendarRequest(month, year);
+}
+
+void AppEngine::setHolidayRequest(QDate date, QString name)
+{
+    client.setHolidayRequest(date, name);
 }
