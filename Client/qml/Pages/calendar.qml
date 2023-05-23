@@ -18,11 +18,15 @@ Rectangle {
 
         Label {
             Layout.fillWidth: true
-            //anchors.leftMargin: parent.width / 2 - back.width - 30 - date.width
         }
         Button {
             id: back
             icon.source: "qrc:/images/back.png"
+            onClicked: {
+                calendar.datePrev();
+                app.loadCalendarRequest(calendar.month, calendar.year);
+                date.text = calendar.getMonthName(calendar.month) + "\n" + calendar.year
+            }
         }
         Label {
             width: 30
@@ -39,6 +43,11 @@ Rectangle {
         Button {
             id:forward
             icon.source: "qrc:/images/forward.png"
+            onClicked: {
+                calendar.dateNext();
+                app.loadCalendarRequest(calendar.month, calendar.year);
+                date.text = calendar.getMonthName(calendar.month) + "\n" + calendar.year
+            }
         }
         Label {
             Layout.fillWidth: true
@@ -63,11 +72,17 @@ Rectangle {
         syncView: table
         anchors.left: parent.left
         anchors.top: table.top
-        anchors.right: table.left
+        //anchors.right: table.left
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display//modelData//model.headerData()
+        delegate: Rectangle {
+            width: 250
+            border.width: 1
+            Text {
+                width: parent.width
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignHCenter
+                text:  model.display//modelData//model.headerData()
+            }
         }
     }
 
@@ -76,7 +91,6 @@ Rectangle {
         anchors.fill: parent
         anchors.topMargin: horizontalHeader.height + navigationButtons.height
         anchors.leftMargin: verticalHeader.width
-        //anchors.left: verticalHeader.right
         columnSpacing: 1
         rowSpacing: 1
         clip: true

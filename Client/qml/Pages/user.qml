@@ -27,10 +27,7 @@ Pane {
             color: Material.color(Material.Purple)
             height: 110 //parent.height / 6
             width: parent.width
-            //anchors.topMargin: 20
             anchors.leftMargin: 55
-            //anchors.margins: 0
-
         }
 
 
@@ -38,7 +35,6 @@ Pane {
             radius: width*0.5
             height: 110
             width: 110
-            //anchors.topMargin: 20
             anchors.margins: 30
             color: Material.color(Material.Purple)
 

@@ -77,7 +77,9 @@ int Calendar::GetNumbersOfDays (int monthNumber, int year)
 
 QString Calendar::getMonthName (int monthNumber)
 {
-    return v_Months[monthNumber];
+    if (monthNumber < JANUARY && monthNumber > DECEMBER)
+        return "";
+    return v_Months[monthNumber - 1];
 }
 
 
@@ -114,12 +116,12 @@ QVariant Calendar::data(const QModelIndex &index, int role) const
         auto it = std::find_if(dateOfUser.begin(), dateOfUser.end(), [this, &index](const QDate& date)
            {
                 //return date.year() == i_CurYear && date.month() == (i_CurMonth + 1) && date.day() == index.column();
-                return date.day() == index.column();
+                return date.day() == index.column() + 1;
            });
 
         if (it != dateOfUser.end())
         {
-            qDebug() << true;
+            //qDebug() << true;
             return true;
         }
     }
@@ -156,9 +158,33 @@ void Calendar::setDate(int month, int year)
     i_CurYear = year;
 }
 
+void Calendar::dateNext()
+{
+    qDebug();
+    i_CurMonth++;
+    if (i_CurMonth > DECEMBER)
+    {
+        i_CurMonth = JANUARY;
+        i_CurYear++;
+    }
+}
+
+void Calendar::datePrev()
+{
+    qDebug();
+    i_CurMonth--;
+    if (i_CurMonth < JANUARY)
+    {
+        i_CurMonth = DECEMBER;
+        i_CurYear--;
+    }
+}
+
 void Calendar::setHoliday(int day, int row)
 {
     //qDebug() << day << " " << row;
+    day += 1;
+
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
     QDate date(i_CurYear, i_CurMonth, day);

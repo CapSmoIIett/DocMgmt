@@ -125,8 +125,8 @@ bool Database::createTables()
 
     result = query.exec("CREATE TABLE IF NOT EXISTS holidays"
                 "("
-                    "id_user int,"
-                    "date date primary key"
+                    "id_user int NOT NULL,"
+                    "date date NOT NULL"
                 ")");
 
     if (!result)

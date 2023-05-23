@@ -33,6 +33,9 @@ public:
 
     Q_INVOKABLE void getCalendar(int month, int year);
     Q_INVOKABLE void setDate(int month, int year);
+    Q_INVOKABLE void dateNext();
+    Q_INVOKABLE void datePrev();
+
 
     Q_INVOKABLE void setHoliday(int day, int row);
 
