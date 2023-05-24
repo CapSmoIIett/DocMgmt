@@ -90,7 +90,7 @@ Rectangle {
     TableView {
         id: table
         anchors.fill: parent
-        anchors.topMargin: toolBar.height + horizontalHeader.height
+        anchors.topMargin:  horizontalHeader.height
         clip: true
 
         columnWidthProvider: function (column) {

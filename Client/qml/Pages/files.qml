@@ -15,7 +15,7 @@ Rectangle {
     id: drop
     anchors.fill: parent
 
-     property var fileExtensionFilters: (["Text (*.txt)", "Obj (*.o)"])
+    property var fileExtensionFilters: (["Text (*.txt)", "Obj (*.o)"])
 
     property bool acceptedDrag: false
     property bool cantainsDrag: false
@@ -131,15 +131,30 @@ Rectangle {
         }
     }
 
+
+
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
         anchors.top: pathLine.bottom
         anchors.left: parent.left
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display
+        delegate: Rectangle {
+            height: parent.height
+            width: table.columnWidthProvider(column)
+            color: "#CE93D8"
+
+            Label {
+                width: parent.width
+                elide: Text.ElideRight
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+
+                text:  model.display
+                font.family: "Helvetica"
+                font.weight: Font.Bold
+                //font.pointSize: 20
+            }
         }
     }
 

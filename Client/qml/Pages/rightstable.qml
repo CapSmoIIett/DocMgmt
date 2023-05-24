@@ -57,22 +57,42 @@ Rectangle {
         }
     }
 
+   Rectangle  {
+        anchors.fill: parent
+
+        anchors.topMargin: toolBar.height + 15
+        anchors.margins: 15
+
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
         anchors.top: toolBar.bottom
         anchors.left: parent.left
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display
+        delegate: Rectangle {
+            height: parent.height
+            width: table.columnWidthProvider(column)
+            color: "#CE93D8"
+
+
+            Label {
+                width: parent.width
+                elide: Text.ElideRight
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+
+                text:  model.display
+                font.family: "Helvetica"
+                font.weight: Font.Bold
+                //font.pointSize: 20
+            }
         }
     }
 
     TableView {
         id: table
         anchors.fill: parent
-        anchors.topMargin: toolBar.height + horizontalHeader.height
+        anchors.topMargin: horizontalHeader.height
         clip: true
 
         columnWidthProvider: function (column) {
@@ -139,5 +159,6 @@ Rectangle {
         Component.onCompleted: {
             app.loadRightsRequest()
         }
+    }
     }
 }
