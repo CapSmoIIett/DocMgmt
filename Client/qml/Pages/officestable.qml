@@ -57,15 +57,33 @@ Rectangle {
         }
     }
 
+    Rectangle {
+
+        anchors.fill: parent
+
+        anchors.topMargin: toolBar.height + 15
+        anchors.margins: 15
+
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
         anchors.top: toolBar.bottom
         anchors.left: parent.left
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display
+
+        delegate: Rectangle {
+            color: "#CE93D8"
+
+            Label {
+                width: parent.width
+                elide: Text.ElideRight
+                anchors.centerIn: parent
+                horizontalAlignment: Text.AlignHCenter
+
+                text:  model.display
+                font.family: "Helvetica"
+                font.weight: Font.Bold
+            }
         }
     }
 
@@ -86,6 +104,7 @@ Rectangle {
         delegate: Rectangle {
             implicitWidth: table.columnWidthProvider(column)
             implicitHeight: 30
+
 
             color: mouseArea.containsMouse ? "#DDDDDD" : "#FFFFFF"
 
@@ -139,5 +158,6 @@ Rectangle {
         Component.onCompleted: {
             app.loadOfficesRequest()
         }
+    }
     }
 }

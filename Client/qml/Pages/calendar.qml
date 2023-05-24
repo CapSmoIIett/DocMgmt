@@ -61,9 +61,16 @@ Rectangle {
         anchors.top: navigationButtons.bottom
         //anchors.leftMargin: verticalHeader.width
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display//modelData//model.headerData()
+        delegate: Rectangle {
+            width: 40
+            height: 40
+
+            color: "#CE93D8"
+
+            Text {
+                horizontalAlignment: Text.AlignHCenter
+                text:  model.display//modelData//model.headerData()
+            }
         }
     }
 
@@ -75,8 +82,11 @@ Rectangle {
         //anchors.right: table.left
 
         delegate: Rectangle {
-            width: 250
+            width: 550
             border.width: 1
+
+            color: "#CE93D8"
+
             Text {
                 width: parent.width
                 elide: Text.ElideRight
