@@ -71,7 +71,8 @@ bool Database::createTables()
                 "("
                     "id serial primary key,"
                     "name varchar(255),"
-                    "access_lvl int"
+                    "access_lvl int,"
+                    "allow_add_users boolean"
                 ")");
 
     if (!result)
@@ -391,6 +392,7 @@ QVector<Right> Database::GetRights()
     const int indexId = rec.indexOf( "id" );
     const int indexName = rec.indexOf( "name" );
     const int indexLVL = rec.indexOf( "access_lvl" );
+    const int indexAddUser = rec.indexOf( "allow" );
 
     while (query.next())
     {

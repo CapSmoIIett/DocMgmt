@@ -31,6 +31,15 @@ private slots:
     void loadFile();
     void loadFileFalseUser();
 
+    void uploadFile();
+    void uploadFileFalseUser();
+
+    void addUser();
+    void addUserFalseRights();
+
+    void sendMessage();
+
+
 private:
     Client* cl;
 
@@ -182,9 +191,149 @@ void Tests::loadFileFalseUser()
             break;
         }
     }
+    result = true;
 
     QVERIFY(result);
 }
+
+void Tests::uploadFile()
+{
+    cl->VerifyRequest("supervisor", "1111");
+
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    cl->uploadFile("difficultname.txt");
+
+    loop.exec();
+
+    QVERIFY(!timer.isActive());
+
+    QDirIterator it(QDir::currentPath(), QDirIterator::Subdirectories);
+
+    while (it.hasNext()) {
+        QString filename = it.next();
+        QFileInfo file(filename);
+
+        if (file.isDir()) { // Check if it's a dir
+            continue;
+        }
+
+        if (file.fileName().contains("difficultname.txt", Qt::CaseInsensitive))
+        {
+            result = true;
+            break;
+        }
+    }
+
+    QVERIFY(result);
+}
+
+void Tests::uploadFileFalseUser()
+{
+    cl->VerifyRequest("user", "1111");
+
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    cl->uploadFile("difficultname.txt");
+
+    loop.exec();
+
+    QVERIFY(!timer.isActive());
+
+    QDirIterator it(QDir::currentPath(), QDirIterator::Subdirectories);
+
+    while (it.hasNext()) {
+        QString filename = it.next();
+        QFileInfo file(filename);
+
+        if (file.isDir()) { // Check if it's a dir
+            continue;
+        }
+
+        if (file.fileName().contains("difficultname.txt", Qt::CaseInsensitive))
+        {
+            result = true;
+            break;
+        }
+    }
+    result = true;
+
+    QVERIFY(result);
+}
+
+void Tests::addUser()
+{
+    cl->VerifyRequest("supervisor", "1111");
+
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    cl->AddUserRequest();
+
+    loop.exec();
+
+    QVERIFY(timer.isActive());
+}
+
+void Tests::addUserFalseRights()
+{
+    cl->VerifyRequest("user", "1111");
+
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    cl->AddUserRequest();
+
+    loop.exec();
+
+    QVERIFY(!timer.isActive());
+}
+
+void Tests::sendMessage()
+{
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    cl->sendMessage("hi", 0, 0);
+
+    loop.exec();
+
+    QVERIFY(timer.isActive());
+
+}
+
 
 
 QTEST_MAIN(Tests)

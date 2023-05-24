@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <Qvector>
 
 
 struct User
@@ -17,6 +18,7 @@ struct Right
     int i_ID;
     QString s_Name;
     int i_acs_lvl;
+    QVector<bool> rights;
 };
 
 struct Office
