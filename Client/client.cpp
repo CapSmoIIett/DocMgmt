@@ -57,7 +57,7 @@ void Client::ConnectToServer()
     qDebug() << "Connecting" << s_IP << " " << i_Port;
     p_TcpSocket->connectToHost(s_IP, i_Port);
 
-    //p_TcpSocket->waitForConnected();
+    p_TcpSocket->waitForConnected();
 
     qDebug() << "Connection: " << (p_TcpSocket->state() == QTcpSocket::ConnectedState);
 }

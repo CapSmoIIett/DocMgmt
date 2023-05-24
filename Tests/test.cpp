@@ -10,13 +10,24 @@
 
 #include <QObject>
 #include <QTest>
+#include <QSignalSpy>
+#include <QTimer>
+#include <QEventLoop>
 
+#include "../Client/client.h"
 
 class Tests : public QObject
 {
     Q_OBJECT
 private slots:
     void simpl();
+
+    void initTestCase();
+    void verify();
+
+private:
+    Client* cl;
+
 };
 
 void Tests::simpl()
@@ -24,84 +35,35 @@ void Tests::simpl()
     QVERIFY(true);
 }
 
+void Tests::initTestCase()
+{
+    cl = new Client;
+    cl->ConnectToServer();
+
+    QVERIFY(cl->IsConnected());
+
+    qApp->processEvents();
+}
+
+void Tests::verify()
+{
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onVerified, this, [this, &loop, &result] (bool res) { result = res; emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    cl->VerifyRequest("supervisor", "1111");
+
+    loop.exec();
+
+    QVERIFY(timer.isActive());
+    QVERIFY(result);
+}
 
 
 QTEST_MAIN(Tests)
 #include "test.moc"
-
-/*
-    ../Client/header.h
-    ../Client/client.cpp
-    ../Client/client.h
-    ../Client/qml.qrc
-    ../Client/personalmodel.cpp
-    ../Client/personalmodel.h
-    ../Client/appengine.cpp
-    ../Client/appengine.h
-    ../Client/rightsmodel.cpp
-    ../Client/rightsmodel.h
-    ../Client/officemodel.cpp
-    ../Client/officemodel.h
-    ../Client/userpage.cpp
-    ../Client/userpage.h
-    ../Client/officepage.cpp
-    ../Client/officepage.h
-    ../Client/rightpage.cpp
-    ../Client/rightpage.h
-    ../Client/filesmodel.cpp
-    ../Client/filesmodel.h
-    ../Client/messenger.h
-    ../Client/messenger.cpp
-    ../Client/calendar.cpp
-    ../Client/calendar.h
-    ../Client/images.qrc
-
-
-    ../encrypter.cpp
-    ../encrypter.h
-
-    ../logger.h
-    ../logger.cpp
-
-    ../messages.h
-    ../datastructures.h
- */
-
-/*
-TEST(TestCaseName, TestName) {
-  EXPECT_EQ(1, 1);
-  EXPECT_TRUE(true);
-}
-
-TEST(SignInTest, SignInTest)
-{
-    //AppEngine app;
-    Client client;
-    Server server;
-    bool isVerified = false;
-
-    QTimer timer;
-    QEventLoop loop;
-
-    client.ConnectToServer();
-
-    connect(&client, &Client::onVerified, &loop, &QEventLoop::quit );
-    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
-    connect(&client, &Client::onVerified, this, [this, &isVerified](bool result) {  isVerified = result; });
-
-    client.ConnectToServer();
-
-    client.VerifyRequest("supervisor", "1111");
-
-  //Server server;
-
-
-  //connect(&client, &Client::onVerified, this, [this](bool result) { });
-
-  EXPECT_TRUE(true);
-}
-/*int main(int argc, char *argv[])
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}*/
