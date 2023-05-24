@@ -42,6 +42,7 @@ public:
     void AppendToSocketLists(QTcpSocket* socket);
 
     void ProcessingMessage(QString header);
+    void SendWarning(QString text);
 
 signals:
     void SendedClient(QString str);
@@ -60,6 +61,7 @@ public slots:
     void SendToClient(QString str);
     void SendToClient(QByteArray str);
     void SendToSpecificClient(QTcpSocket* socket, QString str);
+
 
 private:
     QSet<QTcpSocket*> set_Sockets;

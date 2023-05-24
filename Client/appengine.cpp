@@ -14,6 +14,7 @@ AppEngine::AppEngine(QObject* parent) :
 
     connect(&this->client, &Client::onVerified, this, [this](bool result) { qDebug() << "call"; emit this->verified(result); });
     connect(&this->client, &Client::onGetUserData, this, &AppEngine::GetCurUser);
+    connect(&this->client, &Client::onWarning, this, [this](QString text){ emit this->onWarnign(text); });
 
     connect(this, &AppEngine::onChangeIP, this, [this]()
     {

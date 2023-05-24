@@ -416,8 +416,14 @@ void Client::ReadSocket ()
         }
 
         emit onGetHolidays(users, holidays);
-
     } break;
+
+
+    case MSG_WARNING:
+    {
+        QString text = header.split(",")[1].split(":")[1];
+        emit onWarning(text);
+    }
 
 
     case MSG_GET_FILE_LIST:

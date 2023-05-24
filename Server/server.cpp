@@ -334,6 +334,7 @@ void Server::ReadSocket()
             if (db.GetUserAccessLvl(user_id) > fb.GetAccessLvl(path))
             {
                 qDebug() << "Not enogh lvl";
+                SendWarning("Not enogh lvl");
                 break;
             }
 
@@ -558,6 +559,11 @@ void Server::SendToSpecificClient(QTcpSocket* socket, QString str)
     byteArray.prepend(str.toUtf8());
 
     socketStream << byteArray;
+}
+
+void Server::SendWarning(QString text)
+{
+    emit SendToClient(QString("Type:%1,Text:%2").arg(MSG_WARNING).arg(text));
 }
 
 

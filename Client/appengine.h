@@ -108,6 +108,7 @@ signals:
     void verified(bool result);
     void onChangeIP();
     void onChangePort();
+    void onWarnign(QString);
 
 public slots:
     void GetCurUser(User user);

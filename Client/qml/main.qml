@@ -7,6 +7,7 @@ import QtQuick.Controls.Material
 import QtQuick.Controls.Universal
 import QtCharts
 import Qt.labs.qmlmodels
+import QtQuick.Dialogs
 
 ApplicationWindow {
     id: mainWindow
@@ -34,6 +35,15 @@ ApplicationWindow {
     Universal.theme: Universal[subTheme.currentText]
     Universal.accent: Universal[accentColor.currentText]
     */
+ /***********************************************************************/
+    MessageDialog {
+        id: messageDialog
+        onAccepted: {
+            console.log("And of course you could only agree.")
+            Qt.quit()
+        }
+    }
+
  /***********************************************************************/
 
 
@@ -436,7 +446,13 @@ ApplicationWindow {
         onChangeIP: {
             app.ip = textIP.text
         }
+        onWarning: function(str)
+        {
+            messageDialog.text = str
+            messageDialog.visible = true
+        }
     }
+
 
 
     Component.onCompleted: {

@@ -75,6 +75,7 @@ signals:
     void onGetMessages(QVector<Message>);
     void onGetMessage(Message);
     void onGetHolidays(QVector<QString>&, QVector<QVector<QDate>>&);
+    void onWarning(QString);
 
 public slots:
     void ConnectToServer();
