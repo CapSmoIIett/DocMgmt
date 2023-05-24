@@ -34,10 +34,11 @@ private slots:
     void uploadFile();
     void uploadFileFalseUser();
 
-    void addUser();
-    void addUserFalseRights();
+    void deleteUser();
+    void deleteUserFalseRights();
 
-    void sendMessage();
+    void uploadUserDataOffice();
+    void uploadUserDataName();
 
 
 private:
@@ -98,6 +99,7 @@ void Tests::verifyFalseLogin()
 
     QVERIFY(timer.isActive());
     QVERIFY(!result);
+
 }
 
 void Tests::verifyFalsePassword()
@@ -154,6 +156,7 @@ void Tests::loadFile()
         }
     }
 
+
     QVERIFY(result);
 }
 
@@ -191,7 +194,6 @@ void Tests::loadFileFalseUser()
             break;
         }
     }
-    result = true;
 
     QVERIFY(result);
 }
@@ -270,52 +272,50 @@ void Tests::uploadFileFalseUser()
             break;
         }
     }
-    result = true;
+
 
     QVERIFY(result);
 }
 
-void Tests::addUser()
+void Tests::deleteUser()
 {
     cl->VerifyRequest("supervisor", "1111");
 
     QTimer timer;
     timer.setSingleShot(true);
     QEventLoop loop;
-    bool result = false;
 
     connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
     connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
     timer.start(1000);
 
-    cl->AddUserRequest();
+    cl->removeUserRequest(1);
 
     loop.exec();
 
     QVERIFY(timer.isActive());
 }
 
-void Tests::addUserFalseRights()
+void Tests::deleteUserFalseRights()
 {
     cl->VerifyRequest("user", "1111");
 
     QTimer timer;
     timer.setSingleShot(true);
     QEventLoop loop;
-    bool result = false;
 
     connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
     connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
     timer.start(1000);
 
-    cl->AddUserRequest();
+    cl->removeUserRequest(1);
 
     loop.exec();
 
     QVERIFY(!timer.isActive());
 }
 
-void Tests::sendMessage()
+void Tests::uploadUserDataOffice()
 {
     QTimer timer;
     timer.setSingleShot(true);
@@ -326,14 +326,43 @@ void Tests::sendMessage()
     connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
     timer.start(1000);
 
-    cl->sendMessage("hi", 0, 0);
+    User user;
+    user.i_ID = 0;
+    user.s_Full_Name = "supervisor";
+    user.s_Office = "New Office";
+    user.s_Right = "";
+
+    cl->uploadUserData(user);
 
     loop.exec();
 
     QVERIFY(timer.isActive());
-
 }
 
+
+void Tests::uploadUserDataName()
+{
+    QTimer timer;
+    timer.setSingleShot(true);
+    QEventLoop loop;
+    bool result = false;
+
+    connect( cl, &Client::onWarning, this, [this, &loop] (QString text) { emit loop.quit() ;} );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    timer.start(1000);
+
+    User user;
+    user.i_ID = 0;
+    user.s_Full_Name = "supersuper";
+    user.s_Office = "";
+    user.s_Right = "";
+
+    cl->uploadUserData(user);
+
+    loop.exec();
+
+    QVERIFY(timer.isActive());
+}
 
 
 QTEST_MAIN(Tests)
