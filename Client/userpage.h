@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-#include <appengine.h>
+#include "appengine.h"
 
 class UserPage: public QObject
 {

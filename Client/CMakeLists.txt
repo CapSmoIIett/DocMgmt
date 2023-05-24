@@ -25,10 +25,27 @@ link_directories(${PostgreSQL_LIBRARY_DIRS})
 
 ###########################################################################
 
-#target_include_directories(appDocMgmtQt public "../versypdf")
+
+set(OPENSSL_INCLUDE_DIR "D:/Projects/DocMgmt/Client/openssl/DLL/x64/Debug/include/openssl")
+set(OPENSSL_LIBRARY_DIR "D:/Projects/DocMgmt/Client/openssl/DLL/x64/Debug/bin")
+
+#include_directories(${OPENSSL_INCLUDE_DIR})
+#link_directories(${OPENSSL_LIBRARY_DIR})
+
+find_package(OpenSSL REQUIRED)
+
 
 ###########################################################################
 
+
+#find_package(CryptoPP REQUIRED)
+#target_link_libraries(YOUR_TARGET_NAME cryptopp-static)
+
+set(Cryptopp_INCLUDE_DIRS "D:/Projects/DocMgmt/Client/cryptopp")
+set(Cryptopp_LIBRARY_DIRS "D:/Projects/DocMgmt/Client/cryptopp/x64/DLL_Output/Debug")
+
+include_directories (${Cryptopp_INCLUDE_DIRS})
+link_directories(${Cryptopp_LIBRARY_DIRS})
 
 #include_directories("cryptopp/")
 #link_directories()
@@ -113,7 +130,7 @@ set_target_properties(appDocMgmtQt PROPERTIES
 )
 
 target_link_libraries(appDocMgmtQt
-    PRIVATE Qt6::Quick Qt6::Sql)
+    PRIVATE Qt6::Quick Qt6::Sql OpenSSL::SSL)
 
 install(TARGETS appDocMgmtQt
     BUNDLE DESTINATION .

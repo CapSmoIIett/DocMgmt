@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    std::cout << "################ Server ################" << "\n";
+    //std::cout << "################ Server ################" << "\n";
 
     QCoreApplication a(argc, argv);
 

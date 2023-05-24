@@ -188,6 +188,9 @@ ApplicationWindow {
         //height:20
         Menu {
             title: '&File'
+            Action {
+                text: '&Sign...'
+            }
             Action { text: '&New...' }
             Action { text: '&Open...' }
             Action { text: '&Save' }

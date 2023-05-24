@@ -5,7 +5,7 @@
 #include <QAbstractTableModel>
 #include <QObject>
 
-#include <appengine.h>
+#include "appengine.h"
 
 class OfficeTableModel : public QAbstractTableModel
 {

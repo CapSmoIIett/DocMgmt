@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QAbstractTableModel>
 
-#include <appengine.h>
+#include "appengine.h"
 
 class PersonalTableModel : public QAbstractTableModel
 {

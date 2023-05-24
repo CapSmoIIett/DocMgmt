@@ -5,7 +5,24 @@
 #include <qqml.h>
 #include <QFile>
 
-#include <client.h>
+//#include <cryptopp/cryptlib.h>
+#include <openssl/x509v3.h>
+#include <openssl/rand.h>
+#include <openssl/pem.h>
+#include <openssl/evp.h>
+#include <iostream>
+#include <openssl/aes.h>
+#include <openssl/rsa.h>
+#include <openssl/ssl.h>
+#include <openssl/bio.h>
+#include <openssl/err.h>
+#include <assert.h>
+
+typedef evp_pkey_st EVP_PKEY;
+
+#include <memory>
+
+#include "client.h"
 
 class AppEngine : public QObject
 {
@@ -96,6 +113,23 @@ public slots:
     void GetCurUser(User user);
 
 private:
+    /*void GenerateCertificate();
+    bool setSerialNumber(X509* cert, uint32_t bytes);
+    bool setVersion(X509* cert, long version);
+    bool updateSubjectName(X509* cert, const char* key, const char* value);
+    bool setNotAfter(X509* cert, uint32_t y, uint32_t m, uint32_t d, int32_t offset_days);
+    bool setNotBefore(X509* cert, uint32_t y, uint32_t m, uint32_t d, int32_t offset_days);
+
+    bool setIssuer(X509* cert, X509* issuer);
+    bool addIssuerInfo(X509* cert, const char* key, const char* value);
+
+    std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)> generateKeyPair(int32_t bits);
+    bool setPublicKey(X509* cert, EVP_PKEY* key);
+    bool signCert(X509* cert, EVP_PKEY* key, const EVP_MD* algo);
+    bool saveCertToPemFile(X509* cert, const std::string& file);
+*/
+
+
     Client client;
 
     User user;

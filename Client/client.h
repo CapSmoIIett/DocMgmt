@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include <QtSql/QSqlDatabase>
-#include <QSqlQuery>
 
 #include <QTcpServer>
 #include <QTcpSocket>

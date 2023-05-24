@@ -6,5 +6,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
+include(CTest)
+
 add_subdirectory(Client/)
 add_subdirectory(Server/)
+
+add_subdirectory(googletest/)
+add_subdirectory(GTest/)
+
