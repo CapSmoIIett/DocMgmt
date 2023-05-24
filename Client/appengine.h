@@ -86,7 +86,7 @@ public:
     Q_INVOKABLE void changeAccessLvl(QString path, QString name, int lvl);
     Q_INVOKABLE User getCurUser();
 
-    Q_INVOKABLE bool sign(QString path, QString name);
+    //Q_INVOKABLE bool sign(QString path, QString name);
 
 
     void uploadUserData(User user);

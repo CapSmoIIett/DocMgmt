@@ -309,7 +309,7 @@ QString AppEngine::getIcon100UrlById(int id)
     return icons[id % icons.size()];
 
 }
-
+/*
 std::string privateKey ="-----BEGIN RSA PRIVATE KEY-----\n"\
 "MIIEowIBAAKCAQEAy8Dbv8prpJ/0kKhlGeJYozo2t60EG8L0561g13R29LvMR5hy\n"\
 "vGZlGJpmn65+A4xHXInJYiPuKzrKUnApeLZ+vw1HocOAZtWK0z3r26uA8kQYOKX9\n"\
@@ -604,7 +604,7 @@ bool AppEngine::sign(QString path, QString name)
         return -1;
     }
 //*/
-}
+//}
 
 void AppEngine::loadCalendarRequest(int month, int year)
 {
