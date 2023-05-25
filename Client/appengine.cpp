@@ -285,9 +285,7 @@ QString AppEngine::getIcon50UrlById(int id)
         {3, "qrc:/images/characters/lumpy-space-princess-50.png"},
         {4, "qrc:/images/characters/marceline-50.png"},
         {5, "qrc:/images/characters/princess-bubblegum-50.png"},
-        {6, "qrc:/images/characters/ice-50.png"},
-        {7, "qrc:/images/characters/ice-50.png"},
-        {8, "qrc:/images/characters/gunter-50.png"}
+        {6, "qrc:/images/characters/gunter-50.png"}
     };
 
     return icons[id % icons.size()];
@@ -302,9 +300,7 @@ QString AppEngine::getIcon100UrlById(int id)
         {3, "qrc:/images/characters/lumpy-space-princess-100.png"},
         {4, "qrc:/images/characters/marceline-100.png"},
         {5, "qrc:/images/characters/princess-bubblegum-100.png"},
-        {6, "qrc:/images/characters/ice-100.png"},
-        {7, "qrc:/images/characters/ice-100.png"},
-        {8, "qrc:/images/characters/gunter-100.png"}
+        {6, "qrc:/images/characters/gunter-100.png"}
     };
 
     return icons[id % icons.size()];

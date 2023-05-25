@@ -13,12 +13,19 @@ struct User
     QString s_Office;
 };
 
+
+#define EDIT_USERS 0
+#define EDIT_RIGHTS 1
+#define EDIT_OFFICE 2
+#define EDIT_HOLIDAYS 3
+#define LAST_EDIT EDIT_HOLIDAYS
+
 struct Right
 {
     int i_ID;
     QString s_Name;
     int i_acs_lvl;
-    QVector<bool> rights;
+    bool rights[LAST_EDIT + 1];
 };
 
 struct Office
@@ -49,6 +56,6 @@ struct Message
 };
 
 #define LOWEST_ACS_LVL 7
-
+#define SEP "|"
 
 #define KB 1024

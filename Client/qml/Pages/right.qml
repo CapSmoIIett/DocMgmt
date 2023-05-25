@@ -16,7 +16,6 @@ Pane {
         height: parent.height / 6
         width: parent.width
         anchors.margins: 0
-
     }
 
     Label {
@@ -39,19 +38,22 @@ Pane {
 
     GridLayout {
         id: grid
-        rows: 1
+
+        anchors.leftMargin: 45
+
+        rows: 5
         columns: 6
         flow: GridLayout.TopToBottom
         anchors.top: separator.bottom
         width: parent.width
 
 
-        Label {
+        Row {
+            Label {
             id: accessLvlLabel
             anchors.margins: 15
-
             text: "Access Lvl: "
-        }
+            }
 
         ComboBox {
             id: accessLvl
@@ -64,6 +66,26 @@ Pane {
             onEditTextChanged: save.enabled = true
 
         }
+        }
+        CheckBox {
+            id:allowEditUsersLabel
+            anchors.margins: 15
+            text: "Allow Edit Users"
+        }
+        CheckBox {
+            id: allowEditRightsLabel
+            text: "Allow Edit Rights"
+        }
+        CheckBox {
+            id: allowEditOfficeLabel
+            text: "Allow Edit Office"
+        }
+        CheckBox {
+            id: allowEditHolidaysLabel
+            text: "Allow Edit Label"
+        }
+
+
     }
 
     Button {

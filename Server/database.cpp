@@ -72,7 +72,10 @@ bool Database::createTables()
                     "id serial primary key,"
                     "name varchar(255),"
                     "access_lvl int,"
-                    "allow_add_users boolean"
+                    "allow_edit_users boolean default 'f',"
+                    "allow_edit_rights boolean default 'f',"
+                    "allow_edit_office boolean default 'f',"
+                    "allow_edit_holidays boolean default 'f'"
                 ")");
 
     if (!result)
@@ -139,7 +142,8 @@ bool Database::createTables()
 
     if (!query.next())
     {
-        result = query.exec("INSERT INTO rights (id, name, access_lvl) VALUES (0, 'supervisor', 0) ");
+        result = query.exec("INSERT INTO rights (id, name, access_lvl, allow_edit_users, allow_EDIT_RIGHTS, allow_edit_office, allow_edit_holidays)"
+            "VALUES (0, 'supervisor', 0, 't','t','t','t') ");
 
         if (!result)
         {
@@ -148,6 +152,8 @@ bool Database::createTables()
             return false;
         }
     }
+
+    //allow_edit_users, allow_EDIT_RIGHTS, allow_edit_office, allow_edit_holidays
 
     /*****************************************************
      * Add office for supervisor
@@ -392,7 +398,10 @@ QVector<Right> Database::GetRights()
     const int indexId = rec.indexOf( "id" );
     const int indexName = rec.indexOf( "name" );
     const int indexLVL = rec.indexOf( "access_lvl" );
-    const int indexAddUser = rec.indexOf( "allow" );
+    const int indexEditUser = rec.indexOf( "allow_edit_users" );
+    const int indexEditRights = rec.indexOf( "allow_EDIT_RIGHTS" );
+    const int indexEditOffice = rec.indexOf( "allow_edit_office" );
+    const int indexEditHolidays = rec.indexOf( "allow_edit_holidays" );
 
     while (query.next())
     {
@@ -401,6 +410,10 @@ QVector<Right> Database::GetRights()
         right.i_ID = query.value(indexId).toInt();
         right.s_Name = query.value(indexName).toString();
         right.i_acs_lvl = query.value(indexLVL).toInt();
+        right.rights[EDIT_USERS] = query.value(indexEditUser).toBool();
+        right.rights[EDIT_RIGHTS] = query.value(indexEditRights).toBool();
+        right.rights[EDIT_OFFICE] = query.value(indexEditOffice).toBool();
+        right.rights[EDIT_HOLIDAYS] = query.value(indexEditHolidays).toBool();
 
         rights.push_back(right);
 
@@ -640,12 +653,68 @@ Right Database::GetRight(int id)
     const int indexID = rec.indexOf( "id" );
     const int indexName = rec.indexOf( "name" );
     const int indexLvl = rec.indexOf( "access_lvl" );
+    const int indexEditUser = rec.indexOf( "allow_edit_users" );
+    const int indexEditRights = rec.indexOf( "allow_EDIT_RIGHTS" );
+    const int indexEditOffice = rec.indexOf( "allow_edit_office" );
+    const int indexEditHolidays = rec.indexOf( "allow_edit_holidays" );
+
 
     if (query.next())
     {
         right.i_ID = query.value(indexID).toInt();
         right.s_Name = query.value(indexName).toString();
         right.i_acs_lvl = query.value(indexLvl).toInt();
+        right.rights[EDIT_USERS] = query.value(indexEditUser).toBool();
+        right.rights[EDIT_RIGHTS] = query.value(indexEditRights).toBool();
+        right.rights[EDIT_OFFICE] = query.value(indexEditOffice).toBool();
+        right.rights[EDIT_HOLIDAYS] = query.value(indexEditHolidays).toBool();
+
+    }
+
+    return right;
+}
+
+Right Database::GetRight(QString name)
+{
+    qDebug() << name;
+
+    QSqlQuery query;
+    Right right;
+    int result;
+
+    query.prepare(QString("SELECT * FROM rights WHERE name = :name"));
+
+    query.bindValue(":name", name);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return {};
+    }
+
+    QSqlRecord rec = query.record();
+    const int indexID = rec.indexOf( "id" );
+    const int indexName = rec.indexOf( "name" );
+    const int indexLvl = rec.indexOf( "access_lvl" );
+    const int indexEditUser = rec.indexOf( "allow_edit_users" );
+    const int indexEditRights = rec.indexOf( "allow_EDIT_RIGHTS" );
+    const int indexEditOffice = rec.indexOf( "allow_edit_office" );
+    const int indexEditHolidays = rec.indexOf( "allow_edit_holidays" );
+
+
+    if (query.next())
+    {
+        right.i_ID = query.value(indexID).toInt();
+        right.s_Name = query.value(indexName).toString();
+        right.i_acs_lvl = query.value(indexLvl).toInt();
+        right.rights[EDIT_USERS] = query.value(indexEditUser).toBool();
+        right.rights[EDIT_RIGHTS] = query.value(indexEditRights).toBool();
+        right.rights[EDIT_OFFICE] = query.value(indexEditOffice).toBool();
+        right.rights[EDIT_HOLIDAYS] = query.value(indexEditHolidays).toBool();
+
     }
 
     return right;

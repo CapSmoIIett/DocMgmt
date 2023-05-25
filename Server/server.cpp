@@ -84,15 +84,15 @@ void Server::ReadSocket()
     qDebug() << header;
     qDebug() << QTime::currentTime().toString() ;
 
-    QString type = header.split(",")[0].split(":")[1];
+    QString type = header.split(SEP)[0].split(":")[1];
     qDebug() << "Type: " << type;
 
     switch (type.toInt())
     {
     case MSG_VERIFY:
     {
-        QString username = header.split(",")[1].split(":")[1];
-        QString password = header.split(",")[2].split(":")[1];
+        QString username = header.split(SEP)[1].split(":")[1];
+        QString password = header.split(SEP)[2].split(":")[1];
 
         qDebug() << "Username: " << username;
         qDebug() << "Password: " << password;
@@ -106,55 +106,69 @@ void Server::ReadSocket()
 
         qDebug() << "Verified: " << isVerified;
 
-        emit SendToClient(QString("Type:%1,result:%2").arg(MSG_VERIFY).arg(isVerified));
+        emit SendToClient(QString("Type:%1,result:%2").replace(",",SEP).arg(MSG_VERIFY).arg(isVerified));
     } break;
 
     case MSG_ALL_USERS:
     {
         auto users = db.GetUsersList();
 
-        QString data = QString("Type:%1,Size:%2,").arg(MSG_ALL_USERS).arg(users.size());
+        QString data = QString("Type:%1,Size:%2,").replace(",",SEP).arg(MSG_ALL_USERS).arg(users.size());
         for (int i = 0; i < users.size(); i++)
         {
-            data += QString("ID%1:%2,").arg(i).arg(users[i].i_ID);
-            data += QString("Full_Name_%1:%2,").arg(i).arg(users[i].s_Full_Name);
-            data += QString("Office_%1:%2,").arg(i).arg(users[i].s_Office);
-            data += QString("Right_%1:%2,").arg(i).arg(users[i].s_Right);
+            data += QString("ID%1:%2").arg(i).arg(users[i].i_ID) + SEP;
+            data += QString("Full_Name_%1:%2").arg(i).arg(users[i].s_Full_Name)+ SEP;
+            data += QString("Office_%1:%2").arg(i).arg(users[i].s_Office) + SEP;
+            data += QString("Right_%1:%2").arg(i).arg(users[i].s_Right) + SEP;
         }
 
         emit SendToClient(data);
     } break;
 
+
     case MSG_ADD_USER:
     {
+        auto socket = reinterpret_cast<QTcpSocket*>(sender());
+
+        auto user = map_Users[socket];
+
+        auto right = db.GetRight(user.s_Right);
+
+        if (!right.rights[EDIT_USERS])
+        {
+            qDebug() << "No permission";
+            SendWarning("No permission");
+            break;
+        }
+
         db.AddUser();
     } break;
 
     case MSG_LOAD_DATA_USER:
     {
-        QString username = header.split(",")[1].split(":")[1];
+        QString username = header.split(SEP)[1].split(":")[1];
 
         User user = db.GetUserData(username);
 
-        QString data = QString("Type:%1,").arg(MSG_LOAD_DATA_USER);
-        data += QString("ID:%2,").arg(user.i_ID);
-        data += QString("Full_Name:%1,").arg(user.s_Full_Name);
-        data += QString("Office:%1,").arg(user.s_Office);
-        data += QString("Right:%1,").arg(user.s_Right);
+        QString data = QString("Type:%1").arg(MSG_LOAD_DATA_USER) + SEP;
+        data += QString("ID:%2").arg(user.i_ID) + SEP;
+        data += QString("Full_Name:%1").arg(user.s_Full_Name) + SEP;
+        data += QString("Office:%1").arg(user.s_Office) + SEP;
+        data += QString("Right:%1").arg(user.s_Right) + SEP;
 
         emit SendToClient(data);
     } break;
     case MSG_LOAD_DATA_USER_BY_ID:
     {
-        QString id = header.split(",")[1].split(":")[1];
+        QString id = header.split(SEP)[1].split(":")[1];
 
         auto user = db.GetUserData(id.toInt());
 
-        QString data = QString("Type:%1,").arg(MSG_LOAD_DATA_USER);
-        data += QString("ID:%2,").arg(user.i_ID);
-        data += QString("Full_Name:%1,").arg(user.s_Full_Name);
-        data += QString("Office:%1,").arg(user.s_Office);
-        data += QString("Right:%1,").arg(user.s_Right);
+        QString data = QString("Type:%1").arg(MSG_LOAD_DATA_USER) + SEP;
+        data += QString("ID:%2").arg(user.i_ID) + SEP;
+        data += QString("Full_Name:%1").arg(user.s_Full_Name) + SEP;
+        data += QString("Office:%1").arg(user.s_Office) + SEP;
+        data += QString("Right:%1").arg(user.s_Right) + SEP;
 
         emit SendToClient(data);
     } break;
@@ -163,12 +177,12 @@ void Server::ReadSocket()
     {
         auto rights = db.GetRights();
 
-        QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_RIGHTS).arg(rights.size());
+        QString data = QString("Type:%1,Size:%2,").replace(",",SEP).arg(MSG_LOAD_RIGHTS).arg(rights.size());
         for (int i = 0; i < rights.size(); i++)
         {
-            data += QString("ID%1:%2,").arg(i).arg(rights[i].i_ID);
-            data += QString("Name%1:%2,").arg(i).arg(rights[i].s_Name);
-            data += QString("Lvl%1:%2,").arg(i).arg(rights[i].i_acs_lvl);
+            data += QString("ID%1:%2").arg(i).arg(rights[i].i_ID) + SEP;
+            data += QString("Name%1:%2").arg(i).arg(rights[i].s_Name) + SEP;
+            data += QString("Lvl%1:%2").arg(i).arg(rights[i].i_acs_lvl) + SEP;
         }
 
         emit SendToClient(data);
@@ -176,11 +190,33 @@ void Server::ReadSocket()
 
     case MSG_ADD_RIGHT:
     {
+        auto user = map_Users[socket];
+
+        auto right = db.GetRight(user.s_Right);
+
+        if (!right.rights[EDIT_RIGHTS])
+        {
+            qDebug() << "No permission";
+            SendWarning("No permission");
+            break;
+        }
+
         db.AddRight();
     } break;
     case MSG_REMOVE_USER:
     {
-        int id = header.split(",")[1].split(":")[1].toInt();
+        auto user = map_Users[socket];
+
+        auto right = db.GetRight(user.s_Right);
+
+        if (!right.rights[EDIT_USERS])
+        {
+            qDebug() << "No permission";
+            SendWarning("No permission");
+            break;
+        }
+
+        int id = header.split(SEP)[1].split(":")[1].toInt();
 
         db.RemoveUser(id);
     } break;
@@ -188,18 +224,29 @@ void Server::ReadSocket()
     {
         auto offices = db.GetOffices();
 
-        QString data = QString("Type:%1,Size:%2,").arg(MSG_LOAD_OFFICES).arg(offices.size());
+        QString data = QString("Type:%1,Size:%2,").replace(",",SEP).arg(MSG_LOAD_OFFICES).arg(offices.size());
         for (int i = 0; i < offices.size(); i++)
         {
-            data += QString("ID%1:%2,").arg(i).arg(offices[i].i_ID);
-            data += QString("Name%1:%2,").arg(i).arg(offices[i].s_Name);
-            data += QString("Address%1:%2,").arg(i).arg(offices[i].s_Address);
+            data += QString("ID%1:%2").arg(i).arg(offices[i].i_ID) + SEP;
+            data += QString("Name%1:%2").arg(i).arg(offices[i].s_Name) + SEP;
+            data += QString("Address%1:%2").arg(i).arg(offices[i].s_Address) + SEP;
         }
 
         emit SendToClient(data);
     } break;
     case MSG_ADD_OFFICE:
     {
+        auto user = map_Users[socket];
+
+        auto right = db.GetRight(user.s_Right);
+
+        if (!right.rights[EDIT_OFFICE])
+        {
+            qDebug() << "No permission";
+            SendWarning("No permission");
+            break;
+        }
+
         db.AddOffice();
 
     } break;
@@ -207,28 +254,28 @@ void Server::ReadSocket()
     case MSG_LOAD_OFFICE:
     {
 
-        QString id = header.split(",")[1].split(":")[1];
+        QString id = header.split(SEP)[1].split(":")[1];
 
         auto office = db.GetOffice(id.toInt());
 
-        QString data = QString("Type:%1,").arg(MSG_LOAD_OFFICE);
-        data += QString("ID:%1,").arg(office.i_ID);
-        data += QString("Name:%1,").arg(office.s_Name);
-        data += QString("Address:%1,").arg(office.s_Address);
+        QString data = QString("Type:%1").arg(MSG_LOAD_OFFICE) + SEP;
+        data += QString("ID:%1").arg(office.i_ID) + SEP;
+        data += QString("Name:%1").arg(office.s_Name) + SEP;
+        data += QString("Address:%1").arg(office.s_Address) + SEP;
 
         emit SendToClient(data);
     } break;
 
     case MSG_LOAD_RIGHT:
     {
-        QString id = header.split(",")[1].split(":")[1];
+        QString id = header.split(SEP)[1].split(":")[1];
 
         auto right = db.GetRight(id.toInt());
 
-        QString data = QString("Type:%1,").arg(MSG_LOAD_RIGHT);
-        data += QString("ID:%1,").arg(right.i_ID);
-        data += QString("Name:%1,").arg(right.s_Name);
-        data += QString("Lvl:%1,").arg(right.i_acs_lvl);
+        QString data = QString("Type:%1").arg(MSG_LOAD_RIGHT) + SEP;
+        data += QString("ID:%1").arg(right.i_ID) + SEP;
+        data += QString("Name:%1").arg(right.s_Name) + SEP;
+        data += QString("Lvl:%1").arg(right.i_acs_lvl) + SEP;
 
         emit SendToClient(data);
     } break;
@@ -236,10 +283,10 @@ void Server::ReadSocket()
     case MSG_UPLOAD_USER_DATA:
     {
         User user;
-        user.i_ID = header.split(",")[1].split(":")[1].toInt();
-        user.s_Full_Name = header.split(",")[2].split(":")[1];
-        user.s_Right = header.split(",")[3].split(":")[1];
-        user.s_Office = header.split(",")[4].split(":")[1];
+        user.i_ID = header.split(SEP)[1].split(":")[1].toInt();
+        user.s_Full_Name = header.split(SEP)[2].split(":")[1];
+        user.s_Right = header.split(SEP)[3].split(":")[1];
+        user.s_Office = header.split(SEP)[4].split(":")[1];
 
         db.UpdateUserData(user);
 
@@ -248,9 +295,9 @@ void Server::ReadSocket()
     case MSG_UPLOAD_RIGHT_DATA:
     {
         Right right;
-        right.i_ID = header.split(",")[1].split(":")[1].toInt();
-        right.s_Name = header.split(",")[2].split(":")[1];
-        right.i_acs_lvl = header.split(",")[3].split(":")[1].toInt();
+        right.i_ID = header.split(SEP)[1].split(":")[1].toInt();
+        right.s_Name = header.split(SEP)[2].split(":")[1];
+        right.i_acs_lvl = header.split(SEP)[3].split(":")[1].toInt();
 
         db.UpdateRightData(right);
 
@@ -258,25 +305,25 @@ void Server::ReadSocket()
 
     case MSG_UPLOAD_CALENDAR:
     {
-        int month = header.split(",")[1].split(":")[1].toInt();
-        int year = header.split(",")[2].split(":")[1].toInt();
+        int month = header.split(SEP)[1].split(":")[1].toInt();
+        int year = header.split(SEP)[2].split(":")[1].toInt();
 
         auto tp = db.GetHolidays(month, year);
 
         auto users = std::get<0>(tp);
         auto holidays = std::get<1>(tp);
 
-        QString data = QString("Type:%1,Size:%2,Month:%3,Year:%4,").arg(MSG_UPLOAD_CALENDAR).arg(users.size())
+        QString data = QString("Type:%1,Size:%2,Month:%3,Year:%4,").replace(",", SEP).arg(MSG_UPLOAD_CALENDAR).arg(users.size())
            .arg(month).arg(year);
 
         for (int i = 0; i < users.size(); i++)
         {
-            data += QString("User%1:%2,").arg(i).arg(users[i]);
-            data += QString("Size%1:%2,").arg(i).arg(holidays[i].size());
+            data += QString("User%1:%2").arg(i).arg(users[i]) + SEP;
+            data += QString("Size%1:%2").arg(i).arg(holidays[i].size()) + SEP;
 
             for (int j = 0; j < holidays[i].size(); j++)
             {
-                data += QString("date%1_%2:%3,").arg(i).arg(j).arg(holidays[i][j].toString("dd"));
+                data += QString("date%1_%2:%3").arg(i).arg(j).arg(holidays[i][j].toString("dd")) + SEP;
             }
         }
 
@@ -285,8 +332,19 @@ void Server::ReadSocket()
 
     case MSG_SET_HOLIDAY:
     {
-        QString name = header.split(",")[1].split(":")[1];
-        QDate date = QDate::fromString(header.split(",")[2].split(":")[1]);
+        auto user = map_Users[socket];
+
+        auto right = db.GetRight(user.s_Right);
+
+        if (!right.rights[EDIT_HOLIDAYS])
+        {
+            qDebug() << "No permission";
+            SendWarning("No permission");
+            break;
+        }
+
+        QString name = header.split(SEP)[1].split(":")[1];
+        QDate date = QDate::fromString(header.split(SEP)[2].split(":")[1]);
 
         db.SetHoliday(date, db.GetUserID(name));
 
@@ -297,21 +355,21 @@ void Server::ReadSocket()
 
     case MSG_GET_FILE_LIST:
     {
-        QString path = header.split(",")[1].split(":")[1];
+        QString path = header.split(SEP)[1].split(":")[1];
 
         auto files = fb.GetFileList(path);
 
-        QString data = QString("Type:%1,Size:%2,").arg(MSG_GET_FILE_LIST).arg(files.size());
+        QString data = QString("Type:%1,Size:%2,").replace(",", SEP).arg(MSG_GET_FILE_LIST).arg(files.size());
 
         for (int i = 0; i < files.size(); i++)
         {
             auto file = files[i];
 
-            data += QString("Name%1:%2,").arg(i).arg(file.s_Name);
-            data += QString("Type%1:%2,").arg(i).arg(file.s_Type);
-            data += QString("Size%1:%2,").arg(i).arg(file.i_Size);
-            data += QString("LVL%1:%2,").arg(i).arg(file.i_acs_lvl);
-            data += QString("Date%1:%2,").arg(i).arg(file.dt_DateModified.toString(fileDateFormate));
+            data += QString("Name%1:%2").arg(i).arg(file.s_Name) + SEP;
+            data += QString("Type%1:%2").arg(i).arg(file.s_Type) + SEP;
+            data += QString("Size%1:%2").arg(i).arg(file.i_Size) + SEP;
+            data += QString("LVL%1:%2").arg(i).arg(file.i_acs_lvl) + SEP;
+            data += QString("Date%1:%2").arg(i).arg(file.dt_DateModified.toString(fileDateFormate)) + SEP;
         }
 
         emit SendToClient(data);
@@ -319,7 +377,7 @@ void Server::ReadSocket()
 
     case MSG_DOWNLOAD_FILE:
     {
-        QString path = header.split(",")[1].split(":")[1];
+        QString path = header.split(SEP)[1].split(":")[1];
 
 
         int file_size = fb.GetFileSize(path);
@@ -327,7 +385,7 @@ void Server::ReadSocket()
         if (file_size < KB)
         {
 
-            int user_id = header.split(",")[2].split(":")[1].toInt();
+            int user_id = header.split(SEP)[2].split(":")[1].toInt();
 
             qDebug() << db.GetUserAccessLvl(user_id) << " " << fb.GetAccessLvl(path);
 
@@ -340,7 +398,7 @@ void Server::ReadSocket()
 
 
             auto text = fb.GetFileBytes(path);
-            QString data = QString("Type:%1,Size:%2,Path:%3,Flag:0,").arg(MSG_DOWNLOAD_FILE).arg(text.size()).arg(path);
+            QString data = QString("Type:%1,Size:%2,Path:%3,Flag:0,").replace(",", SEP).arg(MSG_DOWNLOAD_FILE).arg(text.size()).arg(path);
 
             qDebug() << "text: " << text;
 
@@ -359,7 +417,7 @@ void Server::ReadSocket()
 
             if (!header.contains(QString("Flag")))
             {
-                int user_id = header.split(",")[2].split(":")[1].toInt();
+                int user_id = header.split(SEP)[2].split(":")[1].toInt();
 
                 qDebug() << db.GetUserAccessLvl(user_id) << " " << fb.GetAccessLvl(path);
 
@@ -374,7 +432,7 @@ void Server::ReadSocket()
                 file = fb.GetFilePointer(path);
                 in = new QDataStream(file);
 
-                QString data = QString("Type:%1,Size:%2,Path:%3,Flag:%4,").arg(MSG_DOWNLOAD_FILE).arg(0).arg(path).arg(FLAG_FILE_TRANSFER_START);
+                QString data = QString("Type:%1,Size:%2,Path:%3,Flag:%4,").replace(",", SEP).arg(MSG_DOWNLOAD_FILE).arg(0).arg(path).arg(FLAG_FILE_TRANSFER_START);
                 emit SendToClient(data.toUtf8());
 
                 break;
@@ -382,7 +440,7 @@ void Server::ReadSocket()
 
             if (size > KB)
             {
-                QString msg = QString("Type:%1,Size:%2,Path:%3,Flag:%4,Data:").arg(MSG_DOWNLOAD_FILE).arg(KB).arg(path).arg(FLAG_FILE_TRANSFER_CONTINUE);
+                QString msg = QString("Type:%1,Size:%2,Path:%3,Flag:%4,Data:").replace(",", SEP).arg(MSG_DOWNLOAD_FILE).arg(KB).arg(path).arg(FLAG_FILE_TRANSFER_CONTINUE);
                 QByteArray bytes (KB, 0);
 
                 qDebug() << "size: " << size;
@@ -397,7 +455,7 @@ void Server::ReadSocket()
             }
             else if (size > 0)
             {
-                QString msg = QString("Type:%1,Size:%2,Path:%3,Flag:%4,Data:").arg(MSG_DOWNLOAD_FILE).arg(KB).arg(path).arg(FLAG_FILE_TRANSFER_CONTINUE);
+                QString msg = QString("Type:%1,Size:%2,Path:%3,Flag:%4,Data:").replace(",", SEP).arg(MSG_DOWNLOAD_FILE).arg(KB).arg(path).arg(FLAG_FILE_TRANSFER_CONTINUE);
                 QByteArray bytes (size, 0);
 
                 qDebug() << "size: " << size;
@@ -419,8 +477,8 @@ void Server::ReadSocket()
 
     case MSG_UPLOAD_FILE:
     {
-        QString name = header.split(",")[1].split(":")[1];
-        QString text = header.split(",")[2].split(":")[1];
+        QString name = header.split(SEP)[1].split(":")[1];
+        QString text = header.split(SEP)[2].split(":")[1];
 
         fb.CreateFile(name, text.toUtf8());
 
@@ -428,8 +486,8 @@ void Server::ReadSocket()
 
     case MSG_CHANGE_ACS_LVL:
     {
-        QString name = header.split(",")[1].split(":")[1];
-        int lvl = header.split(",")[2].split(":")[1].toInt();
+        QString name = header.split(SEP)[1].split(":")[1];
+        int lvl = header.split(SEP)[2].split(":")[1].toInt();
 
         fb.ChangeAccessLvl(name, lvl);
 
@@ -437,9 +495,9 @@ void Server::ReadSocket()
 
     case MSG_SEND_MSG:
     {
-        QString text = header.split(",")[1].split(":")[1];
-        int id_sender = header.split(",")[2].split(":")[1].toInt();
-        int id_accepter = header.split(",")[3].split(":")[1].toInt();
+        QString text = header.split(SEP)[1].split(":")[1];
+        int id_sender = header.split(SEP)[2].split(":")[1].toInt();
+        int id_accepter = header.split(SEP)[3].split(":")[1].toInt();
 
         db.SaveMsg(text, id_sender, id_accepter);
 
@@ -459,21 +517,21 @@ void Server::ReadSocket()
 
     case MSG_UPLOAD_MSGS:
     {
-        int id1  = header.split(",")[1].split(":")[1].toInt();
-        int id2  = header.split(",")[2].split(":")[1].toInt();
+        int id1  = header.split(SEP)[1].split(":")[1].toInt();
+        int id2  = header.split(SEP)[2].split(":")[1].toInt();
 
         auto messages = db.GetMessages(id1, id2);
 
-        QString data = QString("Type:%1,Size:%2,").arg(MSG_UPLOAD_MSGS).arg(messages.size());
+        QString data = QString("Type:%1,Size:%2,").replace(",", SEP).arg(MSG_UPLOAD_MSGS).arg(messages.size());
 
         for (int i = 0; i < messages.size(); i++)
         {
             auto msg = messages[i];
 
-            data += QString("Text%1:%2,").arg(i).arg(msg.text);
-            data += QString("Sender%1:%2,").arg(i).arg(msg.sender);
-            data += QString("Recipient%1:%2,").arg(i).arg(msg.recepient);
-            data += QString("Date%1:%2,").arg(i).arg(msg.date_time.toString());
+            data += QString("Text%1:%2").arg(i).arg(msg.text) + SEP;
+            data += QString("Sender%1:%2").arg(i).arg(msg.sender) + SEP;
+            data += QString("Recipient%1:%2").arg(i).arg(msg.recepient) + SEP;
+            data += QString("Date%1:%2").arg(i).arg(msg.date_time.toString()) + SEP;
         }
 
         emit SendToClient(data);
@@ -571,15 +629,15 @@ void Server::ProcessingMessage(QString header)
 {
     qDebug() << "Start msg processing";
 
-    QString type = header.split(",")[0].split(":")[1];
+    QString type = header.split(SEP)[0].split(":")[1];
     qDebug() << "Type: " << type;
 
     switch (type.toInt())
     {
     case MSG_VERIFY:
     {
-        QString username = header.split(",")[1].split(":")[1];
-        QString password = header.split(",")[2].split(":")[1];
+        QString username = header.split(SEP)[1].split(":")[1];
+        QString password = header.split(SEP)[2].split(":")[1];
 
         qDebug() << "Username: " << username;
         qDebug() << "Password: " << password;

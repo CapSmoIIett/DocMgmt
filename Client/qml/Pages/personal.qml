@@ -80,7 +80,9 @@ Rectangle {
         anchors.fill: parent
 
         anchors.topMargin: toolBar.height + 15
-        anchors.margins: 15
+        //anchors.margins: 15
+        anchors.leftMargin: 15
+        anchors.rightMargin: 15
 
        // border.width: 1
 
@@ -109,15 +111,14 @@ Rectangle {
                 }
             }
         }
-    }
     //*/
 
     TableView {
         id: table
 
         anchors.fill: parent
-        anchors.topMargin: horizontalHeader.height + 85
-        //anchors.leftMargin: tableVerticalBar.width
+        anchors.topMargin: horizontalHeader.height + 3// 85
+        anchors.leftMargin: 2
         clip: true
 
         Keys.onUpPressed: scrollBar.decrease()
@@ -231,6 +232,7 @@ Rectangle {
         Component.onCompleted: {
             app.usersListRequest()
         }
+    }
     }
 
 }

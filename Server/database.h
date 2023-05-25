@@ -47,6 +47,7 @@ public:
 
     Office GetOffice(int id);
     Right GetRight(int id);
+    Right GetRight(QString name);
 
     int GetID(QString table, QString field, QString value);
     void UpdateUserData(User);

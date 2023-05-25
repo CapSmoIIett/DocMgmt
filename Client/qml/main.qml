@@ -246,7 +246,7 @@ ApplicationWindow {
                     anchors.centerIn: parent.Center
                     text: app.userName
                 }*/
-                text: "User"//'_' + app.userName + "shit"
+                text: "Your page"//'_' + app.userName + "shit"
 
                 onClicked: {
                     loader.loadFragment("qrc:/qml/Pages/user.qml")

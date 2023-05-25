@@ -131,8 +131,6 @@ Rectangle {
         }
     }
 
-
-
     HorizontalHeaderView {
         id: horizontalHeader
         syncView: table
@@ -164,7 +162,6 @@ Rectangle {
         anchors.fill: parent
         anchors.topMargin: toolBar.height + pathLine.height + horizontalHeader.height
         clip: true
-
 
         columnWidthProvider: function (column) {
             return table.width / table.model.columnCount();
