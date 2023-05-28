@@ -3,6 +3,7 @@
 #include "database.h"
 
 #include <qrandom.h>
+#include <QFile>
 
 
 Database::Database(QObject *parent) :
@@ -10,9 +11,32 @@ Database::Database(QObject *parent) :
 {
     db = QSqlDatabase::addDatabase("QPSQL");
 
-    db.setDatabaseName("DocMgmt");
-    db.setUserName("postgres");
-    db.setPassword("1111");
+    QFile file("config.txt");
+
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qWarning() << "Can't open configure file";
+    }
+
+    QTextStream in (&file);
+
+    if (in.atEnd())
+        qWarning() << "Config hasn't a db name";
+    // "DocMgmt"
+    db.setDatabaseName(in.readLine());
+
+
+    if (in.atEnd())
+        qWarning() << "Config hasn't a db username";
+    // "postgres"
+    db.setUserName(in.readLine());
+
+
+    if (in.atEnd())
+        qWarning() << "Config hasn't a db name";
+    //"1111"
+    db.setPassword(in.readLine());
+
     db.setHostName("localhost");
     //db.setHostName("127.0.0.1");
     //db.setPort(5434);

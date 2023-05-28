@@ -6,14 +6,17 @@ Server::Server(int port) :
 {
     Logger::Init();
     p_Server = new QTcpServer();
-    i_Port;
 
-    if (!p_Server->listen(QHostAddress::Any, i_Port))
+    int attempt = 0;
+    do
     {
+        if (p_Server->listen(QHostAddress::Any, i_Port))
+            break;
+
         qDebug() << "Error listening";
         qDebug() << p_Server->serverError();
-        return;
-    }
+        i_Port++;
+    } while (attempt++ < 10);
 
     qDebug() << "Start listening";
     qDebug() << i_Port;
