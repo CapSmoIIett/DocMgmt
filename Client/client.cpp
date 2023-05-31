@@ -233,6 +233,12 @@ void Client::setHolidayRequest(QDate date, QString name)
     SendRequest(QString("Type:%1,Name:%2,Date:%3").replace(",",SEP).arg(MSG_SET_HOLIDAY).arg(name).arg(date.toString()));
 }
 
+void Client::backupRequest()
+{
+    qDebug();
+    SendRequest(QString("Type:%1").arg(MSG_BACKUP_REQUEST));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();

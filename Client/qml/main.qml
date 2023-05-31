@@ -199,9 +199,11 @@ ApplicationWindow {
         Menu {
             title: '&File'
             Action {
-                text: '&Sign...'
+                text: '&BD backup'
+                onTriggered: {
+                    app.backupRequest();
+                }
             }
-            Action { text: '&New...' }
             Action { text: '&Open...' }
             Action { text: '&Save' }
             Action { text: 'Save &As...' }

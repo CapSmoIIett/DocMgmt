@@ -4,6 +4,9 @@
 
 #include <qrandom.h>
 #include <QFile>
+#include <QProcess>
+#include <QApplication>
+#include <iostream>
 
 
 Database::Database(QObject *parent) :
@@ -54,6 +57,7 @@ Database::Database(QObject *parent) :
         qDebug("DB not open");
         qDebug() << db.lastError().text() << "\n";
     }
+    file.close();
 
     createTables();
 }
@@ -1068,4 +1072,53 @@ void Database::SetHoliday(QDate date, int id)
     }
 
     return;
+}
+
+void Database::backUp()
+{
+    QString db_name, user, pass;
+
+    QFile file("config.txt");
+
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qWarning() << "Can't open configure file";
+    }
+
+    QTextStream in (&file);
+
+    if (in.atEnd())
+        qWarning() << "Config hasn't a db name";
+    db_name = in.readLine();
+
+
+    if (in.atEnd())
+        qWarning() << "Config hasn't a db username";
+    // "postgres"
+    user = in.readLine();
+
+
+    if (in.atEnd())
+        qWarning() << "Config hasn't a db name";
+    //"1111"
+    pass = in.readLine();
+
+    file.close();
+
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("PGPASSWORD", pass);
+
+    // pg_dump -U postgres -d DocMgmt -f backup_file.backup
+    QStringList args;
+    args << "-U" << user << "-d" << db_name << "-f" << "backup_file.backup";
+
+    QProcess *pg_dump = new QProcess(this);
+    pg_dump->setProcessEnvironment(env);
+    pg_dump->start("pg_dump", args);
+
+    QApplication::processEvents();
+    pg_dump->waitForStarted();
+
+    pg_dump->waitForFinished();
+
 }

@@ -63,6 +63,8 @@ public:
     void loadCalendarRequest(int month, int year);
     void setHolidayRequest(QDate date, QString name);
 
+    void backupRequest();
+
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);

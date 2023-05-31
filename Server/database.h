@@ -62,6 +62,8 @@ public:
     int GetUserID(QString name);
     void SetHoliday(QDate, int);
 
+    void backUp();
+
 private:
     // Сам объект базы данных, с которым будет производиться работа
     QSqlDatabase    db;

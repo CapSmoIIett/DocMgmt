@@ -541,6 +541,12 @@ void Server::ReadSocket()
 
     } break;
 
+    case MSG_BACKUP_REQUEST:
+    {
+        db.backUp();
+
+    } break;
+
 
 
     }

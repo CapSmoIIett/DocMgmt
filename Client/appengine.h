@@ -103,6 +103,7 @@ public:
 
     Q_INVOKABLE void loadCalendarRequest(int month, int year);
     Q_INVOKABLE void setHolidayRequest(QDate date, QString name);
+    Q_INVOKABLE void backupRequest();
 
 signals:
     void verified(bool result);

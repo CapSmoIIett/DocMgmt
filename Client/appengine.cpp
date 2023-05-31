@@ -613,6 +613,11 @@ void AppEngine::setHolidayRequest(QDate date, QString name)
     client.setHolidayRequest(date, name);
 }
 
+void AppEngine::backupRequest()
+{
+    client.backupRequest();
+}
+
 /*
 void AppEngine::GenerateCertificate()
 {

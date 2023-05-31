@@ -38,6 +38,8 @@
 #define MSG_SEND_MSG			300
 #define MSG_UPLOAD_MSGS			301
 
+#define MSG_BACKUP_REQUEST		400
+
 
 
 #endif // MESSAGES_H
