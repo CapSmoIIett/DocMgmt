@@ -107,6 +107,8 @@ public:
     Q_INVOKABLE void setHolidayRequest(QDate date, QString name);
     Q_INVOKABLE void backupRequest();
 
+    Q_INVOKABLE void loadBasicData();
+
 signals:
     void verified(bool result);
     void onChangeIP();

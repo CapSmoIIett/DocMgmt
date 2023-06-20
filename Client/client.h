@@ -67,6 +67,8 @@ public:
 
     void backupRequest();
 
+    void loadBasicData();
+
 signals:
     void onVerified(bool result);
     void onGetUsersList(QVector<User>);

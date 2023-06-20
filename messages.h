@@ -24,6 +24,7 @@
 #define MSG_SET_HOLIDAY			116
 #define MSG_UPLOAD_OFFICE_DATA	117
 #define MSG_REMOVE_OFFICE		118
+#define MSG_LOAD_BASE			119
 
 #define MSG_WARNING				130
 

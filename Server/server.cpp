@@ -313,6 +313,42 @@ void Server::ReadSocket()
         emit SendToClient(data);
     } break;
 
+    case MSG_LOAD_BASE:
+    {
+        auto rights = db.GetRights();
+        auto users = db.GetUsersList();
+        auto offices = db.GetOffices();
+
+        QString data = QString("Type:%1,rSize:%2,uSize:%3,oSize:%4,").replace(",",SEP).arg(MSG_LOAD_BASE)
+            .arg(rights.size()).arg(users.size()).arg(offices.size());
+
+
+        for (int i = 0; i < rights.size(); i++)
+        {
+            data += QString("ID%1:%2").arg(i).arg(rights[i].i_ID) + SEP;
+            data += QString("Name%1:%2").arg(i).arg(rights[i].s_Name) + SEP;
+            data += QString("Lvl%1:%2").arg(i).arg(rights[i].i_acs_lvl) + SEP;
+        }
+
+        for (int i = 0; i < users.size(); i++)
+        {
+            data += QString("ID%1:%2").arg(i).arg(users[i].i_ID) + SEP;
+            data += QString("Full_Name_%1:%2").arg(i).arg(users[i].s_Full_Name)+ SEP;
+            data += QString("Office_%1:%2").arg(i).arg(users[i].s_Office) + SEP;
+            data += QString("Right_%1:%2").arg(i).arg(users[i].s_Right) + SEP;
+        }
+
+        for (int i = 0; i < offices.size(); i++)
+        {
+            data += QString("ID%1:%2").arg(i).arg(offices[i].i_ID) + SEP;
+            data += QString("Name%1:%2").arg(i).arg(offices[i].s_Name) + SEP;
+            data += QString("Address%1:%2").arg(i).arg(offices[i].s_Address) + SEP;
+        }
+
+
+        emit SendToClient(data);
+    }break;
+
     case MSG_UPLOAD_USER_DATA:
     {
         User user;

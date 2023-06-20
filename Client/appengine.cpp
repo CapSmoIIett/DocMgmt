@@ -154,7 +154,8 @@ void AppEngine::addUserRequest()
 void AppEngine::loadCurUserDataRequest()
 {
     qDebug() << user.s_Full_Name;
-    client.loadUserDataRequest(user.s_Full_Name);
+    //client.loadUserDataRequest(user.s_Full_Name);
+    client.loadUserDataRequest(user.i_ID);
 }
 
 void AppEngine::loadUserDataRequest(int id)
@@ -627,6 +628,11 @@ void AppEngine::setHolidayRequest(QDate date, QString name)
 void AppEngine::backupRequest()
 {
     client.backupRequest();
+}
+
+void AppEngine::loadBasicData()
+{
+    client.loadBasicData();
 }
 
 /*

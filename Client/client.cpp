@@ -250,6 +250,12 @@ void Client::backupRequest()
     SendRequest(QString("Type:%1").arg(MSG_BACKUP_REQUEST));
 }
 
+void Client::loadBasicData()
+{
+    qDebug();
+    SendRequest(QString("Type:%1").arg(MSG_LOAD_BASE));
+}
+
 void Client::ReadSocket ()
 {
     qDebug();
@@ -402,6 +408,71 @@ void Client::ReadSocket ()
         right.i_acs_lvl = header.split(SEP)[3].split(":")[1].toInt();
 
         emit onGetRight(right);
+    } break;
+
+
+    case MSG_LOAD_BASE:
+    {
+        QVector<Right> rights;
+        QVector<User> users;
+        QVector<Office> offices;
+
+        int rightsSize = header.split(SEP)[1].split(":")[1].toInt();
+        int usersSize = header.split(SEP)[2].split(":")[1].toInt();
+        int officesSize = header.split(SEP)[3].split(":")[1].toInt();
+        int it = 4;
+
+        for (int i = 0; i < rightsSize; i++)
+        {
+            Right right;
+            right.i_ID = header.split(SEP)[it++].split(":")[1].toInt();
+            right.s_Name = header.split(SEP)[it++].split(":")[1];
+            right.i_acs_lvl = header.split(SEP)[it++].split(":")[1].toInt();
+
+            rights.push_back(right);
+        }
+
+        emit onGetRights(rights);
+
+        for (int i = 0; i < usersSize; i++)
+        {
+            User user;
+            user.i_ID = header.split(SEP)[it++].split(":")[1].toInt();
+            user.s_Full_Name = header.split(SEP)[it++].split(":")[1];
+            user.s_Office = header.split(SEP)[it++].split(":")[1];
+            user.s_Right = header.split(SEP)[it++].split(":")[1];
+
+            //qDebug() << user.i_ID;
+            //qDebug() << user.s_Full_Name;
+            //qDebug() << user.s_Right;
+            //qDebug() << user.s_Office;
+
+            users.push_back(user);
+        }
+
+        emit onGetUsersList(users);
+
+
+        for (int i = 0; i < officesSize; i++)
+        {
+            Office office;
+            office.i_ID = header.split(SEP)[it++].split(":")[1].toInt();
+            office.s_Name = header.split(SEP)[it++].split(":")[1];
+            office.s_Address = header.split(SEP)[it++].split(":")[1];
+
+            //qDebug() << header.split(SEP)[1 + i + 1];
+            //qDebug() << header.split(SEP)[1 + i + 2];
+
+            //qDebug() << "ID: " << office.i_ID;
+            //qDebug() << "Name: " << office.s_Name;
+            //qDebug() << "Address: " << office.s_Address;
+
+            offices.push_back(office);
+        }
+
+        emit onGetOffices(offices);
+
+
     } break;
 
     case MSG_UPLOAD_CALENDAR:

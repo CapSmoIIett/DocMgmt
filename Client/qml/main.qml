@@ -177,12 +177,18 @@ ApplicationWindow {
                 if (result)
                 {
                     console.log("true")
-                    app.loadCurUserDataRequest()
                     loginWindow.hide()
                     mainWindow.show()
 
-                    rightsTableModel.loadrightsRequest()
-                    officeTableModel.loadOfficesRequest()
+                    //app.usersListRequest()
+                    app.loadBasicData()
+                    /*
+                    app.loadRightsRequest()
+                    app.loadOfficesRequest()
+                    app.usersListRequest()
+                    */
+                    //app.loadCurUserDataRequest()
+
                 }
                 else
                 {
@@ -251,7 +257,8 @@ ApplicationWindow {
                 text: "Your page"//'_' + app.userName + "shit"
 
                 onClicked: {
-                    loader.loadFragment("qrc:/qml/Pages/user.qml")
+                    app.loadCurUserDataRequest()
+                    //loader.loadFragment("qrc:/qml/Pages/user.qml")
                 }
             }
             ToolSeparator {}
