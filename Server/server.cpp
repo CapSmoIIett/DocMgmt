@@ -135,9 +135,9 @@ void Server::ReadSocket()
 
         auto user = map_Users[socket];
 
-        auto right = db.GetRight(user.s_Right);
+        auto right = db.GetRight(user.s_Right.toInt());
 
-        if (!right.rights[EDIT_USERS])
+        if (user.i_ID != 0 && !right.rights[EDIT_USERS])
         {
             qDebug() << "No permission";
             SendWarning("No permission");
@@ -195,9 +195,9 @@ void Server::ReadSocket()
     {
         auto user = map_Users[socket];
 
-        auto right = db.GetRight(user.s_Right);
+        auto right = db.GetRight(user.s_Right.toInt());
 
-        if (!right.rights[EDIT_RIGHTS])
+        if (user.i_ID != 0 && !right.rights[EDIT_RIGHTS])
         {
             qDebug() << "No permission";
             SendWarning("No permission");
@@ -210,9 +210,9 @@ void Server::ReadSocket()
     {
         auto user = map_Users[socket];
 
-        auto right = db.GetRight(user.s_Right);
+        auto right = db.GetRight(user.s_Right.toInt());
 
-        if (!right.rights[EDIT_USERS])
+        if (user.i_ID != 0 && !right.rights[EDIT_USERS])
         {
             qDebug() << "No permission";
             SendWarning("No permission");
@@ -221,7 +221,37 @@ void Server::ReadSocket()
 
         int id = header.split(SEP)[1].split(":")[1].toInt();
 
+        if (id == 0)
+        {
+            qDebug() << "Can't remove supervisor";
+            break;
+        }
+
         db.RemoveUser(id);
+    } break;
+    case MSG_REMOVE_OFFICE:
+    {
+        auto user = map_Users[socket];
+
+        auto right = db.GetRight(user.s_Right.toInt());
+
+        if (user.i_ID != 0 && !right.rights[EDIT_OFFICE])
+        {
+            qDebug() << "No permission";
+            SendWarning("No permission");
+            break;
+        }
+
+        int id = header.split(SEP)[1].split(":")[1].toInt();
+
+        if (id == 0)
+        {
+            qDebug() << "Can't remove supervisor";
+            break;
+        }
+
+        db.RemoveOffice(id);
+
     } break;
     case MSG_LOAD_OFFICES:
     {
@@ -241,9 +271,9 @@ void Server::ReadSocket()
     {
         auto user = map_Users[socket];
 
-        auto right = db.GetRight(user.s_Right);
+        auto right = db.GetRight(user.s_Right.toInt());
 
-        if (!right.rights[EDIT_OFFICE])
+        if (user.i_ID != 0 && !right.rights[EDIT_OFFICE])
         {
             qDebug() << "No permission";
             SendWarning("No permission");
@@ -306,6 +336,17 @@ void Server::ReadSocket()
 
     } break;
 
+    case MSG_UPLOAD_OFFICE_DATA:
+    {
+        Office office;
+        office.i_ID = header.split(SEP)[1].split(":")[1].toInt();
+        office.s_Name = header.split(SEP)[2].split(":")[1];
+        office.s_Address = header.split(SEP)[3].split(":")[1];
+
+        db.UpdateOfficeData(office);
+
+    } break;
+
     case MSG_UPLOAD_CALENDAR:
     {
         int month = header.split(SEP)[1].split(":")[1].toInt();
@@ -339,7 +380,7 @@ void Server::ReadSocket()
 
         auto right = db.GetRight(user.s_Right);
 
-        if (!right.rights[EDIT_HOLIDAYS])
+        if (user.i_ID != 0 && !right.rights[EDIT_HOLIDAYS])
         {
             qDebug() << "No permission";
             SendWarning("No permission");

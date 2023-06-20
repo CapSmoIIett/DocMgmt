@@ -1,102 +1,106 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import Qt.labs.qmlmodels
+import QtQuick.Controls.Material
+import QtQuick.Controls.Universal
+import QtCharts
 
+import Qt.labs.folderlistmodel
 
-Rectangle {
+Pane {
     anchors.fill: parent
 
-    ToolBar {
-        id: toolBar
+    Rectangle {
+        id: top
+        color: Material.color(Material.Purple)
+        height: parent.height / 6
         width: parent.width
-        height: updateButton.height + 10
-
-
-        RowLayout {
-            anchors.fill: parent
-
-            Label {
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                width: 30
-            }
-
-            ToolButton {
-                id: updateButton
-
-                text: "Update"
-                onClicked: {
-                console.log("Update")
-                app.loadOfficesRequest()
-                }
-            }
-
-            Label {
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                Layout.fillWidth: true
-            }
-
-            ToolButton {
-                text: 'Add office'
-                onClicked: {
-                    console.log("Add office")
-                    //app.addOfficesRequest()
-                }
-            }
-
-            Label {
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                width: 30
-            }
-        }
+        anchors.margins: 0
     }
 
-    HorizontalHeaderView {
-        id: horizontalHeader
-        syncView: table
-        anchors.top: toolBar.bottom
+    /*Label {
+        id: labelName
+        anchors.top: top.bottom
         anchors.left: parent.left
+        anchors.margins: 15
 
-        delegate: Text {
-            horizontalAlignment: Text.AlignHCenter
-            text:  model.display
+        text: officePage.name;
+    }*/
+    TextInput {
+        id: labelName
+
+        anchors.top: top.bottom
+        anchors.left: parent.left
+        anchors.margins: 15
+        text: officePage.name
+
+        onTextEdited: {
+            save.enabled = true
         }
     }
 
-    TableView {
-        id: table
-        anchors.fill: parent
-        anchors.topMargin: toolBar.height + horizontalHeader.height
-        clip: true
+    MenuSeparator {
+        id: separator
+        anchors.top: labelName.bottom
+        anchors.left: parent.left
+        anchors.topMargin: 15
+        anchors.bottomMargin: 15
+        width: parent.width
+    }
 
-        columnWidthProvider: function (column) {
-            return table.width / table.model.columnCount();
+    GridLayout {
+        id: grid
+
+        anchors.leftMargin: 45
+
+        rows: 1
+        columns: 4
+        flow: GridLayout.TopToBottom
+        anchors.top: separator.bottom
+        width: parent.width
+
+        Label {
+            text: "Address: "
         }
 
-        onWidthChanged: table.forceLayout()
+        Rectangle {
+            width: parent.width / 2
+            height: 25
+            border.color: "grey"
+            border.width: 1
 
-        model: officeTableModel
+            TextInput{
+                id: inputAddress
+                text: officePage.address
+                width: parent.width / 2
 
-        delegate: Rectangle {
-            implicitWidth: table.columnWidthProvider(column)
-            implicitHeight: 30
-
-            Label {
-                text: display
-                anchors.centerIn: parent
+                onTextEdited: {
+                    save.enabled = true
+                }
             }
         }
 
+    }
 
+    Button {
+        id: save
+        anchors.top: grid.bottom
+        anchors.margins: 15
+        Layout.fillWidth: true
+        enabled: false
 
-        Component.onCompleted: {
-            app.loadOfficesRequest()
+        text: "Save Changes"
+
+        onClicked: {
+            //console.log(accessLvl.currentIndex)
+            officePage.name = labelName.text
+            officePage.address = inputAddress.text
+
+            officePage.uploadData()
         }
+    }
+
+    Component.onCompleted: {
+        //rightPage.loadRightRequest(0)
     }
 }

@@ -77,23 +77,6 @@ bool Database::createTables()
     QSqlQuery query;
     bool result = 0;
 
-    result = query.exec("CREATE TABLE IF NOT EXISTS users"
-                "("
-                    "id serial primary key,"
-                    "password varchar(255) null,"
-                    "rights_Id integer references Rights(Id),"
-                    "full_Name varchar(255) null,"
-                    "birth_Date date null,"
-                    "office_Id integer references Office(Id),"
-                    "phone_Number varchar(30)"
-                ")");
-
-    if (!result)
-    {
-        qDebug() << query.lastQuery();
-        qDebug() << query.lastError().text();
-        return false;
-    }
 
     result = query.exec("CREATE TABLE IF NOT EXISTS rights"
                 "("
@@ -118,6 +101,24 @@ bool Database::createTables()
                     "id serial primary key,"
                     "name varchar(255),"
                     "address varchar(255)"
+                ")");
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+    result = query.exec("CREATE TABLE IF NOT EXISTS users"
+                "("
+                    "id serial primary key,"
+                    "password varchar(255) null,"
+                    "rights_Id integer references Rights(Id),"
+                    "full_Name varchar(255) null,"
+                    "birth_Date date null,"
+                    "office_Id integer references Office(Id),"
+                    "phone_Number varchar(30)"
                 ")");
 
     if (!result)
@@ -576,7 +577,27 @@ void Database::RemoveUser(int id)
         qDebug() << query.lastQuery();
         qDebug() << query.lastError().text();
     }
+}
 
+void Database::RemoveOffice(int id)
+{
+    qDebug() << id;
+
+    QSqlQuery query;
+    int result = 0;
+    int it = 0;
+
+    query.prepare("DELETE FROM office WHERE id = :id ");
+
+    query.bindValue(":id", id);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
 }
 
 QVector<Office> Database::GetOffices()
@@ -806,7 +827,6 @@ void Database::UpdateUserData(User user)
 
 void Database::UpdateRightData(Right right)
 {
-
     qDebug() << right.i_ID << " " << right.s_Name << " " << right.i_acs_lvl;
 
     QSqlQuery query;
@@ -825,7 +845,28 @@ void Database::UpdateRightData(Right right)
         qDebug() << query.lastQuery();
         qDebug() << query.lastError().text();
     }
+}
 
+void Database::UpdateOfficeData(Office office)
+{
+    qDebug() << office.i_ID << " " << office.s_Name << " " << office.s_Address;
+
+    QSqlQuery query;
+    int result;
+
+    query.prepare(QString("UPDATE Office SET name = :name, address = :address WHERE id = :id"));
+
+    query.bindValue(":id", office.i_ID);
+    query.bindValue(":name", office.s_Name);
+    query.bindValue(":address", office.s_Address);
+
+    result = query.exec();
+
+    if (!result)
+    {
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError().text();
+    }
 }
 
 int Database::GetUserAccessLvl(int id)

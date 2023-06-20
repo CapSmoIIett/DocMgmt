@@ -158,6 +158,11 @@ void Client::removeUserRequest(int id)
     SendRequest(QString("Type:%1,ID:%2").replace(",",SEP).arg(MSG_REMOVE_USER).arg(id));
 }
 
+void Client::removeOfficeRequest(int id)
+{
+    SendRequest(QString("Type:%1,ID:%2").replace(",",SEP).arg(MSG_REMOVE_OFFICE).arg(id));
+}
+
 void Client::loadOfficesRequest()
 {
     SendRequest(QString("Type:%1").replace(",",SEP).arg(MSG_LOAD_OFFICES));
@@ -198,6 +203,12 @@ void Client::uploadRightData(Right right)
 {
     SendRequest(QString("Type:%1,ID:%2,Name:%3,LVL:%4").replace(",",SEP)
         .arg(MSG_UPLOAD_RIGHT_DATA).arg(right.i_ID).arg(right.s_Name).arg(right.i_acs_lvl));
+}
+
+void Client::uploadOfficeData(Office office)
+{
+    SendRequest(QString("Type:%1,ID:%2,Name:%3,Address:%4").replace(",",SEP)
+        .arg(MSG_UPLOAD_OFFICE_DATA).arg(office.i_ID).arg(office.s_Name).arg(office.s_Address));
 }
 
 void Client::uploadFile(QString name, QString text)

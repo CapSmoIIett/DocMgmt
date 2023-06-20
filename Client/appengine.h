@@ -75,6 +75,7 @@ public:
     Q_INVOKABLE void loadRightsRequest();
     Q_INVOKABLE void addRightsRequest();
     Q_INVOKABLE void removeUserRequest(int id);
+    Q_INVOKABLE void removeOfficeRequest(int id);
     Q_INVOKABLE void loadOfficesRequest();
     Q_INVOKABLE void addOfficesRequest();
     Q_INVOKABLE void loadOfficeRequest(int id);
@@ -91,6 +92,7 @@ public:
 
     void uploadUserData(User user);
     void uploadRightData(Right right);
+    void uploadOfficeData(Office office);
 
     Q_INVOKABLE void uploadFile(QString path);
 

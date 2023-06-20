@@ -25,6 +25,7 @@ public:
     void setAddress(const QString &address);
 
     Q_INVOKABLE void loadOfficeRequest(int id);
+    Q_INVOKABLE void uploadData();
 
 public slots:
     void GetOffice(Office office);

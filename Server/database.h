@@ -42,6 +42,7 @@ public:
     void AddOffice();
 
     void RemoveUser(int id);
+    void RemoveOffice(int id);
 
     QVector<Office> GetOffices();
 
@@ -52,6 +53,7 @@ public:
     int GetID(QString table, QString field, QString value);
     void UpdateUserData(User);
     void UpdateRightData(Right);
+    void UpdateOfficeData(Office);
     int GetUserAccessLvl(int id);
 
 

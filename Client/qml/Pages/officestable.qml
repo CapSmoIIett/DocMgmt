@@ -133,7 +133,7 @@ Rectangle {
                         console.log(row);
                         console.log(officeTableModel.getIDbyRow(row))
                         //main.loadUserPage(personalTableModel.getIDbyRow(row))
-                        //officeTableModel.loadOfficePage(officeTableModel.getIDbyRow(row))
+                        officeTableModel.loadOfficePage(officeTableModel.getIDbyRow(row))
                     }
                 }
             }
@@ -149,7 +149,7 @@ Rectangle {
                 text: 'remove'
 
                 onClicked: {
-                    //app.removeUserRequest(menu.curRow)
+                    app.removeOfficeRequest(officeTableModel.getIDbyRow(menu.curRow))
                 }
             }
         }

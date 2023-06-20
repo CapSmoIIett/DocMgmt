@@ -177,6 +177,11 @@ void AppEngine::removeUserRequest(int id)
     client.removeUserRequest(id);
 }
 
+void AppEngine::removeOfficeRequest(int id)
+{
+    client.removeOfficeRequest(id);
+}
+
 void AppEngine::loadOfficesRequest()
 {
     client.loadOfficesRequest();
@@ -218,6 +223,12 @@ void AppEngine::uploadRightData(Right right)
 {
     client.uploadRightData(right);
 }
+
+void AppEngine::uploadOfficeData(Office office)
+{
+    client.uploadOfficeData(office);
+}
+
 
 void AppEngine::changeAccessLvl(QString path, QString name, int lvl)
 {

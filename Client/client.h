@@ -42,6 +42,7 @@ public:
     void loadRightsRequest();
     void addRightsRequest();
     void removeUserRequest(int id);
+    void removeOfficeRequest(int id);
     void loadOfficesRequest();
     void addOfficeRequest();
     void loadOfficeRequest(int id);
@@ -55,6 +56,7 @@ public:
 
     void uploadUserData(User);
     void uploadRightData(Right);
+    void uploadOfficeData(Office);
     void uploadFile(QString name, QString text);
 
     void sendMessage(QString, int, int);

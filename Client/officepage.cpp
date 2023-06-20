@@ -47,6 +47,12 @@ void OfficePage::loadOfficeRequest(int id)
     p_AppEngine->loadOfficeRequest(id);
 }
 
+
+void OfficePage::uploadData()
+{
+    p_AppEngine->uploadOfficeData(office);
+}
+
 void OfficePage::GetOffice(Office office)
 {
     this->office = office;
