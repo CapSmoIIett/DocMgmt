@@ -1,4 +1,4 @@
-#FoxFile - File Manager
+# FoxFile - File Manager
 
 *C++ and QML for QtCreator*
 This is a simple file manager developed using C++ and the QML framework in the QtCreator environment. This project allows users to browse files and folders in the system, create new folders, move and delete files and folders.
