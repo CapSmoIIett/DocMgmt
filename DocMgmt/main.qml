@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Controls 2.15
+import "components/buttons"
 
 Window {
     id: window
@@ -35,6 +36,23 @@ Window {
             anchors.rightMargin: 0
             anchors.leftMargin: 0
             anchors.topMargin: 0
+
+            Rectangle {
+                id: btTopContent
+                x: 715
+                width: 200
+                color: "#00ffffff"
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 0
+                anchors.topMargin: 0
+                anchors.rightMargin: 0
+
+                TopBarButton {
+
+                }
+            }
         }
 
         Rectangle {
