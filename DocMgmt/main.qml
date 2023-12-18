@@ -32,25 +32,32 @@ Window {
             color: "#202225"
             anchors.left: left_menu_bg.right
             anchors.right: parent.right
-            anchors.top: bg.top
+            anchors.top: parent.top
             anchors.rightMargin: 0
             anchors.leftMargin: 0
             anchors.topMargin: 0
 
             Rectangle {
                 id: btTopContent
-                x: 715
-                width: 200
-                color: "#00ffffff"
-                anchors.right: parent.right
+                width: 150
+                color: "#000004ff"
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
+                anchors.right: parent.right
                 anchors.topMargin: 0
                 anchors.rightMargin: 0
 
-                TopBarButton {
+                Row{
+                    anchors.right: parent.right
+                    TopBarButton {
 
+                    }
+                    TopBarButton {
+
+                    }
+                    TopBarButton {
+
+                    }
                 }
             }
         }
